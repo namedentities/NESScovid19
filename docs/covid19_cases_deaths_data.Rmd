@@ -1,0 +1,1407 @@
+---
+title: "How to be Careful with COVID-19 Counts: What We can and Cannot Learn from Observational Data"
+output:
+  html_notebook:
+    toc: yes
+date: 
+author: 
+affiliation: Director, Machine Learning for Social Science Lab, Center for Peace and Security Studies, University of California San Diego
+editor_options: 
+  chunk_output_type: inline
+---
+
+Rex W. Douglass
+
+<style type="text/css">
+blockquote {
+    padding: 10px 20px;
+    margin: 0 0 20px;
+    font-size: 14px;
+    border-left: 5px solid #eee;
+}
+</style>
+
+  
+```{r}
+#libraries
+library(lubridate)
+library(tidyverse)
+
+#devtools::install_github("ropensci/USAboundaries")
+#devtools::install_github("ropensci/USAboundariesData")
+library(USAboundaries) ; #install.packages('USAboundaries')
+data(state_codes)
+
+library(tidyverse)
+library(scales)
+library(gghighlight)
+library(lubridate)
+library(R0)  # consider moving all library commands to top -- this one was in a loop below
+
+library(WikidataR)
+library(countrycode)
+
+library(usmap) ; # install.packages('usmap')
+data(statepop)
+#devtools::install_github("ropensci/USAboundaries")
+#devtools::install_github("ropensci/USAboundariesData")
+library(USAboundaries) ; #install.packages('USAboundaries')
+data(state_codes)
+
+library(tidyverse)
+library(sf)
+
+```
+
+GADM
+
+```{r}
+
+if(fromscratch){
+
+  gadm36 = st_read("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSgadm/data_in/gadm36_gpkg/gadm36.gpkg")
+  
+  gadm36_df <- gadm36 %>% as.data.frame()
+  
+  countries <- gadm36_df %>% dplyr::select(gid=GID_0, name=NAME_0 ) %>% distinct()
+  
+  #Gadm is good about aliases for lower level entities but not countries so use countrycode to grab a bunch of other ways to write countries
+  #For variety, we're going to throw in all the country aliases in countrycode
+  library(countrycode)
+  exclude <- c("ar5", "continent", "country.name.de.regex", "country.name.en.regex", "eurocontrol_pru", "eurocontrol_statfor", "icao.region", "region",
+               "cldr.variant.ccp","cldr.variant.dz", "cldr.variant.ce", "cldr.variant.brx","cldr.variant.bn_in","cldr.variant.bn","cldr.variant.fa","cldr.variant.fa_af", "cldr.variant.ja","cldr.variant.ka",
+               "cldr.variant.kk","cldr.variant.km","cldr.variant.kn","cldr.variant.ko","cldr.variant.ko_kp","cldr.variant.kok","cldr.variant.ks","cldr.variant.lo","cldr.variant.my","cldr.variant.mzn","cldr.variant.ne",
+               "cldr.variant.or","cldr.variant.pa","cldr.variant.ps","cldr.variant.sd","cldr.variant.shi","cldr.variant.si","cldr.variant.sr","cldr.variant.sr_cyrl_ba","cldr.variant.sr_cyrl_me","cldr.variant.sr_cyrl_xk","cldr.variant.ta",
+               "cldr.variant.te","cldr.variant.th","cldr.variant.ti","cldr.variant.ug","cldr.variant.uk","cldr.variant.ur","cldr.variant.ur_in","cldr.variant.uz_cyrl","cldr.variant.vai","cldr.variant.yi","cldr.variant.yo","cldr.variant.yo_bj",
+               "cldr.variant.yue","cldr.variant.yue_hans","cldr.variant.zgh","cldr.variant.zh","cldr.variant.zh_hant","cldr.variant.zh_hant_hk",
+               "un.name.ar","un.name.ru","un.name.zh","cldr.name.am","cldr.name.ar","cldr.name.ar_ly","cldr.name.ar_sa","cldr.name.as","cldr.name.az","cldr.name.az_cyrl",
+               "cldr.name.be","cldr.name.bg","cldr.name.bm","cldr.name.bn","cldr.name.brx","cldr.name.bs_cyrl","cldr.name.ccp","cldr.name.ce","cldr.name.chr","cldr.name.chr","cldr.name.ckb","cldr.name.dz","cldr.name.el",
+               "cldr.name.fa","cldr.name.fa_af","cldr.name.gu","cldr.name.he","cldr.name.hi","cldr.name.hy","cldr.name.ja","cldr.name.ka","cldr.name.km","cldr.name.kn","cldr.name.ko",
+               "cldr.short.yo_bj"  ,    "cldr.name.tk"         , "cldr.short.tk"        , "cldr.variant.tk"      , "cldr.name.mgh"     ,    "cldr.short.mgh"     ,   "cldr.variant.mgh"      ,"cldr.short.el"        , "cldr.variant.el"   ,    "cldr.name.mk"    ,     
+               "cldr.name.sr"     ,     "cldr.name.sr_cyrl_ba" , "cldr.name.sr_cyrl_me" , "cldr.name.sr_cyrl_xk" , "cldr.short.mk"    ,     "cldr.short.sr"      ,   "cldr.short.sr_cyrl_ba", "cldr.short.sr_cyrl_me", "cldr.short.sr_cyrl_xk", "cldr.variant.mk"      ,
+               "cldr.name.kk"     ,     "cldr.short.kk"        , "cldr.name.ky"     ,     "cldr.name.mn"         , "cldr.name.ru"     ,     "cldr.name.ru_ua"    ,   "cldr.short.bg"        , "cldr.short.bs_cyrl" ,   "cldr.short.ky"   ,      "cldr.short.mn"       , 
+               "cldr.short.ru"     ,    "cldr.short.ru_ua"     , "cldr.variant.bg"  ,     "cldr.variant.bs_cyrl" , "cldr.variant.ky"   ,    "cldr.variant.mn"    ,   "cldr.variant.ru"      , "cldr.variant.ru_ua" ,   "cldr.name.uk"    ,      "cldr.short.be"       , 
+               "cldr.short.uk"      ,   "cldr.variant.be"      , "cldr.name.tg"     ,     "cldr.name.uz_cyrl"  ,   "cldr.short.tg"      ,   "cldr.short.uz_cyrl" ,   "cldr.variant.tg"      , "cldr.name.tt"       ,   "cldr.short.tt"   ,      "cldr.variant.tt"     , 
+               "cldr.short.az_cyrl"  ,  "cldr.variant.az_cyrl" , "cldr.short.ce"    ,     "cldr.short.ka"      ,   "cldr.short.hy"       ,  "cldr.variant.hy"    ,   "cldr.name.yi"         , "cldr.short.yi"      ,   "cldr.short.he"   ,      "cldr.variant.he"     , 
+               "cldr.short.ar"       ,  "cldr.short.ar_ly"   ,   "cldr.short.ar_sa" ,     "cldr.variant.ar"    ,   "cldr.variant.ar_ae" ,   "cldr.variant.ar_ly" ,   "cldr.variant.ar_sa"   , "cldr.name.ug"       ,   "cldr.short.ug"   ,      "cldr.short.ckb"     ,  
+               "cldr.variant.ckb"   ,   "cldr.name.ps"       ,   "cldr.name.sd"     ,     "cldr.name.ur"       ,   "cldr.name.ur_in"    ,   "cldr.name.uz_arab"  ,   "cldr.short.fa"        , "cldr.short.fa_af"   ,   "cldr.short.ps"    ,     "cldr.short.sd"     ,   
+               "cldr.short.ur"      ,   "cldr.short.ur_in"   ,   "cldr.name.ks"     ,     "cldr.short.ks"      ,   "cldr.name.mzn"      ,   "cldr.short.mzn"     ,   "cldr.name.shi"        , "cldr.name.zgh"      ,   "cldr.short.shi"   ,     "cldr.short.zgh"    ,   
+               "cldr.name.ti"       ,   "cldr.short.am"      ,   "cldr.short.ti"    ,     "cldr.variant.am"    ,   "cldr.name.mr"       ,   "cldr.short.mr"      ,   "cldr.variant.mr"      , "cldr.name.kok"      ,   "cldr.name.ne"      ,    "cldr.short.kok"     ,  
+               "cldr.short.ne"      ,   "cldr.short.hi"      ,   "cldr.variant.hi"  ,     "cldr.short.brx"     ,   "cldr.short.as"      ,   "cldr.short.bn"      ,   "cldr.variant.as"      , "cldr.name.pa"       ,   "cldr.short.pa"      ,   "cldr.short.gu"     ,   
+               "cldr.variant.gu"    ,   "cldr.name.or"       ,   "cldr.short.or"    ,     "cldr.name.ta"       ,   "cldr.short.ta"      ,   "cldr.name.te"       ,   "cldr.short.te"        , "cldr.short.kn"      ,   "cldr.name.ml"        ,  "cldr.short.ml"    ,    
+               "cldr.variant.ml"    ,   "cldr.name.si"       ,   "cldr.short.si"    ,     "cldr.name.th"       ,   "cldr.short.th"      ,   "cldr.name.lo"       ,   "cldr.short.lo"        , "cldr.short.dz"      ,   "cldr.name.my"       ,   "cldr.short.my"    ,    
+               "cldr.short.ccp"     ,   "cldr.short.km"      ,   "cldr.short.chr"   ,     "cldr.variant.chr"   ,   "cldr.name.vai"       ,  "cldr.short.vai"     ,   "cldr.name.ko_kp"      , "cldr.short.ko"      ,   "cldr.short.ko_kp"    ,  "cldr.short.ja"    ,    
+               "cldr.name.yue"      ,   "cldr.name.yue_hans" ,   "cldr.name.zh"     ,     "cldr.name.zh_hant"  ,   "cldr.name.zh_hant_hk" , "cldr.short.yue"     ,   "cldr.short.yue_hans"  , "cldr.short.zh"      ,   "cldr.short.zh_hant"  ,  "cldr.short.zh_hant_hk"
+               )
+  length(names(codelist))
+  vars <- setdiff(names(codelist),exclude)
+  length(vars) #489
+  codelist_t <- t(codelist[,vars])
+  
+  sort(codelist_t[,1])
+  
+  countries_list <- list()
+  for(q in vars){
+    print(q)
+    temp <- countries
+    temp$name <- countrycode(
+      sourcevar=countries$name,
+      origin="country.name",
+      destination=q,
+      warn = F,
+      nomatch = NA,
+      custom_dict = NULL,
+      custom_match = NULL,
+      origin_regex = FALSE
+    )
+    if(!is.numeric(temp$name)) { #auto exclude those columns that are numeric codes
+      countries_list[[q]] <- temp
+    }
+  }
+  
+  countries_df <- bind_rows(countries_list)
+  dim(countries_df) #182016
+  countries_df_unique <- countries_df %>% 
+                         mutate(name=trimws(name)) %>%
+                         distinct() %>% 
+                         filter(!is.na(name)) %>% 
+                         add_count(name) %>% filter(n==1) %>% dplyr::select(-n) %>%
+                         filter(is.na(as.numeric(name)))
+  dim(countries_df_unique) #16,150 
+  countries_df_unique <- bind_rows(
+    gadm36_df %>% dplyr::select(gid=GID_0, name=NAME_0 ) %>% distinct(),
+    countries_df_unique
+  ) %>% distinct()
+  
+  temp1 <- bind_rows(
+    countries_df_unique,
+    gadm36_df %>% dplyr::select(gid=GID_1, name=NAME_1 , varname=VARNAME_1, type=TYPE_1, engtype=ENGTYPE_1, validfrom=VALIDFR_1, validto=VALIDTO_1 ) %>% distinct(),
+    gadm36_df %>% dplyr::select(gid=GID_2, name=NAME_2 , varname=VARNAME_2, type=TYPE_2, engtype=ENGTYPE_2, validfrom=VALIDFR_2, validto=VALIDTO_2 ) %>% distinct(),
+    gadm36_df %>% dplyr::select(gid=GID_3, name=NAME_3 , varname=VARNAME_3, type=TYPE_3, engtype=ENGTYPE_3, validfrom=VALIDFR_3, validto=VALIDTO_3 ) %>% distinct(),
+    gadm36_df %>% dplyr::select(gid=GID_4, name=NAME_4 , varname=VARNAME_4, type=TYPE_4, engtype=ENGTYPE_4, validfrom=VALIDFR_4, validto=VALIDTO_4 )
+  ) %>% distinct()
+  dim(temp1)
+  
+  temp2 <- bind_rows(
+    temp1 %>% dplyr::select(gid, name=name , type, engtype, validfrom, validto ),
+    temp1 %>% dplyr::select(gid, name=varname , type, engtype, validfrom, validto )
+  )  %>%
+    distinct() %>% 
+    separate_rows(name,sep="\\|") %>%
+    mutate(name = trimws(name)) %>%
+    filter(!is.na(name) & name!='') %>%
+    distinct() 
+  
+  temp3 <- bind_rows(
+    temp2 %>% dplyr::select(gid, name , type=type, validfrom, validto ),
+    temp2 %>% dplyr::select(gid, name , type=engtype, validfrom, validto )
+  )  %>%
+    distinct() %>% 
+    separate_rows(type,sep="\\|") %>%
+    mutate(type = trimws(type)) %>%
+    distinct() 
+  dim(temp3)
+  #Territorio Nacional|Provincia
+  
+  temp4 <- bind_rows(
+    temp3 %>% dplyr::select(gid, name , validfrom, validto ), #just the name
+    temp3 %>% filter(!is.na(type) & type!='') %>% mutate(name=paste0(name," ",type)) %>% dplyr::select(gid, name , validfrom, validto ), #original name followed by the type that it is
+    temp3 %>% filter(!is.na(type) & type!='') %>% mutate(name=paste0(type," of ",name)) %>% dplyr::select(gid, name , validfrom, validto ), #type followed by of, so state of, county of province of, etc.
+  )  %>%
+    distinct() %>% 
+    mutate(name = trimws(name)) %>%
+    distinct() 
+  dim(temp4) #1,657,967 #1019451
+  
+  #dates
+  dates_df <- temp4 %>% dplyr::select(gid,validfrom, validto) %>% distinct()
+
+  library(data.table)
+  temp5 <- temp4 %>% dplyr::select(gid,name) %>% as.data.table()
+
+  library(dtplyr) #install.packages("dtplyr")
+  library(stringi)
+  rex_clean <- function(x){ x %>% stri_trans_general("latin-ascii") %>% stri_replace_all(regex="[^A-Za-z0-9]","") %>% tolower() } #so individually, each string should be devoid of spaces,noncharacters, and nonlatin
+  temp5[,name:=rex_clean(name),]
+  temp5 <- temp5 %>% distinct()
+  dim(temp5) 
+  
+  #but between levels we'll put an underscore. Number of udnerscores tells you how many levels down it is
+  level0 <- countries_df_unique %>% mutate(name=rex_clean(name)) %>% distinct() %>% arrange(gid) %>% filter(!is.na(name) & name!='') %>% filter(!duplicated(name))
+  dim(level0) #
+  
+  #temp <- level0 %>% count(name)
+  
+  level1 <- gadm36_df %>% dplyr::select(gid=GID_1, a=GID_0, b=GID_1) %>% filter(!is.na(a) & !is.na(b)) %>% 
+            left_join(temp5 %>% dplyr::select(a=gid, name_a=name) %>% filter(!is.na(a) & !is.na(name_a) & name_a!='')  ) %>% 
+            left_join(temp5 %>% dplyr::select(b=gid, name_b=name) %>% filter(!is.na(b) & !is.na(name_b) & name_b!='')  ) %>%
+            mutate(name=paste0(name_a,"_",name_b)) %>% dplyr::select(gid, name) %>% distinct() %>% filter(!is.na(name) & name!='') #%>% filter(!duplicated(name))
+  dim(level1) #1,093,517  #1,081,957
+  #level1_distinct <- level1 %>% distinct() #no dupes
+  
+  level2 <- gadm36_df %>% dplyr::select(gid=GID_2, a=GID_0,b=GID_1,c=GID_2) %>% filter(!is.na(a) & !is.na(b) & !is.na(c)) %>% 
+            left_join(temp5 %>% dplyr::select(a=gid, name_a=name) %>% filter(!is.na(a) & !is.na(name_a) & name_a!='') ) %>% 
+            left_join(temp5 %>% dplyr::select(b=gid, name_b=name) %>% filter(!is.na(b) & !is.na(name_b) & name_b!='') ) %>% 
+            left_join(temp5 %>% dplyr::select(c=gid, name_c=name) %>% filter(!is.na(c) & !is.na(name_c) & name_c!='') ) %>%
+            mutate(name=paste0(name_a,"_",name_b,"_",name_c)) %>% dplyr::select(gid, name) %>% distinct() %>% filter(!is.na(name) & name!='') %>% filter(!duplicated(name))
+  dim(level2) #49,404,935 #49,926,378
+  
+  level0to3 <- rbindlist(list(level0,level1,level2))
+  dim(level0to3) #50,500,567
+  level0to3 <- level0to3[!duplicated(name),]
+  dim(level0to3) #52,281,025  #50,500,567 
+  
+  library(fst)
+  write_fst( level0to3, '/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/level0to3.fst', compress = 100) #upping the compression hoping it speeds up the read
+  level0to3 <- read_fst('/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/level0to3.fst', as.data.table=T) #still takes an annoying long time
+
+}
+
+library(dtplyr) #install.packages("dtplyr")
+#names_to_gid_dt <- readRDS('/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/names_to_gid_dt.Rds') #do I want to bring in fst for this? or parquet?
+
+library(fst)
+#write_fst(names_to_gid_dt,'/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/names_to_gid_dt.fst', compress = 100) #upping the compression hoping it speeds up the read
+level0to3 <- read_fst('/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/level0to3.fst', as.data.table=T) #still takes an annoying long time
+class(level0to3)
+dim(level0to3) #52,281,025 
+head(level0to3)
+
+
+
+```
+
+Geonames
+
+```{r}
+
+
+
+geonames <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/allCountries.txt", sep="\t")
+dim(geonames) #12,006,426
+
+#geonameid         : integer id of record in geonames database
+#name              : name of geographical point (utf8) varchar(200)
+#asciiname         : name of geographical point in plain ascii characters, varchar(200)
+#alternatenames    : alternatenames, comma separated, ascii names automatically transliterated, convenience attribute from alternatename table, varchar(10000)
+#latitude          : latitude in decimal degrees (wgs84)
+#longitude         : longitude in decimal degrees (wgs84)
+#feature class     : see http://www.geonames.org/export/codes.html, char(1)
+#feature code      : see http://www.geonames.org/export/codes.html, varchar(10)
+#country code      : ISO-3166 2-letter country code, 2 characters
+#cc2               : alternate country codes, comma separated, ISO-3166 2-letter country code, 200 characters
+#admin1 code       : fipscode (subject to change to iso code), see exceptions below, see file admin1Codes.txt for display names of this code; varchar(20)
+#admin2 code       : code for the second administrative division, a county in the US, see file admin2Codes.txt; varchar(80) 
+#admin3 code       : code for third level administrative division, varchar(20)
+#admin4 code       : code for fourth level administrative division, varchar(20)
+#population        : bigint (8 byte int) 
+#elevation         : in meters, integer
+#dem               : digital elevation model, srtm3 or gtopo30, average elevation of 3''x3'' (ca 90mx90m) or 30''x30'' (ca 900mx900m) area in meters, integer. srtm processed by cgiar/ciat.
+#timezone          : the iana timezone id (see file timeZone.txt) varchar(40)
+#modification date : date of last modification in yyyy-MM-dd format
+
+vars <- c('geonameid','name','asciiname','alternatenames','latitude','longitude','feature_class','feature_code','country_code','cc2','admin1','admin2','admin3','admin4','population','elevation','dem','timezone','modification')
+names(geonames) <- vars
+
+geonames_p <- geonames %>% filter(feature_class=="P")
+dim(geonames_p) #4,770,851
+
+admin1CodesASCII <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin1CodesASCII.txt", sep="\t")
+names(admin1CodesASCII) <- c('code', 'name', 'name ascii', 'geonameid')
+
+admin2Codes <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin2Codes.txt", sep="\t")
+names(admin2Codes) <- c('code', 'name', 'name ascii', 'geonameid')
+
+admin1CodesASCII_long <- admin1CodesASCII %>% dplyr::select(code1=code , name) %>% mutate(name=rex_clean(name))
+admin2Codes_long <- admin2Codes %>% dplyr::select(code2=code , name) %>% mutate(name=rex_clean(name))
+
+geonames_p %>% dplyr::select(geonameid,country_code,admin1,admin2)
+
+countryInfo <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/countryInfo.txt", sep="\t", skip=49)
+names(countryInfo)[1] <- "ISO"
+
+geonames_p <- geonames_p %>% 
+              mutate(code1= paste0(country_code,".", admin1) ) %>%
+              mutate(code1= paste0(country_code,".", admin1) ) %>%
+  
+              left_join(countryInfo %>% dplyr::select(country_code=ISO, admin0_name=Country))
+
+
+```
+
+
+# Introduction
+
+Measurement is not reality
+Correlation is not causation
+Scale
+
+How should we responsibly use COVID-19 counts? 
+
+We want to know in a given population, how many people at some point have had COVID-19 and could have spread it to others. This is an unobserved latent variable.
+
+Tests provide some information. 
+There's some selection process by which a person from the population self selects and is selected to be tested. That test then has some true positive and true negative rate (and false positive and false negative rate).
+
+Assume that more severe cases die. And more severe cases get tested.
+
+Deaths provide some information. Assume a death implies a test with the same rates as the above. Might want to question that, there's some attribution process by which a death is either attributed to COVID or not. Some deaths are happening outside of the medical system and not getting tested or attributed to COVID.
+
+So tests are at best a lower bound for how many in the population have the disease.
+
+What do we learn from negative tests? Very crudely it could be how many people don't have COVID, which could be an upper bound on the number of infected. But it's out of date almost immediately, because all of those people could get infected tomorrow.
+
+
+# LHS
+
+## Bing
+
+```{r}
+
+library(jsonlite)
+#library(rjson)
+#tmp2 <- tempfile()
+#curl_download("https://bing.com/covid/data", tmp2)
+bing <- fromJSON("https://bing.com/covid/data")
+#https://www.bing.com/covid/local/unitedstates
+
+bing_df0 <- bind_rows(bing$areas) %>% mutate(admin0_name_original=displayName)
+dim(bing_df0) #209  13
+
+bing_df1 <- bind_rows(bing_df0$areas) %>% mutate(admin1_name_original=displayName) %>% left_join(bing_df0 %>% dplyr::select(parentId=id, admin0_name_original=displayName))
+dim(bing_df1) #753  13
+
+bing_df2 <- bind_rows(bing_df1$areas) %>% mutate(admin2_name_original=displayName) %>% 
+            left_join(bing_df1 %>% dplyr::select(parentId=id, admin1_name_original=displayName)) %>%
+            left_join(bing_df1 %>% dplyr::select(admin1_name_original,admin0_name_original))
+dim(bing_df2) #2872   13
+
+bing_long <- bind_rows(
+          bing_df0 %>% dplyr::select(-areas),
+          bing_df1 %>% dplyr::select(-areas),
+          bing_df2 %>% dplyr::select(-areas)
+) %>% 
+  mutate(date_asdate = ymd(substring(lastUpdated,1,10))) %>%
+  mutate(dataset="bing") %>% 
+  
+  mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+  mutate(admin0_name_clean=str_replace(admin0_name_clean,"chinamainland","china")) %>%
+
+  mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+  mutate(admin1_name_clean= ifelse(!is.na(admin1_name_clean) & admin1_name_clean !='', 
+                            paste0(admin0_name_clean,"_",admin1_name_clean),
+                            NA)
+         ) %>%
+  
+  mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+  mutate(admin2_name_clean= ifelse(!is.na(admin2_name_clean) & admin2_name_clean !='', 
+                            paste0(admin1_name_clean,"_",admin2_name_clean),
+                            NA)
+         ) %>%
+  
+  left_join(level0to3 %>% dplyr::select(gid0=gid,admin0_name_clean=name)) %>% #this may take an embarrassingly long time
+  left_join(level0to3 %>% dplyr::select(gid1=gid,admin1_name_clean=name)) %>% #this may take an embarrassingly long time
+  left_join(level0to3 %>% dplyr::select(gid2=gid,admin2_name_clean=name)) #%>% #this may take an embarrassingly long time
+  
+
+dim(bing_long)
+
+temp <- bing_long %>% dplyr::select(admin0_name_clean,admin1_name_clean,admin2_name_clean,gid0,gid1,gid2) %>% distinct()
+
+```
+
+## WHO
+
+```{r}
+WHO <- read_csv(url("https://raw.githubusercontent.com/datasets/covid-19/master/data/countries-aggregated.csv")) 
+
+who_long <- WHO %>%
+            mutate(dataset="bing") %>%
+            mutate(admin0_name_original=Country) %>%
+            mutate(date_asdate = ymd(Date)) %>% 
+            rename(confirmed=Confirmed  , deaths=Deaths) 
+
+```
+
+## CSSEGISandData
+
+```{r, echo=F, message=FALSE, results = FALSE, warning=FALSE}
+
+#https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/
+CSSE_confirmed_us      <- read_csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"))
+CSSE_confirmed_global  <- read_csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"))
+
+CSSE_deaths_us      <- read_csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"))
+CSSE_deaths_global  <- read_csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"))
+
+CSSE_confirmed_us_long <- pivot_longer(CSSE_confirmed_us, names_to = "date", cols = ends_with("20"), values_to = "confirmed")
+CSSE_confirmed_global_long <- pivot_longer(CSSE_confirmed_global, names_to = "date", cols = ends_with("20"), values_to = "confirmed")
+
+CSSE_deaths_us_long <- pivot_longer(CSSE_deaths_us, names_to = "date", cols = ends_with("20"), values_to = "deaths")
+CSSE_deaths_global_long <- pivot_longer(CSSE_deaths_global, names_to = "date", cols = ends_with("20"), values_to = "deaths")
+
+CSSE_us_long <- CSSE_confirmed_us_long %>% full_join(CSSE_deaths_us_long) %>% mutate(admin0_name_original="United States") %>% mutate(admin1_name_original=Province_State) %>% mutate(admin2_name_original=Admin2)
+CSSE_global_long <- CSSE_confirmed_global_long %>% full_join(CSSE_deaths_global_long) %>% mutate(admin0_name_original=`Country/Region`) %>% mutate(admin1_name_original=`Province/State`)
+
+CSSE_long <- bind_rows(CSSE_us_long, CSSE_global_long) %>% 
+              mutate(dataset="CSSE") %>%
+              mutate(date_asdate = mdy(str_replace(date,"20$","2020"))) 
+```
+
+
+## NYT
+
+
+```{r}
+#https://www.nytimes.com/article/coronavirus-county-data-us.html
+#https://github.com/nytimes/covid-19-data
+nytimes <- read_csv(url("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")) #
+
+nytimes_long <- nytimes %>%
+                mutate(date_asdate = ymd(date)) %>% 
+                rename(confirmed=cases) %>%
+                mutate(dataset="nyt") %>%
+                mutate(admin0_name_original="United States") %>%
+                mutate(admin1_name_original=state) %>%
+                mutate(admin2_name_original=county)  %>%
+
+                mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                mutate(admin0_name_clean=str_replace(admin0_name_clean,"chinamainland","china")) %>%
+              
+                mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                mutate(admin1_name_clean= ifelse(!is.na(admin1_name_clean) & admin1_name_clean !='', 
+                                          paste0(admin0_name_clean,"_",admin1_name_clean),
+                                          NA)
+                       ) %>%
+                
+                mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                mutate(admin2_name_clean= ifelse(!is.na(admin2_name_clean) & admin2_name_clean !='', 
+                                          paste0(admin1_name_clean,"_",admin2_name_clean),
+                                          NA)
+                       ) %>%
+
+
+                left_join(level0to3 %>% dplyr::select(gid0=gid,admin0_name_clean=name)) %>% #this may take an embarrassingly long time
+                left_join(level0to3 %>% dplyr::select(gid1=gid,admin1_name_clean=name)) %>% #this may take an embarrassingly long time
+                left_join(level0to3 %>% dplyr::select(gid2=gid,admin2_name_clean=name))
+```
+
+### Covidtracking.com
+
+```{r}
+#https://covidtracking.com/about-data
+"If you are calculating positive rates, it should only be with states that have an A grade. And be careful going back in time because almost all the states have changed their level of reporting at different times."
+
+#The data contain the u.s. and the states too
+#FIPS the first two digits are the state
+#All 0 is the U.S.
+#
+#https://covidtracking.com/api
+covidtracking <- read_csv(url("https://covidtracking.com/api/states/daily.csv"))
+dim(covidtracking) #1653   25
+covidtracking_t <- t(covidtracking)
+
+covidtracking_long <- covidtracking %>%
+                      mutate(date_asdate = ymd(date)) %>% 
+                      rename(state_abbr=state) %>%
+                      left_join(state_codes) %>% 
+                      dplyr::select(date_asdate, state_name, state_abbr, positive, negative, death) %>%
+                      mutate(admin0_name_original="United States") %>%
+                      mutate(admin1_name_original=state_name) 
+
+```
+
+### wikipedia
+
+```{r}
+
+#https://rviews.rstudio.com/2020/03/05/covid-19-epidemiology-with-r/
+library(rvest)
+wp_page_url = "https://en.wikipedia.org/wiki/COVID-19_testing"
+testing_webpage <- read_html(wp_page_url)
+
+# parse the web page and extract the data from the eighth
+# table
+testing_tables <- testing_webpage %>% html_nodes("table") %>%  html_table(fill = TRUE)
+lapply(testing_tables, colnames)
+
+wikipedia_tests <- testing_tables[[4]] 
+
+data(codelist)
+countries_for_matching <- codelist %>% unlist() %>% unique() %>% sort()
+wikipedia_tests_long <- wikipedia_tests %>% 
+                        mutate(date_asdate = dmy(paste( `As of`, ", 2020" )   )) %>% 
+                        mutate(tests=str_replace(Tests, ",","")) %>%
+                        mutate(confirmed=str_replace(Positive, ",","")) %>% 
+                        rename(text=`Country or region`) %>%
+                        mutate(text=trimws(str_replace(text,"\\(unofficial\\)",""))) %>%
+                        mutate(is_country = text %in% countries_for_matching) %>%
+                        mutate(admin0_name_original = ifelse(is_country,text, NA  )) %>%
+                        fill(admin0_name_original) %>%
+                        mutate(admin1_name_original = ifelse(!is_country,text, NA  )   ) 
+  
+```
+metabiota.com
+
+```{r}
+
+metabiota <- read_csv("/home/skynet2/Downloads/data_ncov2019.csv")
+dim(metabiota) #605848
+
+table(metabiota$OUTCOME)
+table(metabiota$CUMULATIVE_FLAG)
+
+#cities look broken with just a flat number of 1 or 2 "Ho Chi Minh City"
+
+metabiota_confirmed <- metabiota %>% filter(CUMULATIVE_FLAG==T) %>% filter(OUTCOME=="CASE") %>% filter(CONFIRM_STATUS=="CONFIRMED") %>% 
+                       filter( DATE_LOW==DATE_HIGH) %>%
+                       mutate(composite_source = SOURCE=="Metabiota Composite Source") %>%
+                       distinct() %>%
+                       arrange(AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME, LOCALITY_NAME, DATE_LOW, -composite_source) %>%
+                       group_by(AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME, LOCALITY_NAME, DATE_LOW) %>%
+                       filter(row_number()==1) %>%
+                       ungroup() %>%
+                       dplyr::select(date=DATE_LOW,AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME,LOCALITY_NAME,confirmed=VALUE) 
+
+metabiota_deaths <- metabiota %>% filter(CUMULATIVE_FLAG==T) %>% filter(OUTCOME=="DEATH") %>% filter(CONFIRM_STATUS=="CONFIRMED") %>% 
+                       filter( DATE_LOW==DATE_HIGH) %>%
+                       mutate(composite_source = SOURCE=="Metabiota Composite Source") %>%
+                       distinct() %>%
+                       arrange(AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME, LOCALITY_NAME, DATE_LOW, -composite_source) %>%
+                       group_by(AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME, LOCALITY_NAME, DATE_LOW) %>%
+                       filter(row_number()==1) %>%
+                       ungroup() %>%
+                       dplyr::select(date=DATE_LOW,AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME,LOCALITY_NAME,deaths=VALUE) 
+
+metabiota_long <- metabiota_confirmed %>% 
+                  full_join(metabiota_deaths) %>%
+                  group_by(AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME, LOCALITY_NAME) %>%
+                  filter(min(confirmed)!=max(confirmed)) %>% #require some variation
+                  ungroup() %>%
+                  rename(admin0_name_original=AL0_NAME,
+                         admin1_name_original=AL1_NAME,
+                         admin2_name_original=AL2_NAME,
+                         admin3_name_original=LOCALITY_NAME
+                         ) %>%
+                  dplyr::select(-AL3_NAME) %>%
+
+                  mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                  mutate(admin0_name_clean=str_replace(admin0_name_clean,"chinamainland","china")) %>%
+                
+                  mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                  mutate(admin1_name_clean= ifelse(!is.na(admin1_name_clean) & admin1_name_clean !='', 
+                                            paste0(admin0_name_clean,"_",admin1_name_clean),
+                                            NA)
+                         ) %>%
+                  
+                  mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                  mutate(admin2_name_clean= ifelse(!is.na(admin2_name_clean) & admin2_name_clean !='', 
+                                            paste0(admin1_name_clean,"_",admin2_name_clean),
+                                            NA)
+                         ) %>%
+
+                  mutate(admin3_name_clean=admin3_name_original %>% rex_clean()) %>%
+                  mutate(admin3_name_clean= ifelse(!is.na(admin3_name_clean) & admin3_name_clean !='', 
+                                            paste0(admin2_name_clean,"_",admin3_name_clean),
+                                            NA)
+                         ) %>%
+  
+                  left_join(level0to3 %>% dplyr::select(gid0=gid,admin0_name_clean=name)) %>% #this may take an embarrassingly long time
+                  left_join(level0to3 %>% dplyr::select(gid1=gid,admin1_name_clean=name)) %>% #this may take an embarrassingly long time
+                  left_join(level0to3 %>% dplyr::select(gid2=gid,admin2_name_clean=name)) %>% #this may take an embarrassingly long time
+                  left_join(level0to3 %>% dplyr::select(gid3=gid,admin3_name_clean=name)) #%>% #this may take an embarrassingly long time
+  
+temp <- metabiota_long %>% dplyr::select(admin0_name_clean,admin1_name_clean,admin2_name_clean,admin3_name_clean,
+                                         gid0,gid1,gid2,gid3) %>% distinct()
+
+
+#Drop any with no variation
+
+#https://data.humdata.org/dataset/2019-novel-coronavirus-cases
+#Spatiotemporal data for 2019-Novel Coronavirus Covid-19 Cases and deaths
+#This dataset is part of COVID-19 Pandemic
+#Data Overview
+#This repository contains spatiotemporal data from many official sources for 2019-Novel Coronavirus beginning 2019 in Hubei, China ("nCoV_2019")
+#You may not use this data for commercial purposes. If there is a need for commercial use of the data, please contact Metabiota at info@metabiota.com to obtain a commercial use license.
+
+```
+
+All wikipedia covid pages
+
+```{r}
+
+data(codelist)
+countries_for_matching <- codelist %>% unlist() %>% unique() %>% sort()
+
+
+#link has
+"2020_coronavirus_pandemic_in_"
+url <- "https://en.wikipedia.org/wiki/2019%E2%80%9320_coronavirus_pandemic_by_country_and_territory"
+
+#the 5000 is to say don't limit number of hits on the page, 5k 
+url <- "https://en.wikipedia.org/w/index.php?title=Special:Search&limit=5000&offset=0&profile=default&search=%22coronavirus+pandemic+in%22&advancedSearch-current={}&ns0=1" #here's a search querry that captures both countries and places
+wikipedia_by_country_webpage <- read_html(url)
+
+links <- wikipedia_by_country_webpage %>% html_nodes("a") %>% html_attr(c('href'))
+titles <- wikipedia_by_country_webpage %>% html_nodes("a") %>% html_attr(c('title')) 
+text <- wikipedia_by_country_webpage %>% html_nodes("a") %>% html_text() 
+wikipedia_by_country_links <- data.frame(link=paste0("https://en.wikipedia.org/",links) , 
+                                         title=titles,
+                                         text=text) %>% 
+                              filter(!is.na(title)) %>% 
+                              filter(!str_detect(title,"Template")) %>% 
+                              filter(!str_detect(title,"Timeline")) %>% 
+                              filter(!str_detect(title,"Chronology of the|Economic impact|Responses to|page does not exist")) %>% 
+  
+                              filter(str_detect(title,"coronavirus pandemic in")) %>%
+                              mutate(is_country = text %in% countries_for_matching) %>%
+                              mutate_if(is.factor, as.character) %>%
+                              mutate(place=str_replace(title, ".*coronavirus pandemic in ","")) %>%
+                              distinct()
+dim(wikipedia_by_country_links) #345   4
+
+tables_keep_list <- list()
+for(i in 1:nrow(wikipedia_by_country_links)){
+  temp_place=wikipedia_by_country_links$place[i]
+  print(temp_place)
+  temp_html <- read_html(wikipedia_by_country_links$link[i])
+  temp_tables <- temp_html  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=F) 
+  
+  test <- temp_tables[[10]] %>%  html_table(fill = TRUE, header=F) 
+  test2 <- temp_tables[[10]] %>%  html_table(fill = F, header=F) #nope still throws an error
+  
+  library(htmltab) ; #install.packages('htmltab')
+  url <- wikipedia_by_country_links$link[i]
+  ukLang <- htmltab(doc = url, which = 1)
+  ukLang <- htmltab(doc = url, which = 10, complementary=F, headerSep="_")
+  
+  head(ukLang)
+
+  
+  temp_tables_df <- lapply(temp_tables, FUN=function(x) { 
+                        tryCatch({
+                           html_table(x,fill = TRUE, header=F)} ,
+                           error = function(e) return(data.frame()) 
+                        )   } )  #the one I want is throwing an error
+  
+  condition <- which(sapply(temp_tables_df, ncol)>3 & sapply(temp_tables_df, nrow)>3)
+  temp_tables_deaths <- temp_tables_df[condition]
+
+  #do any of these tables have the word death
+  condition <- which(  sapply(temp_tables_deaths, FUN=function(x) sum(str_detect(unique(unlist(x)), "death|Death"), na.rm=T)  )>0)
+  temp_tables_deaths <- temp_tables_deaths[condition]
+
+  condition <- which(  sapply(temp_tables_deaths, FUN=function(x) sum(str_detect(unique(unlist(x)), "Data \\(templates\\)|Medical professional|SARS-CoV-2 \\(virus\\) COVID-19 \\(disease\\)"), na.rm=T)  )==0)
+  temp_tables_deaths <- temp_tables_deaths[condition]
+  
+  #lapply(temp_tables_deaths, dim)
+  #lapply(temp_tables_deaths, colnames)
+
+  tables_keep_list[[temp_place]] <- temp_tables_deaths
+  temp1 <- temp_tables_deaths[[1]]
+  temp2 <- temp_tables_deaths[[2]]
+  temp3 <- temp_tables_deaths[[3]]
+  temp4 <- temp_tables_deaths[[4]]
+  
+}
+
+
+
+```
+
+
+# RHS
+
+## Testing
+
+### ourworldindata.org
+
+```{r}
+
+#https://drive.google.com/drive/folders/1HPzXon49teN-kMQlY1ry9rh2eq-TyGQI
+#https://ourworldindata.org/covid-testing
+#on how to reformat the url for straight downloading
+#https://gist.github.com/tanaikech/f0f2d122e05bf5f971611258c22c110f
+library(googledrive)
+library(curl)
+tmp <- tempfile()
+#curl_download("https://drive.google.com/open?id=18QE3wScRXL-ARIaBl6yh7xUVNlnitvW_", tmp)
+
+
+#There's also a github repo
+#
+worldindata_github <- read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/testing/covid-testing-all-observations.csv") 
+
+curl_download("https://drive.google.com/uc?export=download&id=18QE3wScRXL-ARIaBl6yh7xUVNlnitvW_", tmp)
+worldindata_googledrive <- read_csv(tmp) 
+
+dim(worldindata_github)
+dim(worldindata_googledrive) #The github one is longer
+
+worldindata_long <- worldindata_github %>%
+                    mutate(date_asdate = ymd(Date)) %>%  
+                    separate(Entity, c("admin0_name_original", "note"), sep="-") %>%
+                    mutate(admin0_name_original=trimws(admin0_name_original)) %>%
+                    rename(tests=`Cumulative total`)
+
+```
+
+
+
+
+## Demographics
+
+### U.S. County Demographics
+
+```{r}
+
+#library(R0)  # consider moving all library commands to top -- this one was in a loop below
+#Until the U.S. states one goes live have to pull it from here
+#Codebook
+#https://github.com/JieYingWu/COVID-19_US_County-level_Summaries/blob/master/data/list_of_columns.md
+counties <- read_csv(url("https://raw.githubusercontent.com/JieYingWu/COVID-19_US_County-level_Summaries/master/data/counties.csv")) #using the archived copy from today because they haven't posted the 
+counties_t <- t(counties)
+
+counties_1 <- counties %>%
+                      filter(as.numeric(substring(FIPS,3,5))==0 & Area_Name!="United States") %>%
+                      mutate(admin0_name_original="United States") %>%
+                      mutate(admin1_name_original=Area_Name) 
+counties_2 <- counties %>% filter(as.numeric(substring(FIPS,3,5))>0 & Area_Name!="United States") %>% 
+                      left_join(state_codes %>% rename(State=state_abbr)) %>%
+                      mutate(admin0_name_original="United States") %>%
+                      mutate(admin1_name_original=state_name)  %>%
+                      mutate(admin2_name_original=Area_Name) 
+
+counties_long <- bind_rows(counties_1,counties_2)
+
+```
+
+## 
+The international political economy data resource
+https://link.springer.com/article/10.1007/s11558-017-9285-0
+
+```{r}
+tmp2 <- tempfile()
+temp_url <- "https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/X093TV/XHEWU3"
+curl_download(temp_url, tmp2)
+load(tmp2) #the object's name is ipe_full
+glimpse(ipe_full)
+#$ country                     <chr> "United States of America", "United States of America", "United States of America", "United States of America", "United States of America", "United States of America", "United States of America", "United States of America", "United States of…
+#$ year                        <dbl> 1800, 1801, 1802, 1803, 1804, 1805, 1806, 1807, 1808, 1809, 1810, 1811, 1812, 1813, 1814, 1815, 1816, 1817, 1818, 1819, 1820, 1821, 1822, 1823, 1824, 1825, 1826, 1827, 1828, 1829, 1830, 1831, 1832, 1833, 1834, 1835, 1836, 1837, 1838, 1839, 1…
+#$ gwno                        <dbl> 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+#$ ccode                       <dbl> 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+#$ ifscode                     <dbl> 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 111, 1…
+#$ ifs                         <chr> "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "USA", "US…
+#$ gwabbrev 
+
+ipe_long <- ipe_full %>% 
+  group_by(country) %>% filter(year==max(year)) %>% ungroup()
+#the whole dataset ends in 2017 and a lot of these values aren't available that recently which is interesting
+
+#codebook
+#https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/X093TV/OIB5GS&version=3.0
+
+ipe_long <- ipe_full %>%
+            mutate_if(is.numeric,as.character, is.factor, as.character) %>% #https://stackoverflow.com/questions/58124530/pivot-longer-with-multiple-classes-causes-error-no-common-type
+            pivot_longer( names_to = "variable", cols = onset2_AO:english_off_USA_CE, values_to = "value", values_ptypes = list(val = 'character')) %>% filter(!is.na(value))  %>% 
+            group_by(country, variable) %>% 
+            filter(year==max(year)) %>% 
+            ungroup()
+
+```
+
+
+```{r}
+#World Development Indicators
+#http://datatopics.worldbank.org/world-development-indicators/
+#csv bulk zip download
+#http://databank.worldbank.org/data/download/WDI_csv.zip
+
+
+WDIData <- read_csv("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/WDIData.csv")
+
+WDIData_long <- WDIData %>%
+                mutate_if(is.numeric,as.character, is.factor, as.character) %>% #https://stackoverflow.com/questions/58124530/pivot-longer-with-multiple-classes-causes-error-no-common-type
+                pivot_longer( names_to = "year", cols = `1960`:X65, values_to = "value", values_ptypes = list(val = 'character')) %>% filter(!is.na(value))  %>% 
+                group_by(`Country Name`, `Indicator Name`) %>% 
+                filter(year==max(year)) %>% 
+                ungroup() 
+                
+
+colnames(WDIData_long) <- colnames(WDIData_long) %>% str_replace_all(" ","_") %>% tolower()
+
+WDIData_long <- WDIData_long %>%
+                mutate(indicator_name=indicator_name%>% str_replace_all(" ","_") %>% tolower()) %>%
+                rename(admin0_name_original=country_name)
+
+temp <- WDIData_long %>% count(indicator_name)
+
+```
+
+
+
+## Mobility
+
+### Google Mobility Data
+
+```{r}
+#Google mobility daily data from the trend lines
+#https://github.com/nacnudus/google-location-coronavirus
+#only at the country level though
+google_mobility_timelines <- read_tsv("https://raw.githubusercontent.com/nacnudus/google-location-coronavirus/master/2020-03-29.tsv")
+
+```
+
+```{r}
+
+#Mobility datga
+google_mobility_us <- read_csv(url("https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/mobility_report_US.csv")) #
+google_mobility_regions <- read_csv(url("https://raw.githubusercontent.com/ActiveConclusion/COVID19_mobility/master/mobility_report_regions.csv")) #
+
+google_mobility_us_long <- google_mobility_us %>%
+                   mutate(date_asdate = ymd(Date)) %>%
+                    mutate(admin0_name_original="United States") %>%
+                    mutate(admin1_name_original=State)  %>%
+                    mutate(admin2_name_original=Region) %>%
+                    mutate(admin2_name_original=ifelse(admin2_name_original=="Total",NA, admin2_name_original))
+
+google_mobility_regions_long <- google_mobility_regions %>%
+                          mutate(date_asdate = ymd(Date)) %>%
+                          mutate(admin0_name_original=Country) %>%
+                          mutate(admin1_name_original=Region)  %>%
+                          mutate(admin1_name_original=ifelse(admin1_name_original=="Total",NA, admin1_name_original))  
+
+google_mobility_long <- 
+                  bind_rows(google_mobility_us_long,
+                            google_mobility_regions_long) %>%
+                  rename(google_retail= `Retail & recreation`,
+                         google_grocery=`Grocery & pharmacy`,
+                         google_park= Parks,
+                         google_transit=`Transit stations`,
+                         google_workplace=Workplaces,
+                         google_residential=Residential) %>% 
+                  distinct()
+  
+```
+
+
+# Munging
+
+```{r, eval=F}
+
+places <- bind_rows(
+            google_mobility_long %>% dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original),
+            counties_long %>% dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original, fips=FIPS) %>% mutate(fips=as.character(fips)),
+            worldindata_long %>% dplyr::select(admin0_name_original),
+            covidtracking_long %>% dplyr::select(admin0_name_original, admin1_name_original),
+            nytimes_long %>% dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original, fips),
+            CSSE_long %>% dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original,fips=FIPS) %>% mutate(fips=as.character(fips)),
+            who_long %>% dplyr::select(admin0_name_original),
+            bing_long %>% dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original),
+            wikipedia_tests_long %>% dplyr::select(admin0_name_original, admin1_name_original),
+            metabiota_long %>% dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original,admin3_name_original),
+            WDIData_long %>% dplyr::select(admin0_name_original)
+) %>%
+  dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original,admin3_name_original,fips) %>% 
+  distinct() %>%
+  arrange(admin0_name_original, admin1_name_original, admin2_name_original) %>%
+  mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+  mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+  mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+  mutate(admin3_name_clean=admin3_name_original %>% rex_clean()) %>%
+  left_join(gadm_long %>% dplyr::select(gadm0,admin0_name_clean) %>% na.omit() ) %>%
+  left_join(gadm_long %>% dplyr::select(gadm0,gadm1,admin1_name_clean) %>% na.omit() ) %>%
+  left_join(gadm_long %>% dplyr::select(gadm0,gadm1,gadm2,admin2_name_clean) %>% na.omit())
+  
+dim(places) #12203     4
+
+
+places <- all_long %>% dplyr::select(country,state) %>% distinct() %>% mutate(search=paste0(state,", ", country ))  %>% mutate(search= ifelse(is.na(state) | state=="none", country, state ) )
+library(WikidataR)
+wiki_searches <- list()
+for(q in places$search){
+  print(q)
+  try({
+    #wiki <- find_item("Bexas County")
+    wiki <- find_item(q)
+    temp <- as.data.frame(wiki[[1]])
+    temp$search <- q
+    wiki_searches[[q]] <- temp
+  })
+}
+wiki_searches_df <- bind_rows(wiki_searches)
+
+
+```
+
+
+# Points
+
+
+# Comparison by source
+
+# 
+
+# Case Fatality Rates
+
+# Case Fatality Rates as a function of Cases
+
+# Case Fataility Rates as a function of cases and testing
+
+# Case Fataility Rates as a function of cases and testing and Time
+
+# Rates of Change and R0
+
+# Crests 
+
+# Residuals
+
+What areas have more or fewer cases/deaths than we would expect?
+
+
+```{r}
+
+#has new york city as a single entitiy but not the constituent counties which is frustrating
+
+library(strucchange) ; #install.packages('strucchange')
+temp <- nytimes_long %>% arrange(date_asdate) %>% filter(county %in% "Bexar") %>% 
+  mutate(confirmed_log=log(confirmed+1)) %>%
+  mutate(date_rank= rank(date_asdate))  
+bp <- breakpoints(confirmed_log ~ 1, data=temp)
+bp <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp)
+temp %>% ggplot() + geom_point(aes(x=rank(date_asdate), y=confirmed_log)) + geom_vline(xintercept=bp$breakpoints)
+coef(bp)
+
+
+temp <- nytimes_long %>% arrange(date_asdate) %>% filter(county %in% "New York City") %>% 
+  mutate(confirmed_log=log(confirmed+1)) %>%
+  mutate(t= rank(date_asdate))  
+bp <- breakpoints(confirmed_log ~ 1, data=temp)
+bp <- breakpoints(confirmed_log ~ 1 + t, data=temp)
+
+tmin <- min(temp$t)
+tmax <- max(temp$t)
+c(tmin, bp$breakpoints, tmax)
+
+
+cdf <- data.frame(
+  t= c(1,bp$breakpoints), 
+  t_slope= coef(bp)[,2]
+)
+
+temp <- temp %>% 
+  mutate(y_hat = fitted.values(bp)) %>%
+  left_join(cdf) %>% 
+  fill(t_slope) %>%
+  mutate(t_slope_percent_change = round((exp(t_slope)-1)*100,2))
+
+temp %>% ggplot() +
+  geom_point(aes(x=rank(date_asdate), y=confirmed_log)) + 
+  geom_line(aes(x=rank(date_asdate), y=y_hat)) + 
+  geom_vline(xintercept=bp$breakpoints)
+```
+
+```{r}
+
+temp_list <- list()
+for(q in places$place){
+  print(q)
+  temp <- NULL
+  temp <- nytimes_long %>% 
+    arrange(date_asdate) %>% 
+    filter(place %in% q) %>% 
+    mutate(confirmed_log=log(confirmed+1)) %>%
+    mutate(t= rank(date_asdate))  
+  if( nrow(temp)==0 ) {print("error"); break}
+  
+  #bp <- breakpoints(confirmed_log ~ 1, data=temp)
+  bp <- NULL
+  lm1 <- NULL
+  y_hat <- NA
+  cdf <- NULL
+  try({
+    #if it fails fall back to just a lm
+    lm1 <- lm(confirmed_log ~ 1 + t, data=temp)
+    
+    cdf <- data.frame(
+      t= 1, 
+      t_slope= coef(lm1)[2],
+      t_slope_break=0
+    )
+    y_hat=fitted.values(lm1)
+  })
+  
+  try({
+    bp <- breakpoints(confirmed_log ~ 1 + t, data=temp)
+    
+    cdf <- data.frame(
+      t= c(1,bp$breakpoints), 
+      t_slope= coef(bp)[,2],
+      t_slope_break=1
+    )
+    y_hat=fitted.values(bp)
+  })
+  
+  try({
+    temp <- temp %>% 
+      mutate(y_hat = y_hat) %>%
+      left_join(cdf) %>% 
+      fill(t_slope) %>%
+      mutate(t_slope_percent_change = round((exp(t_slope)-1)*100,2))
+    
+    temp_list[[as.character(q)]] <- temp
+  })
+  #if( is.na( temp_list[[as.character(q)]]$y_hat) ) {print("error"); break}
+}
+#"13055"
+temp_df <- bind_rows(temp_list)
+dim(temp_df)
+
+temp_list[["New York_New York City_NA"]]
+
+
+```
+
+```{r}
+
+temp_df_max <- temp_df %>% group_by(fips) %>% filter(date_asdate==max(date_asdate)) %>% ungroup()
+
+hist(temp_df_max$t_slope_percent_change, breaks=50)
+
+temp_df_max %>% ggplot() + geom_density(aes(x=t_slope_percent_change))
+
+```
+
+```{r}
+temp_df %>% 
+  head(1000) %>%
+  ggplot() +
+  geom_line(aes(x=date_asdate,
+                y=t_slope_percent_change,
+                color=fips))  + theme(legend.position = "none")
+
+```
+
+```{r}
+temp_df %>%
+  filter(place %in% "New York_New York City_NA")  %>% 
+  mutate(date_asdate_rank=rank(date_asdate)) %>%
+  ggplot() +
+  geom_point(aes(x=date_asdate,y=t_slope_percent_change))
+
+
+temp_df %>%
+  filter(place %in% "New York_New York City_NA")  %>% 
+  ggplot() +
+  geom_point(aes(x=date_asdate,y=confirmed_log)) +
+  geom_line(aes(x=date_asdate,y=y_hat)) +
+  #geom_point(aes(x=date_asdate,y=t_slope_percent_change))
+  
+  temp_df %>%
+  filter(place %in% "Texas_Bexar_48029")  %>% 
+  ggplot() +
+  geom_point(aes(x=date_asdate,y=confirmed_log)) +
+  geom_line(aes(x=date_asdate,y=y_hat))
+
+library(gghighlight)
+temp_df %>%
+  filter(place %in% c("New York_New York City_NA","Texas_Bexar_48029","California_San Diego_06073","Florida_St. Lucie_12111") ) %>% 
+  ggplot(aes(x=date_asdate, color=place)) +
+  geom_point(aes(y=confirmed_log)) +
+  geom_line(aes(y=y_hat)) +
+  gghighlight(#prefered_label %in% c("Washington, US","Italy","China") , #"New York, US" #, "US"
+    label_params =
+      list(
+        size = 3,
+        segment.alpha=0)
+  ) +
+  theme_bw()
+
+library(gghighlight)
+temp_df %>%
+  filter(t_slope_percent_change>1 & confirmed>20 ) %>% 
+  mutate(y_hat_exp=exp(y_hat) ) %>% 
+  
+  ggplot(aes(x=date_asdate, color=place)) +
+  geom_point(aes(y=confirmed_log)) +
+  geom_line(aes(y=y_hat)) +
+  gghighlight(place %in% c("New York_New York City_NA","Texas_Bexar_48029","California_San Diego_06073","Florida_St. Lucie_12111") , 
+              label_params =
+                list(
+                  size = 3,
+                  segment.alpha=0)
+  ) +
+  theme_bw() + ylim(3,11.5)
+
+library(scales)
+library(gghighlight)
+temp_df %>%
+  filter(t_slope_percent_change>1 & confirmed>20 ) %>% 
+  mutate(y_hat_exp=exp(y_hat) ) %>% 
+  
+  ggplot(aes(x=date_asdate, color=place)) +
+  geom_point(aes(y=confirmed)) +
+  geom_line(aes(y=y_hat_exp)) +
+  gghighlight(place %in% c("New York_New York City_NA","Texas_Bexar_48029","California_San Diego_06073","Florida_St. Lucie_12111") , 
+              label_params =
+                list(
+                  size = 3,
+                  segment.alpha=0)
+  ) +
+  theme_bw() + scale_y_log10(labels = comma_format()) #+ ylim(10, 100000)
+
+
+temp_df %>%
+  filter(t_slope_percent_change>1 & confirmed>=20 ) %>% 
+  mutate(y_hat_exp=exp(y_hat) ) %>% 
+  
+  ggplot(aes(x=days_since_20_confirmed, color=place)) +
+  geom_point(aes(y=confirmed)) +
+  geom_line(aes(y=y_hat_exp)) +
+  gghighlight(place %in% c("New York_New York City_NA","Texas_Bexar_48029","California_San Diego_06073","Florida_St. Lucie_12111") , 
+              label_params =
+                list(
+                  size = 3,
+                  segment.alpha=0)
+  ) +
+  theme_bw() + scale_y_log10(labels = comma_format()) #+ ylim(10, 100000)
+
+
+
+
+```
+
+Ok so we put slope at days since 20 confirmed on the left hand side, and put other covariates on the rhs
+
+
+```{r}
+
+
+lhs_20 <- temp_df %>% 
+  filter(t_slope_percent_change>1 & confirmed>=20 ) %>% 
+  mutate(y_hat_exp=exp(y_hat) ) %>%
+  left_join( state_codes %>% dplyr::select(state=state_name, state_abbr ) )
+dim(lhs_20)
+
+dim(covidtracking)
+
+contemporary_us  <- us_counties()
+rhs_mobility <- mobility %>% 
+  mutate(Region=str_replace(Region," County","")) %>%
+  left_join(contemporary_us %>% 
+              mutate(fips=paste0(statefp , countyfp))  %>% as.data.frame() %>% 
+              dplyr::select(fips, State=state_name , Region=name  ) 
+  ) %>%
+  rename(google_retail= `Retail & recreation`,
+         google_grocery=`Grocery & pharmacy`,
+         google_park= Parks,
+         google_transit=`Transit stations`,
+         google_workplace=Workplaces,
+         google_residential=Residential) %>% 
+  distinct()
+
+
+rhs_covidtracking <- covidtracking %>%
+  mutate(date_asdate = ymd(date)) %>% 
+  dplyr::select(date_asdate, state_abbr=state, state_test_positive=positive, state_test_negative=negative) %>%
+  mutate( state_test = state_test_positive + state_test_negative) %>% 
+  left_join(statepop  %>% dplyr::select(state_abbr=abbr, pop_2015) ) %>%
+  mutate( state_test_percap = state_test/pop_2015) %>% 
+  distinct()
+
+
+
+rhs_counties <- counties %>% dplyr::select(fips=FIPS, 
+                                    TOT_MALE, TOT_FEMALE,
+                                    doctors_per_cap=`Active Physicians per 100000 Population 2018 (AAMC)`,
+                                    popdensity=`Density per square mile of land area - Population`,
+                                    area=`Area in square miles - Total area`,
+                                    Median_Household_Income_2018,
+                                    Total_age65plus,
+                                    WA_MALE,	#White alone male population
+                                    WA_FEMALE,	#White alone female population
+                                    hospitals=`Total Hospitals (2019)`
+) %>% 
+  mutate(pop=TOT_MALE+TOT_FEMALE) %>% mutate(pop_perc_male = TOT_MALE/pop) %>% 
+  mutate(pop_over65_perc=Total_age65plus/pop) %>%
+  mutate(pop_nonwhite_perc= (pop-(WA_MALE+WA_FEMALE))/pop  ) %>%
+  
+  distinct()
+
+xy_all <- lhs_20 %>% filter(county!="Unknown") %>%
+  mutate(date_numeric=as.numeric(date_asdate)) %>% 
+  left_join(rhs_covidtracking)  %>% 
+  left_join(rhs_counties) %>% 
+  left_join(rhs_mobility)
+dim(xy_all)
+glimpse(xy_all)
+
+xy_all_cross_section <- xy_all %>% group_by(place) %>% filter(date_numeric==max(date_numeric)) %>% filter(!is.na(fips))  %>% ungroup() %>% as.data.frame()
+dim(xy_all_cross_section)
+
+xy_all_cross_section$pop_log <- log(xy_all_cross_section$pop)
+xy_all_cross_section$popdensity_log <- log(xy_all_cross_section$popdensity)
+xy_all_cross_section$state_test_log <- log(xy_all_cross_section$state_test)
+xy_all_cross_section$area_log <- log(xy_all_cross_section$area)
+xy_all_cross_section$Median_Household_Income_2018_log <- log(xy_all_cross_section$Median_Household_Income_2018)
+xy_all_cross_section$doctors_per_cap_log <- log(xy_all_cross_section$doctors_per_cap)
+xy_all_cross_section$hospitals_log <- log(xy_all_cross_section$hospitals+1)
+
+```
+
+```{r}
+
+temp <- xy_all_cross_section %>%
+  dplyr::select(place,state, county, t_slope_percent_change,days_since_20_confirmed,pop_log,popdensity_log,state_test_percap,google_workplace,Median_Household_Income_2018,area_log,pop_over65_perc,hospitals_log) %>% 
+  arrange(place)
+
+library(GGally)
+xy_all_cross_section %>%
+  dplyr::select(t_slope_percent_change,days_since_20_confirmed,pop_log,popdensity_log,state_test_percap,google_workplace,Median_Household_Income_2018_log,area_log,hospitals) %>%
+  ggpairs(title = "Within Psychological Variables")
+
+```
+
+```{r}
+
+
+library(randomForestSRC); #install.packages('randomForestSRC')
+rf <- rfsrc(t_slope_percent_change ~ 
+              days_since_20_confirmed + 
+              pop_log  + #date_numeric +
+              pop_perc_male +
+              pop_over65_perc + 
+              pop_nonwhite_perc +
+              #state_test_log +
+              doctors_per_cap_log + 
+              hospitals_log +
+              popdensity_log +
+              state_test_percap + #this is doing a ton of work
+              Median_Household_Income_2018_log +
+              area_log +
+              google_workplace +
+              google_grocery   +  google_residential + google_retail #+ google_park + google_transit
+            , 
+            ntree = 300 , 
+            na.action='na.impute',
+            data=xy_all_cross_section,
+            importance="permute"
+) #
+rf #% variance explained: 19.6
+vp <- vimp(rf)
+plot(vp)
+
+plot.variable(rf, partial = TRUE, smooth.lines = TRUE, sorted=T)
+
+```
+
+
+
+
+```{r}  
+temp_df %>%
+  filter(county %in% "Bexar") %>%
+  ggplot() +
+  geom_point(aes(x=date_asdate, y=confirmed_log)) +
+  geom_line(aes(x=date_asdate, y=y_hat)) 
+
+```
+
+```{r}
+#what should the cuttoff be?
+temp_df %>% filter(confirmed<100) %>%
+  ggplot() +
+  geom_point(aes(x=confirmed, y=t_slope_percent_change)) 
+
+#Where should we put the cutoff
+temp_df %>% filter(confirmed<100) %>%
+  ggplot(aes(x=confirmed , y=t_slope_percent_change)) +
+  geom_point() +
+  geom_smooth()
+
+summary(temp_df$t_slope_percent_change[temp_df$confirmed>=10])
+
+
+```
+
+```{r}
+
+temp_df_15 <- temp_df %>% filter(confirmed_max>10) %>% filter(days_since_15_confirmed>=1)
+
+temp_df_15 %>% 
+  ggplot(aes(x=days_since_15_confirmed , y=t_slope_percent_change)) +
+  geom_point() +
+  geom_smooth() + ylim(0,50)
+
+```
+
+
+
+```{r}
+bing_long %>% filter(!is.na(death_perc_confirmed) & death_perc_confirmed!=0) %>% pull(death_perc_confirmed) %>% hist(breaks=100)
+#Median of 3.7 deaths per 100
+bing_long %>% filter(!is.na(death_perc_confirmed) & death_perc_confirmed!=0) %>% pull(death_perc_confirmed100) %>% summary()
+
+bing_long$displayName
+
+```
+
+Without any limits we gets lots of weirdness on the low and high end. On the low end we're getting undercounting of confirmed cases. If you die, you get tested, but otherwise you're not getting reported and so the percentage of deaths is unrealistically high. On the high end the more people who are getting it, the greater share who are dying. Either because it's reaching further into communities and catching more vulnerbale people, or it's creating competition for limmitted medical resources, or both.
+
+```{r}
+bing_long %>% 
+  #filter(totalDeaths>=2) %>%
+  #filter(totalConfirmed>=200) %>%
+  ggplot(aes(x=log(totalConfirmed),y=death_perc_confirmed100)) + geom_point() + ylim(0,50) + geom_smooth()
+```
+
+```{r}
+bing_long %>% 
+  filter(totalDeaths>=2) %>%
+  filter(totalConfirmed>=200) %>%
+  ggplot(aes(x=log(totalConfirmed),y=death_perc_confirmed100)) + geom_point() + ylim(0,25) + geom_smooth()
+
+```
+
+
+
+```{r}
+
+
+  mutate(place=paste0(state,"_",county,"_",fips)) %>%
+  group_by(place) %>%
+  mutate(confirmed_cummax=cummax(confirmed)) %>%
+  mutate(days_since_1_confirmed=cumsum(confirmed_cummax>=1)) %>%
+  mutate(days_since_10_confirmed=cumsum(confirmed_cummax>=10)) %>%
+  mutate(days_since_15_confirmed=cumsum(confirmed_cummax>=15)) %>%
+  mutate(days_since_20_confirmed=cumsum(confirmed_cummax>=20)) %>%
+  
+  mutate(days_since_50_confirmed=cumsum(confirmed_cummax>=50)) %>%
+  mutate(days_since_100_confirmed=cumsum(confirmed_cummax>=100)) %>%
+  mutate(days_since_500_confirmed=cumsum(confirmed_cummax>=500)) %>%
+  
+  mutate(deaths_cummax=cummax(deaths)) %>%        
+  mutate(days_since_1_deaths=cumsum(deaths_cummax>=1)) %>%
+  mutate(days_since_10_deaths=cumsum(deaths_cummax>=10)) %>%
+  mutate(days_since_50_deaths=cumsum(deaths_cummax>=50)) %>%
+  mutate(days_since_100_deaths=cumsum(deaths_cummax>=100)) %>%
+  mutate(days_since_500_deaths=cumsum(deaths_cummax>=500)) %>%
+  
+  mutate(confirmed_fd=confirmed-lag(confirmed)) %>%
+  mutate(deaths_fd=deaths-lag(deaths)) %>%
+  ungroup() %>%
+  arrange(fips, date_asdate) %>%
+  
+  #filter(days_since_1_confirmed>0) %>%
+  group_by(place) %>%
+  mutate(confirmed_max=max(confirmed)) %>%
+  ungroup() %>%
+  
+  mutate(deaths=ifelse(deaths==0, NA,deaths)) %>%
+  mutate(confirmed=ifelse(confirmed==0, NA,confirmed)) %>%
+  mutate(death_perc_confirmed= deaths / (confirmed )) %>%
+  mutate(death_perc_confirmed100 = round( deaths / (confirmed/100 ),1 ) )
+
+
+nytimes_long %>% filter(!is.na(death_perc_confirmed) & death_perc_confirmed!=0) %>% pull(death_perc_confirmed) %>% hist(breaks=100)
+#Median of 40 deaths per 1k confirmed
+nytimes_long %>% filter(!is.na(death_perc_confirmed) & death_perc_confirmed!=0) %>%  pull(death_perc_confirmed100) %>% summary()
+
+temp <- nytimes_long %>% dplyr::select(place, confirmed, deaths, death_perc_confirmed100)
+
+nytimes_cross <- nytimes_long %>%
+  dplyr::select(state, county, fips, place, date_asdate, confirmed, deaths) %>% 
+  group_by(place) %>%
+  filter(date_asdate==max(date_asdate)) %>%
+  ungroup() %>%
+  mutate(deaths_perc_confirmed=deaths/confirmed)
+
+temp <- nytimes_long %>% dplyr::select(fips, confirmed_max) %>% distinct()
+table(temp$confirmed_max) #936 have 10 or more cases , 1412 don't
+
+hist(nytimes_cross$deaths_perc_confirmed)
+
+```
+
+```{r}
+%>%
+                      mutate(confirmed_perc_tests= positive / (positive + negative)) %>%
+                      mutate(death_perc_confirmed= death / (positive ))  %>%
+                      mutate(death_perc_confirmed100 = round( death / (positive/100 ),1 ) ) %>%
+                      arrange(state_name,date_asdate)
+
+covidtracking_long %>% filter(!is.na(death_perc_confirmed) & death_perc_confirmed!=0) %>% pull(death_perc_confirmed) %>% hist(breaks=100)
+#Median of 1.9 fatalities per thousand confirmed cases
+covidtracking_long %>% filter(!is.na(death_perc_confirmed) & death_perc_confirmed!=0) %>% pull(death_perc_confirmed100) %>% summary()
+
+
+covidtracking_cross <- covidtracking  %>% 
+  
+  #dplyr::select(state, county, fips, place, date_asdate, confirmed, deaths) %>% 
+  group_by(state) %>%
+  filter(date_asdate==max(date_asdate)) %>%
+  ungroup()# %>%
+
+```
+
+
