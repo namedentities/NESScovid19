@@ -3,12 +3,6 @@ library(dplyr)
 library(lubridate)
 library(stringr)
 
-wp_page_url = "https://en.wikipedia.org/wiki/COVID-19_testing"
-testing_webpage <- read_html(wp_page_url)
-
-table_list = testing_webpage %>% html_nodes("table") %>% html_table(fill = TRUE) %>% .[[3]]
-country_list <- as.vector(table_list[1])
-
 
 # This function filters all the tables to obtain only the wiki-tables for that country.
 filter_wikitables <- function(list_of_nodes)
@@ -63,7 +57,13 @@ fetch_for_country <- function(country_name){
   )
 }
 
-#Example run3
-fetch_for_country('India')
-fetch_for_country('Austria')
+#This function filters the keywords -> States , Region and Province from region
+state_filter <- function(country){
+  tbls = fetch_for_country(country)
+  return(tbls[grep("State|Province|Region",tbls,ignore.case = T)])
+}
+
+# Run using
+#state_filter('India')
+#state_filter('Austria')
 
