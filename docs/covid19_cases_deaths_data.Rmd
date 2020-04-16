@@ -54,806 +54,31 @@ library(sf)
 
 ```
 
-
-
-
-Country codes
+Can start back from here
 
 ```{r}
 
-library(countrycode)
-exclude <- c("ar5", "continent", "country.name.de.regex", "country.name.en.regex", "eurocontrol_pru", "eurocontrol_statfor", "icao.region", "region",
-             "cldr.variant.ccp","cldr.variant.dz", "cldr.variant.ce", "cldr.variant.brx","cldr.variant.bn_in","cldr.variant.bn","cldr.variant.fa","cldr.variant.fa_af", "cldr.variant.ja","cldr.variant.ka",
-             "cldr.variant.kk","cldr.variant.km","cldr.variant.kn","cldr.variant.ko","cldr.variant.ko_kp","cldr.variant.kok","cldr.variant.ks","cldr.variant.lo","cldr.variant.my","cldr.variant.mzn","cldr.variant.ne",
-             "cldr.variant.or","cldr.variant.pa","cldr.variant.ps","cldr.variant.sd","cldr.variant.shi","cldr.variant.si","cldr.variant.sr","cldr.variant.sr_cyrl_ba","cldr.variant.sr_cyrl_me","cldr.variant.sr_cyrl_xk","cldr.variant.ta",
-             "cldr.variant.te","cldr.variant.th","cldr.variant.ti","cldr.variant.ug","cldr.variant.uk","cldr.variant.ur","cldr.variant.ur_in","cldr.variant.uz_cyrl","cldr.variant.vai","cldr.variant.yi","cldr.variant.yo","cldr.variant.yo_bj",
-             "cldr.variant.yue","cldr.variant.yue_hans","cldr.variant.zgh","cldr.variant.zh","cldr.variant.zh_hant","cldr.variant.zh_hant_hk",
-             "un.name.ar","un.name.ru","un.name.zh","cldr.name.am","cldr.name.ar","cldr.name.ar_ly","cldr.name.ar_sa","cldr.name.as","cldr.name.az","cldr.name.az_cyrl",
-             "cldr.name.be","cldr.name.bg","cldr.name.bm","cldr.name.bn","cldr.name.brx","cldr.name.bs_cyrl","cldr.name.ccp","cldr.name.ce","cldr.name.chr","cldr.name.chr","cldr.name.ckb","cldr.name.dz","cldr.name.el",
-             "cldr.name.fa","cldr.name.fa_af","cldr.name.gu","cldr.name.he","cldr.name.hi","cldr.name.hy","cldr.name.ja","cldr.name.ka","cldr.name.km","cldr.name.kn","cldr.name.ko",
-             "cldr.short.yo_bj"  ,    "cldr.name.tk"         , "cldr.short.tk"        , "cldr.variant.tk"      , "cldr.name.mgh"     ,    "cldr.short.mgh"     ,   "cldr.variant.mgh"      ,"cldr.short.el"        , "cldr.variant.el"   ,    "cldr.name.mk"    ,     
-             "cldr.name.sr"     ,     "cldr.name.sr_cyrl_ba" , "cldr.name.sr_cyrl_me" , "cldr.name.sr_cyrl_xk" , "cldr.short.mk"    ,     "cldr.short.sr"      ,   "cldr.short.sr_cyrl_ba", "cldr.short.sr_cyrl_me", "cldr.short.sr_cyrl_xk", "cldr.variant.mk"      ,
-             "cldr.name.kk"     ,     "cldr.short.kk"        , "cldr.name.ky"     ,     "cldr.name.mn"         , "cldr.name.ru"     ,     "cldr.name.ru_ua"    ,   "cldr.short.bg"        , "cldr.short.bs_cyrl" ,   "cldr.short.ky"   ,      "cldr.short.mn"       , 
-             "cldr.short.ru"     ,    "cldr.short.ru_ua"     , "cldr.variant.bg"  ,     "cldr.variant.bs_cyrl" , "cldr.variant.ky"   ,    "cldr.variant.mn"    ,   "cldr.variant.ru"      , "cldr.variant.ru_ua" ,   "cldr.name.uk"    ,      "cldr.short.be"       , 
-             "cldr.short.uk"      ,   "cldr.variant.be"      , "cldr.name.tg"     ,     "cldr.name.uz_cyrl"  ,   "cldr.short.tg"      ,   "cldr.short.uz_cyrl" ,   "cldr.variant.tg"      , "cldr.name.tt"       ,   "cldr.short.tt"   ,      "cldr.variant.tt"     , 
-             "cldr.short.az_cyrl"  ,  "cldr.variant.az_cyrl" , "cldr.short.ce"    ,     "cldr.short.ka"      ,   "cldr.short.hy"       ,  "cldr.variant.hy"    ,   "cldr.name.yi"         , "cldr.short.yi"      ,   "cldr.short.he"   ,      "cldr.variant.he"     , 
-             "cldr.short.ar"       ,  "cldr.short.ar_ly"   ,   "cldr.short.ar_sa" ,     "cldr.variant.ar"    ,   "cldr.variant.ar_ae" ,   "cldr.variant.ar_ly" ,   "cldr.variant.ar_sa"   , "cldr.name.ug"       ,   "cldr.short.ug"   ,      "cldr.short.ckb"     ,  
-             "cldr.variant.ckb"   ,   "cldr.name.ps"       ,   "cldr.name.sd"     ,     "cldr.name.ur"       ,   "cldr.name.ur_in"    ,   "cldr.name.uz_arab"  ,   "cldr.short.fa"        , "cldr.short.fa_af"   ,   "cldr.short.ps"    ,     "cldr.short.sd"     ,   
-             "cldr.short.ur"      ,   "cldr.short.ur_in"   ,   "cldr.name.ks"     ,     "cldr.short.ks"      ,   "cldr.name.mzn"      ,   "cldr.short.mzn"     ,   "cldr.name.shi"        , "cldr.name.zgh"      ,   "cldr.short.shi"   ,     "cldr.short.zgh"    ,   
-             "cldr.name.ti"       ,   "cldr.short.am"      ,   "cldr.short.ti"    ,     "cldr.variant.am"    ,   "cldr.name.mr"       ,   "cldr.short.mr"      ,   "cldr.variant.mr"      , "cldr.name.kok"      ,   "cldr.name.ne"      ,    "cldr.short.kok"     ,  
-             "cldr.short.ne"      ,   "cldr.short.hi"      ,   "cldr.variant.hi"  ,     "cldr.short.brx"     ,   "cldr.short.as"      ,   "cldr.short.bn"      ,   "cldr.variant.as"      , "cldr.name.pa"       ,   "cldr.short.pa"      ,   "cldr.short.gu"     ,   
-             "cldr.variant.gu"    ,   "cldr.name.or"       ,   "cldr.short.or"    ,     "cldr.name.ta"       ,   "cldr.short.ta"      ,   "cldr.name.te"       ,   "cldr.short.te"        , "cldr.short.kn"      ,   "cldr.name.ml"        ,  "cldr.short.ml"    ,    
-             "cldr.variant.ml"    ,   "cldr.name.si"       ,   "cldr.short.si"    ,     "cldr.name.th"       ,   "cldr.short.th"      ,   "cldr.name.lo"       ,   "cldr.short.lo"        , "cldr.short.dz"      ,   "cldr.name.my"       ,   "cldr.short.my"    ,    
-             "cldr.short.ccp"     ,   "cldr.short.km"      ,   "cldr.short.chr"   ,     "cldr.variant.chr"   ,   "cldr.name.vai"       ,  "cldr.short.vai"     ,   "cldr.name.ko_kp"      , "cldr.short.ko"      ,   "cldr.short.ko_kp"    ,  "cldr.short.ja"    ,    
-             "cldr.name.yue"      ,   "cldr.name.yue_hans" ,   "cldr.name.zh"     ,     "cldr.name.zh_hant"  ,   "cldr.name.zh_hant_hk" , "cldr.short.yue"     ,   "cldr.short.yue_hans"  , "cldr.short.zh"      ,   "cldr.short.zh_hant"  ,  "cldr.short.zh_hant_hk"
-             )
-length(names(codelist))
-vars <- setdiff(names(codelist),exclude)
-length(vars) #489
-codelist_t <- t(codelist[,vars])
+admin0 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin0.Rds")
+admin1 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin1.Rds")
+admin2 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin2.Rds")
 
-sort(codelist_t[,1])
+rex_clean <- function(x){ x %>% stringi::stri_trans_general("latin-ascii") %>% stringi::stri_replace_all(regex="[^A-Za-z0-9]","") %>% tolower() } #so individually, each string should be devoid of spaces,noncharacters, and nonlatin
 
-countries_list <- list()
-for(q in vars){
-  print(q)
-  temp <- countries
-  temp$name <- countrycode(
-    sourcevar=countries$name,
-    origin="country.name",
-    destination=q,
-    warn = F,
-    nomatch = NA,
-    custom_dict = NULL,
-    custom_match = NULL,
-    origin_regex = FALSE
-  )
-  if(!is.numeric(temp$name)) { #auto exclude those columns that are numeric codes
-    countries_list[[q]] <- temp
-  }
+
+rex_admin_function <- function(x) {
+  x %>% 
+  left_join(admin0 ) %>%
+  left_join(admin1 )  %>%
+  left_join(admin2 ) %>%
+  mutate(gid=ifelse(!is.na(admin2_name_clean) & admin2_name_clean!='',gid2,ifelse(!is.na(admin1_name_clean) & admin1_name_clean!='', gid1, gid0))) %>%
+  mutate(wikidata_id=ifelse(!is.na(admin2_name_clean) & admin2_name_clean!='',wikidata_id2,ifelse(!is.na(admin1_name_clean) & admin1_name_clean!='', wikidata_id1, wikidata_id0))) %>%
+  mutate(geonameid=ifelse(!is.na(admin2_name_clean) & admin2_name_clean!='',geonameid2,ifelse(!is.na(admin1_name_clean) & admin1_name_clean!='', geonameid1, geonameid0))) %>%
+  mutate(admin_level=ifelse(!is.na(admin2_name_clean) & admin2_name_clean!='',2,ifelse(!is.na(admin1_name_clean) & admin1_name_clean!='', 1, 0)))
 }
 
-countries_df <- bind_rows(countries_list)
-dim(countries_df) #122,368
-
-rex_clean <- function(x){ x %>% stri_trans_general("latin-ascii") %>% stri_replace_all(regex="[^A-Za-z0-9]","") %>% tolower() } #so individually, each string should be devoid of spaces,noncharacters, and nonlatin
-
-countries_df_unique <- countries_df %>% 
-                       mutate(name= name %>% rex_clean()   ) %>%
-                       distinct() %>% 
-                       filter(!is.na(name)) %>% 
-                       add_count(name) %>% filter(n==1) %>% dplyr::select(-n) %>%
-                       filter(is.na(as.numeric(name)))
-dim(countries_df_unique) #13,653
-
-countries_df_unique <- bind_rows(
-  gadm36_df %>% dplyr::select(gid=GID_0, name=NAME_0 ) %>% mutate(name= name %>% rex_clean()   ),
-  countries_df_unique
-) %>% distinct()
-
-
 ```
 
-GADM
-
-Turns out it's not a panacea. Catches a whole lot but fails like on Delhi's second level administrative boundaries for some reason. Alternate names get poorer for some parts of the world. Also really hit or miss coverage on cities.
-
-```{r}
-
-if(fromscratch){
-
-  gadm36 = st_read("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSgadm/data_in/gadm36_gpkg/gadm36.gpkg")
-  
-  gadm36_df <- gadm36 %>% as.data.frame()
-  
-  countries <- gadm36_df %>% dplyr::select(gid=GID_0, name=NAME_0 ) %>% distinct()
-  
-  #Gadm is good about aliases for lower level entities but not countries so use countrycode to grab a bunch of other ways to write countries
-  #For variety, we're going to throw in all the country aliases in countrycode
-
-
-  
-  temp1 <- bind_rows(
-    countries_df_unique,
-    gadm36_df %>% dplyr::select(gid=GID_1, name=NAME_1 , varname=VARNAME_1, type=TYPE_1, engtype=ENGTYPE_1, validfrom=VALIDFR_1, validto=VALIDTO_1 ) %>% distinct(),
-    gadm36_df %>% dplyr::select(gid=GID_2, name=NAME_2 , varname=VARNAME_2, type=TYPE_2, engtype=ENGTYPE_2, validfrom=VALIDFR_2, validto=VALIDTO_2 ) %>% distinct(),
-    gadm36_df %>% dplyr::select(gid=GID_3, name=NAME_3 , varname=VARNAME_3, type=TYPE_3, engtype=ENGTYPE_3, validfrom=VALIDFR_3, validto=VALIDTO_3 ) %>% distinct(),
-    gadm36_df %>% dplyr::select(gid=GID_4, name=NAME_4 , varname=VARNAME_4, type=TYPE_4, engtype=ENGTYPE_4, validfrom=VALIDFR_4, validto=VALIDTO_4 )
-  ) %>% distinct()
-  dim(temp1)
-  
-  temp2 <- bind_rows(
-    temp1 %>% dplyr::select(gid, name=name , type, engtype, validfrom, validto ),
-    temp1 %>% dplyr::select(gid, name=varname , type, engtype, validfrom, validto )
-  )  %>%
-    distinct() %>% 
-    separate_rows(name,sep="\\|") %>%
-    mutate(name = trimws(name)) %>%
-    filter(!is.na(name) & name!='') %>%
-    distinct() 
-  
-  temp3 <- bind_rows(
-    temp2 %>% dplyr::select(gid, name , type=type, validfrom, validto ),
-    temp2 %>% dplyr::select(gid, name , type=engtype, validfrom, validto )
-  )  %>%
-    distinct() %>% 
-    separate_rows(type,sep="\\|") %>%
-    mutate(type = trimws(type)) %>%
-    distinct() 
-  dim(temp3)
-  #Territorio Nacional|Provincia
-  
-  temp4 <- bind_rows(
-    temp3 %>% dplyr::select(gid, name , validfrom, validto ), #just the name
-    temp3 %>% filter(!is.na(type) & type!='') %>% mutate(name=paste0(name," ",type)) %>% dplyr::select(gid, name , validfrom, validto ), #original name followed by the type that it is
-    temp3 %>% filter(!is.na(type) & type!='') %>% mutate(name=paste0(type," of ",name)) %>% dplyr::select(gid, name , validfrom, validto ), #type followed by of, so state of, county of province of, etc.
-  )  %>%
-    distinct() %>% 
-    mutate(name = trimws(name)) %>%
-    distinct() 
-  dim(temp4) #1,657,967 #1019451
-  
-  #dates
-  dates_df <- temp4 %>% dplyr::select(gid,validfrom, validto) %>% distinct()
-
-  library(data.table)
-  temp5 <- temp4 %>% dplyr::select(gid,name) %>% as.data.table()
-
-  library(dtplyr) #install.packages("dtplyr")
-  library(stringi)
-  rex_clean <- function(x){ x %>% stri_trans_general("latin-ascii") %>% stri_replace_all(regex="[^A-Za-z0-9]","") %>% tolower() } #so individually, each string should be devoid of spaces,noncharacters, and nonlatin
-  temp5[,name:=rex_clean(name),]
-  temp5 <- temp5 %>% distinct()
-  dim(temp5) 
-  
-  #but between levels we'll put an underscore. Number of udnerscores tells you how many levels down it is
-  #we do this better above so we're more interested in level1 below
-  level0 <- countries_df_unique %>% mutate(name=rex_clean(name)) %>% distinct() %>% arrange(gid) %>% filter(!is.na(name) & name!='') %>% filter(!duplicated(name))
-  dim(level0) #
-  
-  #temp <- level0 %>% count(name)
-  
-  gadm1 <- gadm36_df %>% dplyr::select(gid=GID_1, a=GID_0, b=GID_1) %>% filter(!is.na(a) & !is.na(b)) %>% 
-            #left_join(temp5 %>% dplyr::select(a=gid, name_a=name) %>% filter(!is.na(a) & !is.na(name_a) & name_a!='')  ) %>% 
-            left_join(temp5 %>% dplyr::select(b=gid, name_b=name) %>% filter(!is.na(b) & !is.na(name_b) & name_b!='')  ) %>% dplyr::select(gid0=a, gid1=b, name1=name_b)  %>% distinct() 
-            #mutate(name=paste0(name_a,"_",name_b)) %>% dplyr::select(gid, name) %>% distinct() %>% filter(!is.na(name) & name!='') #%>% filter(!duplicated(name))
-  dim(gadm1) #31362
-  #level1_distinct <- level1 %>% distinct() #no dupes
-  
-  #need to redo 2 through whatever below like gadm1 here
-  gadm2 <- gadm36_df %>% dplyr::select(gid=GID_2, a=GID_0, b=GID_1, c=GID_2) %>% filter(!is.na(a) & !is.na(b) & !is.na(c)) %>% 
-            #left_join(temp5 %>% dplyr::select(a=gid, name_a=name) %>% filter(!is.na(a) & !is.na(name_a) & name_a!='')  ) %>% 
-            left_join(temp5 %>% dplyr::select(c=gid, name=name) %>% filter(!is.na(c) & !is.na(name) & name!='')  ) %>% dplyr::select(gid0=a, gid1=b, gid2=c,  name2=name)  %>% distinct() 
-            #mutate(name=paste0(name_a,"_",name_b)) %>% dplyr::select(gid, name) %>% distinct() %>% filter(!is.na(name) & name!='') #%>% filter(!duplicated(name))
-  dim(gadm2) #438,130
-    
-
-  
-  library(fst)
-  write_fst( level0to3, '/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/level0to3.fst', compress = 100) #upping the compression hoping it speeds up the read
-  level0to3 <- read_fst('/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/level0to3.fst', as.data.table=T) #still takes an annoying long time
-
-}
-
-library(dtplyr) #install.packages("dtplyr")
-#names_to_gid_dt <- readRDS('/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/names_to_gid_dt.Rds') #do I want to bring in fst for this? or parquet?
-
-library(fst)
-#write_fst(names_to_gid_dt,'/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/names_to_gid_dt.fst', compress = 100) #upping the compression hoping it speeds up the read
-level0to3 <- read_fst('/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/level0to3.fst', as.data.table=T) #still takes an annoying long time
-class(level0to3)
-dim(level0to3) #52,281,025 
-head(level0to3)
-
-
-
-```
-
-Pull wikidata codes
-
-```{r}
-
-restartspark()
-
-#Produce optimized versions of the file that are sorted, seperated, and more efficiently packed into fewer files
-
-wikidata_labels_eng <- spark_read_parquet(sc=sc, name="wikidata_labels_eng", path='/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSwikidata/data_out/wikidata_parq_optimized/level0=labels/level1=en', memory = F) 
-replyr_nrow(wikidata_labels_eng) #48,936,919
-head(wikidata_labels_eng) #
-
-wikidata_aliases_eng <- spark_read_parquet(sc=sc, name="wikidata_alias_eng", path='/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSwikidata/data_out/wikidata_parq_optimized/level0=aliases/level1=en', memory = F) 
-replyr_nrow(wikidata_aliases_eng) #13,632,710
-head(wikidata_aliases_eng) #
-
-wikidata_aliaseslabels_eng <- rbind( #sparklyr actually prefers rbind
-  wikidata_labels_eng %>% dplyr::select(wikidata_id,value),
-  wikidata_aliases_eng %>% filter(level3=="value") %>% dplyr::select(wikidata_id,value)
-)
-replyr_nrow(wikidata_aliaseslabels_eng) #55,753,274
-
-#If you are seeing this error in code that used to work, the most likely cause is a change dbplyr 1.4.0. Previously `df$x` or `df[[y]]` implied that `df` was a local variable, but now you must make that explict with `!!` or `local()`, e.g., `!!df$x`
-#or `local(df[["y"]))
-geonames_admin0_qcodes <- wikidata_aliaseslabels_eng %>% mutate(value=tolower(value)) %>% mutate(value=regexp_replace(value," ","")) %>% filter(value %in% !!geonames_admin0$name ) 
-
-claims_P31 <- spark_read_parquet(sc=sc, name="claims", path="/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSwikidata/data_out/wikidata_parq_optimized/level0=claims/level1=P31",memory = F) %>% 
-              filter(level6=="id")  %>% filter(level3=="mainsnak") %>% dplyr::select(wikidata_id, P31=value)
-
-
-#located in the administrative territorial entity (P131)
-#country (Q6256)
-#sovereign state (Q3624078)
-#state with limited recognition (Q15634554)
-#island nation (Q112099)
-#British Overseas Territories (Q46395)
-wikidata0 <- claims_P31 %>% filter(P31 %in% c('Q6256','Q3624078','Q15634554','Q112099','Q46395' )) %>% left_join(wikidata_aliases_eng) %>% filter(level3=="value") %>% dplyr::select(wikidata_id, value) %>% collect() %>% as.data.table()
-dim(wikidata0)
-temp <- wikidata0 %>% distinct() %>% count(value)
-
-#hand drop dupes
-#"Q58296","Q70802","Q161885","Q174193",
-#As a good rule of thumb just pick the lowest nubmered one
-library(stringi)
-wikidata0_dt <- wikidata0 %>% distinct() %>% 
-                         mutate(wikidata_id_numeric= str_replace(wikidata_id,"Q","") %>% as.numeric()) %>% 
-                         mutate(name= value %>% rex_clean() ) %>% 
-  
-                         group_by(name) %>% filter(wikidata_id_numeric==min(wikidata_id_numeric)) %>% ungroup() %>%
-                         dplyr::select(wikidata_id,name) %>% distinct()
-dim(wikidata0_dt)
-
-#this turned out to not work very well, the 279 hiearchy is too rough
-#wikidata1
-#We need everything that's a first-level administrative country subdivision
-#first-level administrative country subdivision (Q10864048)
-#claims_P279 <- spark_read_parquet(sc=sc, name="claims", path="/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSwikidata/data_out/wikidata_parq_optimized/level0=claims/level1=P279",memory = F) %>% 
-#               filter(level6=="id")  %>% filter(level3=="mainsnak") %>% dplyr::select(wikidata_id, P279=value)
-#claims_P279_Q10864048 <- claims_P279 %>% filter(P279 == 'Q10864048')
-#wikidata1 <- claims_P31 %>% inner_join(claims_P279_Q10864048 %>% dplyr::select(P31=wikidata_id)) %>% left_join(wikidata_aliases_eng) %>% filter(level3=="value") %>% dplyr::select(wikidata_id, value) %>% collect() %>% as.data.table()
-#wikidata1_dt <- wikidata1 %>% distinct() %>% 
-#                 mutate(wikidata_id_numeric= str_replace(wikidata_id,"Q","") %>% as.numeric()) %>% 
-#                 mutate(name= value %>% rex_clean() ) %>% 
-#  
-#                 group_by(name) %>% filter(wikidata_id_numeric==min(wikidata_id_numeric)) %>% ungroup() %>%
-#                 dplyr::select(wikidata_id,name) %>% distinct()
-#dim(wikidata1_dt)
-
-#This pulls every entity with a geonames id and all the labels and aliases for them
-#GeoNames ID (P1566)
-claims_P1566 <- spark_read_parquet(sc=sc, name="claims", path="/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSwikidata/data_out/wikidata_parq_optimized/level0=claims/level1=P1566/level3=mainsnak",memory = F) #%>% 
-              #filter(level6=="value") %>% dplyr::select(wikidata_id, P1566=value)
-replyr_nrow(claims_P1566) #3683698
-
-temp <- claims_P1566 %>% head(10000) %>% collect()
-
-wikidata_togeonames <- claims_P1566 %>% dplyr::select(wikidata_id, geonames= value) %>% left_join(wikidata_aliaseslabels_eng) %>% collect() %>% as.data.table()
-dim(wikidata_togeonames) #3,998,220
-wikidata_togeonames_dt <- wikidata_togeonames  %>% distinct() %>% 
-                           mutate(wikidata_id_numeric= str_replace(wikidata_id,"Q","") %>% as.numeric()) %>% 
-                           mutate(name= value %>% rex_clean() ) %>% 
-                           group_by(name) %>% filter(wikidata_id_numeric==min(wikidata_id_numeric)) %>% ungroup() %>%
-                           dplyr::select(wikidata_id,geonames,name) %>% distinct()
-dim(wikidata_togeonames_dt) #2,258,725 #227,663
-
-#ISO 3166-1 alpha-2 code (P297) #nope we actually want the 2 digit code. god damn it.
-#ISO 3166-1 alpha-3 code (P298) #we actually want the alpha code
-#ISO 3166-1 numeric code (P299) #not the nmeric one here
-claims_P297 <- spark_read_parquet(sc=sc, name="claims", path="/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSwikidata/data_out/wikidata_parq_optimized/level0=claims/level1=P297/level3=mainsnak",memory = F) #%>% 
-              #filter(level6=="value") %>% dplyr::select(wikidata_id, P1566=value)
-replyr_nrow(claims_P297) #
-
-wikidata_to_ISO31661 <- claims_P297 %>% dplyr::select(wikidata_id, ISO31661 = value) %>% left_join(wikidata_aliaseslabels_eng) %>% collect() %>% as.data.table()
-wikidata_to_ISO31661_dt <- wikidata_to_ISO31661  %>% distinct() %>% 
-                           mutate(wikidata_id_numeric= str_replace(wikidata_id,"Q","") %>% as.numeric()) %>% 
-                           mutate(name= value %>% rex_clean() ) %>% 
-                           group_by(name) %>% filter(wikidata_id_numeric==min(wikidata_id_numeric)) %>% ungroup() %>%
-                           dplyr::select(wikidata_id,ISO31661,name) %>% distinct()
-dim(wikidata_to_ISO31661_dt) #1455
-
-#ISO 3166-2 code (P300)
-claims_P300 <- spark_read_parquet(sc=sc, name="claims", path="/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSwikidata/data_out/wikidata_parq_optimized/level0=claims/level1=P300/level3=mainsnak",memory = F) #%>% 
-              #filter(level6=="value") %>% dplyr::select(wikidata_id, P1566=value)
-replyr_nrow(claims_P300) #5474
-
-#wikidata_aliases_eng %>% filter(wikidata_id=="Q13750") #for some reason label is missing
-#wikidata_labels_eng %>% filter(wikidata_id=="Q13750") #nope I'm an idiot, I've only been joining on aliases alone
-
-
-
-wikidata_to_ISO31662 <- claims_P300 %>% dplyr::select(wikidata_id, ISO31662 = value) %>% left_join(wikidata_aliaseslabels_eng) %>% collect() %>% as.data.table() #some of these labels are missing
-wikidata_to_ISO31662_dt <- wikidata_to_ISO31662  %>% distinct() %>% 
-                           mutate(wikidata_id_numeric= str_replace(wikidata_id,"Q","") %>% as.numeric()) %>% 
-                           mutate(name= value %>% rex_clean() ) %>% 
-                           group_by(name) %>% filter(wikidata_id_numeric==min(wikidata_id_numeric)) %>% ungroup() %>%
-                           dplyr::select(wikidata_id,ISO31662,name) %>% distinct() %>%
-                           mutate(ISO31661=substr(ISO31662,1,2))
-dim(wikidata_to_ISO31662_dt) #8989
-
-#
-
-```
-
-
-
-Geonames
-
-```{r}
-
-
-library(data.table)
-geonames <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/allCountries.txt", sep="\t")
-dim(geonames) #12,006,426
-
-#geonameid         : integer id of record in geonames database
-#name              : name of geographical point (utf8) varchar(200)
-#asciiname         : name of geographical point in plain ascii characters, varchar(200)
-#alternatenames    : alternatenames, comma separated, ascii names automatically transliterated, convenience attribute from alternatename table, varchar(10000)
-#latitude          : latitude in decimal degrees (wgs84)
-#longitude         : longitude in decimal degrees (wgs84)
-#feature class     : see http://www.geonames.org/export/codes.html, char(1)
-#feature code      : see http://www.geonames.org/export/codes.html, varchar(10)
-#country code      : ISO-3166 2-letter country code, 2 characters
-#cc2               : alternate country codes, comma separated, ISO-3166 2-letter country code, 200 characters
-#admin1 code       : fipscode (subject to change to iso code), see exceptions below, see file admin1Codes.txt for display names of this code; varchar(20)
-#admin2 code       : code for the second administrative division, a county in the US, see file admin2Codes.txt; varchar(80) 
-#admin3 code       : code for third level administrative division, varchar(20)
-#admin4 code       : code for fourth level administrative division, varchar(20)
-#population        : bigint (8 byte int) 
-#elevation         : in meters, integer
-#dem               : digital elevation model, srtm3 or gtopo30, average elevation of 3''x3'' (ca 90mx90m) or 30''x30'' (ca 900mx900m) area in meters, integer. srtm processed by cgiar/ciat.
-#timezone          : the iana timezone id (see file timeZone.txt) varchar(40)
-#modification date : date of last modification in yyyy-MM-dd format
-
-vars <- c('geonameid','name','asciiname','alternatenames','latitude','longitude','feature_class','feature_code','country_code','cc2','admin1','admin2','admin3','admin4','population','elevation','dem','timezone','modification')
-names(geonames) <- vars
-
-test <- geonames %>% filter(name %in% "San Antonio") 
-
-table(geonames$feature_class) %>% sort()
-table(geonames$feature_code) %>% sort()
-
-geonames %>% filter(feature_code %in% 'ADMD')
-
-geonames_p <- geonames  %>% filter(!is.na(admin2) & admin2!='' ) #%>% filter(feature_class=="P") #& feature_class=="P"
-dim(geonames_p) #4,770,851
-
-geonames_p_unique <- geonames_p %>% group_by(country_code, name) %>% arrange(-population) %>% filter(row_number()==1) %>% ungroup() #for every placename, keep only the most populated with that name per country. Use this to put in Cities
-
-#hierachy is missing some, like san antonio for some reason 4726206
-#let's add them back in
-hierarchy <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/hierarchy.txt", sep="\t")
-
-#add these nestings
-#unitedkingdom	 england
-#unitedkingdom	 northernireland
-#unitedkingdom	 scotland
-#unitedkingdom	 wales
-hierarchy <- rbindlist(list(hierarchy,
-data.table(V1=2635167, V2=6269131),
-data.table(V1=2635167, V2=2641364),
-data.table(V1=2635167,V2=2638360),
-data.table(V1=2635167,V2=2634895)
-), fill=T)
-
-dim(hierarchy) #488,103
-library(igraph)
-library(tictoc)
-#vec <- 1:100000 #100k to 66 seconds whole thing is only 488k so this is fine. Nope apparently it's much longer than that for the full graph. Lots of branching nodes.
-#1552.91 sec elapsed #took about 25 minutes
-vec <- 1:nrow(hierarchy) #1:100000#
-g <- graph.data.frame(hierarchy[vec,c(2,1)], #from and to so invert the columns
-                 directed=TRUE, vertices=NULL)
-#The root should be 6295630
-#reachable
-earth = V(g)[name=="6295630"]
-#g_all <- subcomponent(g,
-#             v=earth,
-#             mode = c("in"))
-
-#Could have also just done a bunch of joins. Probably would have been better.
-path <- "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/geonames_hierarchy_paths.txt"
-fromscratch=F
-if(fromscratch){
-  tic()
-  #shortest <- get.shortest.paths(graph=g,
-  #                               from=earth,
-  #                               mode = "in") #this is going to be really big
-  all_shortest_paths <- get.shortest.paths(graph=g, #switching to all shortest paths to allow for multiple routes, e.g. england as a country or a admin1 under the UK
-                                 from=earth,
-                                 mode = "in") #this is going to be really big
-  toc()
-  saveRDS(shortest,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/geonames_shortest_path.rds")
-
-  shortest <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/geonames_shortest_path.rds")
-  class(shortest)
-  length(shortest) #516,803
-  length(shortest[[1]])
-  shortest[[1]][[1]]
-  
-  #we can iterate over this and just write them to a file and read back
-  #This is slow, I don't care I just need this done right now
-  tic()
-  list_of_df <- lapply(vec, FUN=function(i)  data.frame( t(names(shortest[[1]][[i]]) ))) #it still takes a while
-  list_of_dt <- rbindlist(list_of_df, fill=T)
-  toc()
-
-}
-#readLines(path, n=1)
-#geonames_hierarchy_paths <- unique( read.table(file=path, sep="\t", fill=T, header = FALSE, col.names=paste("V", 1:20, sep="")) )
-#dim(geonames_hierarchy_paths) # 308797     20
-#geonames_hierarchy_paths <- as.data.table(geonames_hierarchy_paths[,colSums(is.na(geonames_hierarchy_paths))!=nrow(geonames_hierarchy_paths)])
-
-geonames_inpaths <- unique(c(hierarchy$V1,hierarchy$V2)) # length(geonames_inpaths) #516,803
-
-
-#The table 'alternate names' :
-#-----------------------------
-#alternateNameId   : the id of this alternate name, int
-#geonameid         : geonameId referring to id in table 'geoname', int
-#isolanguage       : iso 639 language code 2- or 3-characters; 4-characters 'post' for postal codes and 'iata','icao' and faac for airport codes, fr_1793 for French Revolution names,  abbr for abbreviation, link to a website (mostly to #wikipedia), wkdt for the wikidataid, varchar(7)
-#alternate name    : alternate name or name variant, varchar(400)
-#isPreferredName   : '1', if this alternate name is an official/preferred name
-#isShortName       : '1', if this is a short name like 'California' for 'State of California'
-#isColloquial      : '1', if this alternate name is a colloquial or slang term. Example: 'Big Apple' for 'New York'.
-#isHistoric        : '1', if this alternate name is historic and was used in the past. Example 'Bombay' for 'Mumbai'.
-#from		  : from period when the name was used
-#to		  : to period when the name was used
-alternateNamesV2 <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/alternateNamesV2/alternateNamesV2.txt", sep="\t")
-dim(alternateNamesV2) #14,984,570
-table(alternateNamesV2$V3)
-alternateNamesV2_eng <- alternateNamesV2 %>% dplyr::select(geonameid=V2,name=V4, lang=V3)  %>% dplyr::filter(lang %in% c('','en')) %>% dplyr::filter(geonameid %in% geonames_inpaths) #,'link'
-dim(alternateNamesV2_eng) #479,596
-alternateNamesV2_enwiki <- alternateNamesV2 %>% 
-                            dplyr::select(geonameid=V2,enwiki=V4, lang=V3)  %>% 
-                            dplyr::filter(lang %in% c('link')) %>% dplyr::filter(geonameid %in% geonames_inpaths) %>% 
-                            filter(str_detect(enwiki, "https://en.wikipedia.org"))
-
-#now rexclean
-library(stringi)
-rex_clean <- function(x){ x %>% stri_trans_general("latin-ascii") %>% stri_replace_all(regex="[^A-Za-z0-9]","") %>% tolower() } #so individually, each string should be devoid of spaces,noncharacters, and nonlatin
-
-tic()
-geonames_idtoname <- bind_rows(
-  geonames %>% dplyr::select(geonameid,name) %>% filter(geonameid %in% geonames_inpaths),
-  geonames %>% dplyr::select(geonameid,name=asciiname) %>% filter(geonameid %in% geonames_inpaths),
-  #We can start small with just the regular names and then go back and add these
-  alternateNamesV2_eng %>% dplyr::select(geonameid,name) %>% filter(geonameid %in% geonames_inpaths) 
-) %>% 
-    mutate(name  = rex_clean(name)) %>% #this is what's expensive 
-    mutate(name = trimws(name)) %>%
-    filter(!is.na(name) & name!='') %>%
-    distinct() %>%
-  left_join(geonames %>% dplyr::select(geonameid,feature_code) ) %>% 
-  filter(!feature_code %in% c('HTL','BLDG','AIRP','SEA','HSE'))
-
-
-dim(geonames_idtoname) #605,632    
-
-#Let's do admin0 first
-#this adds wikidata codes to geonames codes
-geonames_admin0 <- geonames_hierarchy_paths %>% dplyr::select(geonameid=V3) %>% distinct() %>% na.omit() %>% left_join(geonames_idtoname) %>% left_join(alternateNamesV2_enwiki %>% dplyr::select(-lang)) %>% distinct() %>% 
-                   mutate(geonameid=as.character(geonameid)) %>%
-                   left_join(wikidata_togeonames_dt %>% dplyr::select(geonameid=geonames, wikidata_id) ) %>% distinct() 
-#this grabs extra labels and aliases
-geonames_admin0 <- bind_rows(
-  geonames_admin0,
-  wikidata_togeonames_dt %>% dplyr::select(geonameid=geonames, wikidata_id, name) %>% inner_join(geonames_admin0 %>% dplyr::select(geonameid) %>% distinct())
-) %>% distinct() %>% #I don't know why we ended up with dupes again but again pick the one with the lowest q code
-  mutate(wikidata_id_numeric= str_replace(wikidata_id,"Q","") %>% as.numeric()) %>% 
-   group_by(name) %>% filter(wikidata_id_numeric==min(wikidata_id_numeric)) %>% ungroup() %>% 
-   arrange(geonameid,feature_code) %>% group_by(geonameid ) %>% fill(feature_code) %>% ungroup() %>% #fill down feature code
-   dplyr::select(-wikidata_id_numeric) %>% distinct()
-
-test <- geonames_admin0 %>% count(name) #ok no dupes now. every name is matched once and only once
-
-geonames_admin1 <- geonames_hierarchy_paths %>% dplyr::select(geonameid0=V3, geonameid1=V4) %>% distinct() %>% na.omit() %>%
-                   left_join(geonames_idtoname %>% dplyr::select(geonameid1=geonameid,name1=name, feature_code1=feature_code)) %>% distinct() %>%  arrange(geonameid0,geonameid1, name1) %>% mutate_if(is.numeric, as.character) %>%
-                   left_join(geonames_admin0 %>% dplyr::select(geonameid0=geonameid,wikidata_id0=wikidata_id)) %>%
-                   left_join(wikidata_togeonames_dt %>% dplyr::select(geonameid1=geonames, wikidata_id1=wikidata_id) ) %>% distinct() 
-geonames_admin1 <- bind_rows(
-  geonames_admin1,
-  wikidata_togeonames_dt %>% dplyr::select(geonameid1=geonames, wikidata_id1=wikidata_id, name1=name) %>% inner_join(geonames_admin1 %>% dplyr::select(geonameid1) %>% distinct())
-) %>% distinct() %>% 
-  
-  #I don't know why we ended up with dupes again but again pick the one with the lowest q code
-
-  mutate(wikidata_id0_numeric= str_replace(wikidata_id0,"Q","") %>% as.numeric())  %>% 
-  group_by(geonameid0,name1) %>% filter(wikidata_id0_numeric==min(wikidata_id0_numeric)) %>% ungroup() %>% 
-  dplyr::select(-wikidata_id0_numeric) %>% distinct()  %>%
-
-  mutate(wikidata_id1_numeric= str_replace(wikidata_id1,"Q","") %>% as.numeric())  %>% 
-  group_by(geonameid0,name1) %>% filter(wikidata_id1_numeric==min(wikidata_id1_numeric)) %>% ungroup() %>% 
-  dplyr::select(-wikidata_id1_numeric) %>% distinct()
-
-test <- geonames_admin1 %>% count(geonameid0,name1) #ok no dupes now. every name is matched once and only once
-
-
-geonames_admin2 <- geonames_hierarchy_paths %>% dplyr::select(geonameid0=V3, geonameid1=V4, geonameid2=V5) %>% distinct() %>% na.omit() %>%
-                    left_join(geonames_idtoname %>% dplyr::select(geonameid2=geonameid,name2=name, feature_code2=feature_code)) %>% distinct() %>%  arrange(geonameid0,geonameid1,geonameid2, name2)
-
-```
-
-
-
-
-Combine countries, geonames, and admin into one admin0
-
-```{r}
-
-#devtools::install_github("moodymudskipper/safejoin")
-library(safejoin)
-
-temp2 <- alternateNamesV2_enwiki %>% count(geonameid)
-
-#gadm36_df = st_read("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSgadm/data_in/gadm36_gpkg/gadm36.gpkg") %>% as.data.frame()
-#gadm36_admin0 <- gadm36_df %>% dplyr::select(gadm36=GID_0, name=NAME_0 ) %>% distinct() %>% mutate(name  = rex_clean(name))
-#  
-geonames_admin0 <- geonames_hierarchy_paths %>% dplyr::select(geonameid=V3) %>% distinct() %>% na.omit() %>% left_join(geonames_idtoname) %>% 
-                   arrange(geonameid, name)  %>% distinct() %>% na.omit()  
-
-admin0 <- geonames_admin0 %>% distinct() %>%
-          safe_full_join(wikidata0_dt %>% distinct(), conflict=NULL ) %>% distinct() %>%  #This pads it out to any that didn't get wikidata codes the first time 
-          safe_full_join(countries_df_unique , conflict=NULL ) %>% distinct() %>% 
-          safe_full_join(wikidata_to_ISO31661_dt %>% dplyr::select(wikidata_id,ISO31661), conflict=coalesce  ) %>% distinct() %>%
-          safe_full_join(wikidata_to_ISO31661_dt %>% dplyr::select(wikidata_id,name), conflict=coalesce  ) %>% distinct() %>% #This pads it out to any that didn't get wikidata codes the first time 
-          mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
-  
-          safe_full_join(wikidata_togeonames_dt %>% dplyr::select(geonameid=geonames, wikidata_id=wikidata_id), by="wikidata_id", conflict = coalesce ) %>% distinct() %>% filter(!is.na(name)) %>% 
-          mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
-  
-          safe_full_join(wikidata_togeonames_dt %>% dplyr::select(geonameid=geonames, wikidata_id=wikidata_id), by="geonameid", conflict = coalesce ) %>% distinct() %>% filter(!is.na(name)) %>%
-          mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
-  
-          #gid
-          arrange(gid,geonameid)    %>% group_by(gid) %>% mutate(temp=geonameid) %>% fill(temp) %>% mutate(geonameid=ifelse(!is.na(gid), temp, geonameid)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid,wikidata_id)    %>% group_by(gid) %>% mutate(temp=wikidata_id) %>% fill(temp) %>% mutate(wikidata_id=ifelse(!is.na(gid), temp, wikidata_id)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid,ISO31661)    %>% group_by(gid) %>% mutate(temp=ISO31661) %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(gid), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid,feature_code)    %>% group_by(gid) %>% mutate(temp=feature_code) %>% fill(temp) %>% mutate(feature_code=ifelse(!is.na(gid), temp, feature_code)) %>% dplyr::select(-temp) %>% ungroup() %>%
-
-          #geoname
-          arrange(geonameid,gid)    %>% group_by(geonameid) %>% mutate(temp=gid) %>% fill(temp) %>% mutate(gid=ifelse(!is.na(geonameid), temp, gid)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid,wikidata_id)    %>% group_by(geonameid) %>% mutate(temp=wikidata_id) %>% fill(temp) %>% mutate(wikidata_id=ifelse(!is.na(geonameid), temp, wikidata_id)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid,ISO31661)    %>% group_by(geonameid) %>% mutate(temp=ISO31661) %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(geonameid), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid,feature_code)    %>% group_by(geonameid) %>% mutate(temp=feature_code) %>% fill(temp) %>% mutate(feature_code=ifelse(!is.na(geonameid), temp, feature_code)) %>% dplyr::select(-temp) %>% ungroup() %>%
-
-          #wikidata_id
-          arrange(wikidata_id,gid)         %>% group_by(wikidata_id) %>% mutate(temp=gid)         %>% fill(temp) %>% mutate(gid=ifelse(!is.na(wikidata_id), temp, gid)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id,ISO31661)    %>% group_by(wikidata_id) %>% mutate(temp=ISO31661)    %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(wikidata_id), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id,feature_code)%>% group_by(wikidata_id) %>% mutate(temp=feature_code)%>% fill(temp) %>% mutate(feature_code=ifelse(!is.na(wikidata_id), temp, feature_code)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id,geonameid)   %>% group_by(wikidata_id) %>% mutate(temp=geonameid)   %>% fill(temp) %>% mutate(geonameid=ifelse(!is.na(wikidata_id), temp, geonameid)) %>% dplyr::select(-temp) %>% ungroup() %>%
-
-          mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
-          rename(admin0_name_clean=name , geonameid0=geonameid , feature_code0=feature_code,wikidata_id0=wikidata_id,  gid0=gid)
-dim(admin0) #15,917
-
-admin0 <- admin0 %>% filter(!geonameid0 %in% c(7729900))
-
-#wikidata on admin1 is a mess so we're joining on geonames code instead
-admin1 <- admin0 %>% dplyr::select(-admin0_name_clean,-feature_code0) %>% distinct() %>% 
-          mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
-  
-          safe_full_join(geonames_admin1 %>% distinct() %>% filter(!is.na(name1))  , conflict = coalesce, by="geonameid0"  )  %>% distinct() %>% 
-          mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
-  
-          safe_full_join(gadm1 %>% distinct()  %>% filter(!is.na(name1)) , conflict = coalesce ) %>% distinct() %>%
-          mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
-  
-          safe_full_join(wikidata_to_ISO31662_dt %>% dplyr::select(wikidata_id1=wikidata_id, ISO31662, name1=name, ISO31661)  %>% distinct() %>% filter(!is.na(name1)) , conflict = coalesce  ) %>% distinct() %>%
-          mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
-  
-          #we can get back some geonames ids from their q codes that aren't in the geonames hierarchy correctly
-          safe_full_join(wikidata_togeonames_dt %>% dplyr::select(geonameid1=geonames, wikidata_id1=wikidata_id), by="wikidata_id1", conflict = coalesce ) %>% distinct() %>% filter(!is.na(name1)) %>% 
-          safe_full_join(wikidata_togeonames_dt %>% dplyr::select(geonameid1=geonames, wikidata_id1=wikidata_id), by="geonameid1", conflict = coalesce ) %>% distinct() %>% filter(!is.na(name1)) %>%
-          mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
-  
-          #Gid  
-          arrange(gid1,gid0)                %>% group_by(gid1) %>% mutate(temp=gid0) %>% fill(temp) %>% mutate(gid0=ifelse(!is.na(gid1), temp, gid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,geonameid0)                %>% group_by(gid1) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(gid1), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,geonameid1)                %>% group_by(gid1) %>% mutate(temp=geonameid1) %>% fill(temp) %>% mutate(geonameid1=ifelse(!is.na(gid1), temp, geonameid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,feature_code1)                %>% group_by(gid1) %>% mutate(temp=feature_code1) %>% fill(temp) %>% mutate(feature_code1=ifelse(!is.na(gid1), temp, feature_code1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,wikidata_id0)                %>% group_by(gid1) %>% mutate(temp=wikidata_id0) %>% fill(temp) %>% mutate(wikidata_id0=ifelse(!is.na(gid1), temp, wikidata_id0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,wikidata_id1)                %>% group_by(gid1) %>% mutate(temp=wikidata_id1) %>% fill(temp) %>% mutate(wikidata_id1=ifelse(!is.na(gid1), temp, wikidata_id1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,ISO31661)                %>% group_by(gid1) %>% mutate(temp=ISO31661) %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(gid1), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,ISO31662)                %>% group_by(gid1) %>% mutate(temp=ISO31662) %>% fill(temp) %>% mutate(ISO31662=ifelse(!is.na(gid1), temp, ISO31662)) %>% dplyr::select(-temp) %>% ungroup() %>%
-
-          #ISO31662
-          arrange(ISO31662,geonameid0)                %>% group_by(ISO31662) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(ISO31662), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31662,geonameid1)                %>% group_by(ISO31662) %>% mutate(temp=geonameid1) %>% fill(temp) %>% mutate(geonameid1=ifelse(!is.na(ISO31662), temp, geonameid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31662,wikidata_id0)                %>% group_by(ISO31662) %>% mutate(temp=wikidata_id0) %>% fill(temp) %>% mutate(wikidata_id0=ifelse(!is.na(ISO31662), temp, wikidata_id0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31662,wikidata_id1)                %>% group_by(ISO31662) %>% mutate(temp=wikidata_id1) %>% fill(temp) %>% mutate(wikidata_id1=ifelse(!is.na(ISO31662), temp, wikidata_id1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31662,gid0)                %>% group_by(ISO31662) %>% mutate(temp=gid0) %>% fill(temp) %>% mutate(gid0=ifelse(!is.na(ISO31662), temp, gid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31662,gid1)                %>% group_by(ISO31662) %>% mutate(temp=gid1) %>% fill(temp) %>% mutate(gid1=ifelse(!is.na(ISO31662), temp, gid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-  
-          #wikidata_id1
-          arrange(wikidata_id1,geonameid0)                %>% group_by(wikidata_id1) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(wikidata_id1), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id1,geonameid1)                %>% group_by(wikidata_id1) %>% mutate(temp=geonameid1) %>% fill(temp) %>% mutate(geonameid1=ifelse(!is.na(wikidata_id1), temp, geonameid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id1,ISO31661)                %>% group_by(wikidata_id1) %>% mutate(temp=ISO31661) %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(wikidata_id1), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id1,ISO31662)                %>% group_by(wikidata_id1) %>% mutate(temp=ISO31662) %>% fill(temp) %>% mutate(ISO31662=ifelse(!is.na(wikidata_id1), temp, ISO31662)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id1,gid0)                %>% group_by(wikidata_id1) %>% mutate(temp=gid0) %>% fill(temp) %>% mutate(gid0=ifelse(!is.na(wikidata_id1), temp, gid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id1,gid1)                %>% group_by(wikidata_id1) %>% mutate(temp=gid1) %>% fill(temp) %>% mutate(gid1=ifelse(!is.na(wikidata_id1), temp, gid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-  
-          #ISO31661
-          arrange(ISO31661,geonameid0)                %>% group_by(ISO31661) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(ISO31661), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31661,gid0)                %>% group_by(ISO31661) %>% mutate(temp=gid0) %>% fill(temp) %>% mutate(gid0=ifelse(!is.na(ISO31661), temp, gid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31661,wikidata_id0)                %>% group_by(ISO31661) %>% mutate(temp=wikidata_id0) %>% fill(temp) %>% mutate(wikidata_id0=ifelse(!is.na(ISO31661), temp, wikidata_id0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-
-          #geonames
-          #it's using NA as a grouping variable which is not what we want
-          arrange(geonameid1,gid0)                %>% group_by(geonameid1) %>% mutate(temp=gid0) %>% fill(temp) %>% mutate(gid0=ifelse(!is.na(geonameid1), temp, gid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid1,gid1)                %>% group_by(geonameid1) %>% mutate(temp=gid1) %>% fill(temp) %>% mutate(gid1=ifelse(!is.na(geonameid1), temp, gid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-  
-          arrange(geonameid1,wikidata_id0)        %>% group_by(geonameid1) %>% mutate(temp=wikidata_id0) %>% fill(temp) %>% mutate(wikidata_id0=ifelse(!is.na(geonameid1), temp, wikidata_id0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid1,wikidata_id1)        %>% group_by(geonameid1) %>% mutate(temp=wikidata_id1) %>% fill(temp) %>% mutate(wikidata_id1=ifelse(!is.na(geonameid1), temp, wikidata_id1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid1,ISO31661)            %>% group_by(geonameid1) %>% mutate(temp=ISO31661) %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(geonameid1), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid1,ISO31662)            %>% group_by(geonameid1) %>% mutate(temp=ISO31662) %>% fill(temp) %>% mutate(ISO31662=ifelse(!is.na(geonameid1), temp, ISO31662)) %>% dplyr::select(-temp) %>% ungroup() %>%
-
-          #level0
-          arrange(gid0,geonameid0)                %>% group_by(gid0) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(gid0), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,ISO31661)                %>% group_by(gid0) %>% mutate(temp=ISO31661) %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(ISO31661), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,wikidata_id0)                %>% group_by(gid0) %>% mutate(temp=wikidata_id0) %>% fill(temp) %>% mutate(wikidata_id0=ifelse(!is.na(gid0), temp, wikidata_id0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-  
-          #some of these names are dupes and we can group by that now and go down
-          filter(!is.na(name1)) %>% #make sure again that all the names are the
-          arrange(gid0,name1,geonameid0)        %>% group_by(gid0,name1) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(gid0), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-  
-          arrange(gid0,name1,gid1)                %>% group_by(gid0,name1) %>% mutate(temp=gid1) %>% fill(temp) %>% mutate(gid1=ifelse(!is.na(gid1), temp, gid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,geonameid0)                %>% group_by(gid0,name1) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(gid0), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,geonameid1)                %>% group_by(gid0,name1) %>% mutate(temp=geonameid1) %>% fill(temp) %>% mutate(geonameid1=ifelse(!is.na(gid0), temp, geonameid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,feature_code1)                %>% group_by(gid0,name1) %>% mutate(temp=feature_code1) %>% fill(temp) %>% mutate(feature_code1=ifelse(!is.na(gid0), temp, feature_code1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,wikidata_id0)                %>% group_by(gid0,name1) %>% mutate(temp=wikidata_id0) %>% fill(temp) %>% mutate(wikidata_id0=ifelse(!is.na(gid0), temp, wikidata_id0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,wikidata_id1)                %>% group_by(gid0,name1) %>% mutate(temp=wikidata_id1) %>% fill(temp) %>% mutate(wikidata_id1=ifelse(!is.na(gid0), temp, wikidata_id1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,ISO31661)                %>% group_by(gid0,name1) %>% mutate(temp=ISO31661) %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(gid0), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,ISO31662)                %>% group_by(gid0,name1) %>% mutate(temp=ISO31662) %>% fill(temp) %>% mutate(ISO31662=ifelse(!is.na(gid0), temp, ISO31662)) %>% dplyr::select(-temp) %>% ungroup() %>%
-
-  
-          #do geonames again
-          #it's using NA as a grouping variable which is not what we want
-          arrange(geonameid1,gid0)                %>% group_by(geonameid1) %>% mutate(temp=gid0) %>% fill(temp) %>% mutate(gid0=ifelse(!is.na(geonameid1), temp, gid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid1,gid1)                %>% group_by(geonameid1) %>% mutate(temp=gid1) %>% fill(temp) %>% mutate(gid1=ifelse(!is.na(geonameid1), temp, gid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-  
-          arrange(geonameid1,wikidata_id0)        %>% group_by(geonameid1) %>% mutate(temp=wikidata_id0) %>% fill(temp) %>% mutate(wikidata_id0=ifelse(!is.na(geonameid1), temp, wikidata_id0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid1,wikidata_id1)        %>% group_by(geonameid1) %>% mutate(temp=wikidata_id1) %>% fill(temp) %>% mutate(wikidata_id1=ifelse(!is.na(geonameid1), temp, wikidata_id1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid1,ISO31661)            %>% group_by(geonameid1) %>% mutate(temp=ISO31661) %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(geonameid1), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid1,ISO31662)            %>% group_by(geonameid1) %>% mutate(temp=ISO31662) %>% fill(temp) %>% mutate(ISO31662=ifelse(!is.na(geonameid1), temp, ISO31662)) %>% dplyr::select(-temp) %>% ungroup() %>%
-
-  
-            #Gid  
-          arrange(gid1,gid0)                %>% group_by(gid1) %>% mutate(temp=gid0) %>% fill(temp) %>% mutate(gid0=ifelse(!is.na(gid1), temp, gid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,geonameid0)                %>% group_by(gid1) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(gid1), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,geonameid1)                %>% group_by(gid1) %>% mutate(temp=geonameid1) %>% fill(temp) %>% mutate(geonameid1=ifelse(!is.na(gid1), temp, geonameid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,feature_code1)                %>% group_by(gid1) %>% mutate(temp=feature_code1) %>% fill(temp) %>% mutate(feature_code1=ifelse(!is.na(gid1), temp, feature_code1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,wikidata_id0)                %>% group_by(gid1) %>% mutate(temp=wikidata_id0) %>% fill(temp) %>% mutate(wikidata_id0=ifelse(!is.na(gid1), temp, wikidata_id0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,wikidata_id1)                %>% group_by(gid1) %>% mutate(temp=wikidata_id1) %>% fill(temp) %>% mutate(wikidata_id1=ifelse(!is.na(gid1), temp, wikidata_id1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,ISO31661)                %>% group_by(gid1) %>% mutate(temp=ISO31661) %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(gid1), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid1,ISO31662)                %>% group_by(gid1) %>% mutate(temp=ISO31662) %>% fill(temp) %>% mutate(ISO31662=ifelse(!is.na(gid1), temp, ISO31662)) %>% dplyr::select(-temp) %>% ungroup() %>%
-
-          #ISO31662
-          arrange(ISO31662,geonameid0)                %>% group_by(ISO31662) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(ISO31662), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31662,geonameid1)                %>% group_by(ISO31662) %>% mutate(temp=geonameid1) %>% fill(temp) %>% mutate(geonameid1=ifelse(!is.na(ISO31662), temp, geonameid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31662,wikidata_id0)                %>% group_by(ISO31662) %>% mutate(temp=wikidata_id0) %>% fill(temp) %>% mutate(wikidata_id0=ifelse(!is.na(ISO31662), temp, wikidata_id0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31662,wikidata_id1)                %>% group_by(ISO31662) %>% mutate(temp=wikidata_id1) %>% fill(temp) %>% mutate(wikidata_id1=ifelse(!is.na(ISO31662), temp, wikidata_id1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31662,gid0)                %>% group_by(ISO31662) %>% mutate(temp=gid0) %>% fill(temp) %>% mutate(gid0=ifelse(!is.na(ISO31662), temp, gid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31662,gid1)                %>% group_by(ISO31662) %>% mutate(temp=gid1) %>% fill(temp) %>% mutate(gid1=ifelse(!is.na(ISO31662), temp, gid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-  
-          #wikidata_id1
-          arrange(wikidata_id1,geonameid0)                %>% group_by(wikidata_id1) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(wikidata_id1), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id1,geonameid1)                %>% group_by(wikidata_id1) %>% mutate(temp=geonameid1) %>% fill(temp) %>% mutate(geonameid1=ifelse(!is.na(wikidata_id1), temp, geonameid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id1,ISO31661)                %>% group_by(wikidata_id1) %>% mutate(temp=ISO31661) %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(wikidata_id1), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id1,ISO31662)                %>% group_by(wikidata_id1) %>% mutate(temp=ISO31662) %>% fill(temp) %>% mutate(ISO31662=ifelse(!is.na(wikidata_id1), temp, ISO31662)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id1,gid0)                %>% group_by(wikidata_id1) %>% mutate(temp=gid0) %>% fill(temp) %>% mutate(gid0=ifelse(!is.na(wikidata_id1), temp, gid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(wikidata_id1,gid1)                %>% group_by(wikidata_id1) %>% mutate(temp=gid1) %>% fill(temp) %>% mutate(gid1=ifelse(!is.na(wikidata_id1), temp, gid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-  
-          #ISO31661
-          arrange(ISO31661,geonameid0)                %>% group_by(ISO31661) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(ISO31661), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31661,gid0)                %>% group_by(ISO31661) %>% mutate(temp=gid0) %>% fill(temp) %>% mutate(gid0=ifelse(!is.na(ISO31661), temp, gid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(ISO31661,wikidata_id0)                %>% group_by(ISO31661) %>% mutate(temp=wikidata_id0) %>% fill(temp) %>% mutate(wikidata_id0=ifelse(!is.na(ISO31661), temp, wikidata_id0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-
-          #geonames
-          #it's using NA as a grouping variable which is not what we want
-          arrange(geonameid1,gid0)                %>% group_by(geonameid1) %>% mutate(temp=gid0) %>% fill(temp) %>% mutate(gid0=ifelse(!is.na(geonameid1), temp, gid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid1,gid1)                %>% group_by(geonameid1) %>% mutate(temp=gid1) %>% fill(temp) %>% mutate(gid1=ifelse(!is.na(geonameid1), temp, gid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-  
-          arrange(geonameid1,wikidata_id0)        %>% group_by(geonameid1) %>% mutate(temp=wikidata_id0) %>% fill(temp) %>% mutate(wikidata_id0=ifelse(!is.na(geonameid1), temp, wikidata_id0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid1,wikidata_id1)        %>% group_by(geonameid1) %>% mutate(temp=wikidata_id1) %>% fill(temp) %>% mutate(wikidata_id1=ifelse(!is.na(geonameid1), temp, wikidata_id1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid1,ISO31661)            %>% group_by(geonameid1) %>% mutate(temp=ISO31661) %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(geonameid1), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(geonameid1,ISO31662)            %>% group_by(geonameid1) %>% mutate(temp=ISO31662) %>% fill(temp) %>% mutate(ISO31662=ifelse(!is.na(geonameid1), temp, ISO31662)) %>% dplyr::select(-temp) %>% ungroup() %>%
-
-  
-          #some of these names are dupes and we can group by that now and go down
-          filter(!is.na(name1)) %>% #make sure again that all the names are the
-          arrange(gid0,name1,geonameid0)        %>% group_by(gid0,name1) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(gid0), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-  
-          arrange(gid0,name1,gid1)                %>% group_by(gid0,name1) %>% mutate(temp=gid1) %>% fill(temp) %>% mutate(gid1=ifelse(!is.na(gid1), temp, gid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,geonameid0)                %>% group_by(gid0,name1) %>% mutate(temp=geonameid0) %>% fill(temp) %>% mutate(geonameid0=ifelse(!is.na(gid0), temp, geonameid0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,geonameid1)                %>% group_by(gid0,name1) %>% mutate(temp=geonameid1) %>% fill(temp) %>% mutate(geonameid1=ifelse(!is.na(gid0), temp, geonameid1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,feature_code1)                %>% group_by(gid0,name1) %>% mutate(temp=feature_code1) %>% fill(temp) %>% mutate(feature_code1=ifelse(!is.na(gid0), temp, feature_code1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,wikidata_id0)                %>% group_by(gid0,name1) %>% mutate(temp=wikidata_id0) %>% fill(temp) %>% mutate(wikidata_id0=ifelse(!is.na(gid0), temp, wikidata_id0)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,wikidata_id1)                %>% group_by(gid0,name1) %>% mutate(temp=wikidata_id1) %>% fill(temp) %>% mutate(wikidata_id1=ifelse(!is.na(gid0), temp, wikidata_id1)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,ISO31661)                %>% group_by(gid0,name1) %>% mutate(temp=ISO31661) %>% fill(temp) %>% mutate(ISO31661=ifelse(!is.na(gid0), temp, ISO31661)) %>% dplyr::select(-temp) %>% ungroup() %>%
-          arrange(gid0,name1,ISO31662)                %>% group_by(gid0,name1) %>% mutate(temp=ISO31662) %>% fill(temp) %>% mutate(ISO31662=ifelse(!is.na(gid0), temp, ISO31662)) %>% dplyr::select(-temp) %>% ungroup() %>%
-  
-          rename(admin1_name_clean=name1) %>% distinct() %>%
-          mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character)
-dim(admin1) #46,380 #43,710 #43828 #46,744
-sapply(admin1, function(x) sum(is.na(x))) #That gets the missing down even more.
-
-admin2 <- geonames_admin2 %>% left_join(admin1 %>% dplyr::select(-admin1_name_clean,-feature_code1) %>% distinct()) %>% 
-          full_join(gadm2 ) %>% distinct() %>%
-          arrange(geonameid0, geonameid1,geonameid2,gid0,gid1,gid2) %>% group_by(geonameid0,  geonameid1,  geonameid2 ) %>% fill(gid0,gid1,gid2) %>% ungroup() %>%
-          arrange(gid0,gid1,gid2,geonameid0, geonameid1, geonameid2) %>% group_by(gid0,gid1,gid2 ) %>% fill(geonameid0,geonameid1,geonameid2, feature_code2) %>% ungroup() %>%
-          distinct() %>%
-          rename(admin2_name_clean=name2)
-dim(admin2) #270,328
-
-```
-
-
-
-```{r}
-
-#library(cld3)
-#geonames_idtoname <- geonames_idtoname %>% mutate(lang= detect_language(name ) )
-#sample <- geonames_idtoname %>% group_by(lang) %>% filter(row_number()<=10) %>% ungroup() %>% arrange(lang, name)
-#nonlatin <- c( 'hy', 'bn', 'gu', 'hi', 'hy', 'iw', 'ka', 'km', 'kn', 'lo', 'ml', 'my', 'pa', 'ps', 'si', 'ta', 'te', 'th', 'ur','yi')
-#geonames_idtoname_latin <- geonames_idtoname %>% filter(!lang %in% nonlatin)
-#dim(geonames_idtoname_latin)
-
-#We should kill off others that are nonenglish
-#geonames_idtoname_latin_clean_unique <- geonames_idtoname_latin_clean %>% dplyr::select(geonameid, feature_code, name_clean) %>% distinct()
-#dim(geonames_idtoname_latin_clean_unique) #1,024,714
-
-
-dim(geonames_hierarchy_paths)
-geonames_hierarchy_paths_labeled <- geonames_hierarchy_paths %>% 
-                                    #left_join(geonames_idtoname %>% dplyr::select(V1=geonameid, name1=name, feature_code1=feature_code)) %>% 
-                                    #left_join(geonames_idtoname %>% dplyr::select(V2=geonameid, name2=name, feature_code2=feature_code)) %>% #ignore anything above country
-                                    left_join(geonames %>% dplyr::select(V3=geonameid, name3=name, feature_code3=feature_code)) %>%
-                                    left_join(geonames %>% dplyr::select(V4=geonameid, name4=name, feature_code4=feature_code)) %>%
-                                    left_join(geonames %>% dplyr::select(V5=geonameid, name5=name, feature_code5=feature_code)) %>%
-                                    left_join(geonames %>% dplyr::select(V6=geonameid, name6=name, feature_code6=feature_code)) %>%
-                                    left_join(geonames %>% dplyr::select(V7=geonameid, name7=name, feature_code7=feature_code)) %>%
-                                    left_join(geonames %>% dplyr::select(V8=geonameid, name8=name, feature_code8=feature_code)) %>%
-                                    left_join(geonames %>% dplyr::select(V9=geonameid, name9=name, feature_code9=feature_code)) %>%
-                                    left_join(geonames %>% dplyr::select(V10=geonameid, name10=name, feature_code10=feature_code))
-
-dim(geonames_hierarchy_paths_labeled)  #308,797
-
-
-
-temp10 <- geonames_hierarchy_paths_labeled %>% filter(!is.na(V10)) %>%  mutate(geonameid=V10, name=paste(name3,name4,name5,name6,name7,name8,name9,name10,sep="_"), feature_code=feature_code10) %>% dplyr::select(geonameid, name, feature_code) %>% distinct()
-temp9 <- geonames_hierarchy_paths_labeled %>% filter(!is.na(V9) & !is.na(V10)) %>%  mutate(geonameid=V9, name=paste(name3,name4,name5,name6,name7,name8,name9,sep="_"), feature_code=feature_code9) %>% dplyr::select(geonameid, name, feature_code) %>% distinct()
-temp8 <- geonames_hierarchy_paths_labeled %>% filter(!is.na(V8) & !is.na(V9)) %>%  mutate(geonameid=V8, name=paste(name3,name4,name5,name6,name7,name8,sep="_"), feature_code=feature_code8) %>% dplyr::select(geonameid, name, feature_code) %>% distinct()
-temp7 <- geonames_hierarchy_paths_labeled %>% filter(!is.na(V7) & !is.na(V8)) %>%  mutate(geonameid=V7, name=paste(name3,name4,name5,name6,name7,sep="_"), feature_code=feature_code7) %>% dplyr::select(geonameid, name, feature_code) %>% distinct()
-temp6 <- geonames_hierarchy_paths_labeled %>% filter(!is.na(V6) & !is.na(V7)) %>%  mutate(geonameid=V6, name=paste(name3,name4,name5,name6,sep="_"), feature_code=feature_code6) %>% dplyr::select(geonameid, name, feature_code) %>% distinct()
-temp5 <- geonames_hierarchy_paths_labeled %>% filter(!is.na(V5) & !is.na(V6)) %>%  mutate(geonameid=V5, name=paste(name3,name4,name5,sep="_"), feature_code=feature_code5) %>% dplyr::select(geonameid, name, feature_code) %>% distinct()
-temp4 <- geonames_hierarchy_paths_labeled %>% filter(!is.na(V4) & !is.na(V5)) %>%  mutate(geonameid=V4, name=paste(name3,name4,sep="_"), feature_code=feature_code4) %>% dplyr::select(geonameid, name, feature_code) %>% distinct()
-temp3 <- geonames_hierarchy_paths_labeled %>% filter(!is.na(V3) & !is.na(V3)) %>%  mutate(geonameid=V3, name=paste(name3,sep="_"), feature_code=feature_code3) %>% dplyr::select(geonameid, name, feature_code) %>% distinct()
-
-
-
-
-admin1CodesASCII <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin1CodesASCII.txt", sep="\t")
-names(admin1CodesASCII) <- c('code', 'name', 'name ascii', 'geonameid')
-
-admin2Codes <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin2Codes.txt", sep="\t")
-names(admin2Codes) <- c('code', 'name', 'name ascii', 'geonameid')
-
-admin1CodesASCII_long <- admin1CodesASCII %>% dplyr::select(code1=code , name) %>% mutate(name=rex_clean(name))
-admin2Codes_long <- admin2Codes %>% dplyr::select(code2=code , name) %>% mutate(name=rex_clean(name))
-
-geonames_p %>% dplyr::select(geonameid,country_code,admin1,admin2)
-
-countryInfo <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/countryInfo.txt", sep="\t", skip=49)
-names(countryInfo)[1] <- "ISO"
-
-geonames_p <- geonames_p %>% 
-              mutate(code1= paste0(country_code,".", admin1) ) %>%
-              mutate(code1= paste0(country_code,".", admin1) ) %>%
-              left_join(countryInfo %>% dplyr::select(country_code=ISO, admin0_name=Country))
-
-
-```
-
-Google maps
+## Google maps
 
 ```{r}
 #install.packages("mapsapi")
@@ -861,33 +86,6 @@ Google maps
 #doc = mp_geocode(addresses = "Tel-Aviv", key=) #couldn't get this to work with my api key. intentionally leaving it out here so I don't push it accidentally
 
 ```
-
-
-# Introduction
-
-Measurement is not reality
-Correlation is not causation
-Scale
-
-ratios are the worst
-
-How should we responsibly use COVID-19 counts? 
-
-We want to know in a given population, how many people at some point have had COVID-19 and could have spread it to others. This is an unobserved latent variable.
-
-Tests provide some information. 
-There's some selection process by which a person from the population self selects and is selected to be tested. That test then has some true positive and true negative rate (and false positive and false negative rate).
-
-Assume that more severe cases die. And more severe cases get tested.
-
-Deaths provide some information. Assume a death implies a test with the same rates as the above. Might want to question that, there's some attribution process by which a death is either attributed to COVID or not. Some deaths are happening outside of the medical system and not getting tested or attributed to COVID.
-
-So tests are at best a lower bound for how many in the population have the disease.
-
-What do we learn from negative tests? Very crudely it could be how many people don't have COVID, which could be an upper bound on the number of infected. But it's out of date almost immediately, because all of those people could get infected tomorrow.
-
-
-
 
 # LHS
 
@@ -911,6 +109,113 @@ https://www.medrxiv.org/content/10.1101/2020.04.01.20050542v1
 
 https://www.economist.com/graphic-detail/2020/04/11/why-a-study-showing-that-covid-19-is-everywhere-is-good-news?fsrc=scn%2Ftw%2Fte%2Fbl%2Fed%2Ffootprintsoftheinvisibleenemywhyastudyshowingthatcovid19iseverywhereisgoodnewsgraphicdetail&%3Ffsrc%3Dscn%2F=tw%2Fdc
 
+## ECDC
+https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
+
+Country level
+
+```{r}
+
+#these libraries need to be loaded
+library(utils)
+#read the Dataset sheet into “R”. The dataset will be called "data".
+ecdc <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM")
+
+ecdc_log <- ecdc %>% 
+  mutate(date_asdate = dmy(dateRep)) %>%
+  mutate(dataset="ecdc") %>% 
+  
+  mutate(admin0_name_clean=countriesAndTerritories %>% rex_clean()) %>%
+  mutate(admin1_name_clean='') %>%
+  mutate(admin2_name_clean='') %>%
+  rex_admin_function() %>%
+  group_by(gid, geonameid,wikidata_id) %>% arrange(date_asdate) %>%
+  mutate(confirmed=cumsum(cases),
+         deaths=cumsum(deaths)) %>%
+  ungroup()
+
+forjoining_ecdc <- ecdc_log %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate, confirmed, deaths)
+
+
+```
+
+
+## India
+https://api.covid19india.org/
+https://docs.google.com/spreadsheets/d/e/2PACX-1vSc_2y5N0I67wDU38DjDh35IZSIS30rQf7_NYZhtYYGU1jJYT6_kDx4YpF-qw0LSlGsBYP8pqM_a1Pd/pubhtml#
+https://github.com/covid19india/api/blob/master/state_test_data.json
+
+
+https://github.com/amodm/api-covid19-in
+
+
+```{r}
+#Couldn't get any of this to work
+#library(googlesheets4)
+#temp <- read_csv("http://api.covid19india.org/states_daily_csv/confirmed.csv")
+#temp <- read_sheet("https://docs.google.com/spreadsheets/d/e/2PACX-1vSc_2y5N0I67wDU38DjDh35IZSIS30rQf7_NYZhtYYGU1jJYT6_kDx4YpF-qw0LSlGsBYP8pqM_a1Pd/pubhtml#")
+#install.packages('gsheet')
+#library(gsheet)
+
+#The test data is pushed as a json file here but it's not historical
+#https://github.com/covid19india/api/blob/master/state_test_data.json
+covid19india_test <- fromJSON("https://raw.githubusercontent.com/covid19india/api/master/state_test_data.json")$states_tested_data
+saveRDS(covid19india_test, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/covid19india_test_latest_" %>% paste0(Sys.Date(),".Rds")   ) #start saving dayly snapshots that we can add to the pile
+
+covid19india_test_long <- covid19india_test %>% 
+                          mutate(date_asdate = dmy(updatedon )) %>%
+                          mutate(admin0_name_clean="India" %>% rex_clean()) %>%
+                          mutate(admin1_name_clean= state %>% rex_clean()) %>%
+                          mutate(admin2_name_clean= "" %>% rex_clean()) %>%
+                          mutate(totaltested=as.numeric(totaltested)) %>%
+                          dplyr::select(date_asdate, admin0_name_clean, admin1_name_clean, admin2_name_clean, tested_people=totaltested)
+                          
+  
+#construct_download_url(url="https://docs.google.com/spreadsheets/d/e/2PACX-1vSc_2y5N0I67wDU38DjDh35IZSIS30rQf7_NYZhtYYGU1jJYT6_kDx4YpF-qw0LSlGsBYP8pqM_a1Pd/pubhtml#", format = "csv", sheetid = 1)
+#temp < gsheet2tbl(url="https://docs.google.com/spreadsheets/d/e/2PACX-1vSc_2y5N0I67wDU38DjDh35IZSIS30rQf7_NYZhtYYGU1jJYT6_kDx4YpF-qw0LSlGsBYP8pqM_a1Pd/pubhtml#", sheetid = 1)
+library(jsonlite)
+rootnet_case_json <- fromJSON("https://api.rootnet.in/covid19-in/stats/history")
+for(i in 1:length(rootnet_case_json$data$regional)){
+  rootnet_case_json$data$regional[[i]]$day <- rootnet_case_json$data$day[i]
+}
+rootnet_cases_regional <- bind_rows(rootnet_case_json$data$regional)
+rootnet_cases_regional <- rootnet_cases_regional  %>%
+                           mutate(admin0_name_clean="India" %>% rex_clean()) %>%
+                           mutate(admin1_name_clean= loc %>% rex_clean()) %>%
+                           mutate(admin2_name_clean= "" %>% rex_clean())
+
+rootnet_cases_national <- rootnet_case_json$data$summary
+rootnet_cases_national$day <- rootnet_case_json$data$day
+
+#This is just national testing
+rootnet_testing <- fromJSON("https://api.rootnet.in/covid19-in/stats/testing/history")$data
+
+rootnet_national <- rootnet_testing %>%
+                     full_join(rootnet_cases_national) %>%
+                     mutate(admin0_name_clean="India" %>% rex_clean()) %>%
+                     mutate(admin1_name_clean= "" %>% rex_clean()) %>%
+                     mutate(admin2_name_clean= "" %>% rex_clean()) 
+
+covid19india_long <- bind_rows(
+                rootnet_national %>% rename(tested_samples=totalSamplesTested, tested_people=totalIndividualsTested) %>% mutate(date_asdate = ymd(day )),
+                rootnet_cases_regional %>% mutate(date_asdate = ymd(day )) %>% full_join(covid19india_test_long %>% distinct()) 
+                ) %>%
+                mutate(dataset="covid19india") %>%
+                rex_admin_function()
+
+forjoining_covid19india <- rootnet_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate,
+                                                     tested_samples,
+                                                     tested_people,
+                                                     confirmed=total,
+                                                     deaths=deaths
+                                                     )
+
+dim(forjoining_covid19india) #946
+
+
+```
+
+
 ## Bing
 
 ```{r}
@@ -919,18 +224,30 @@ library(jsonlite)
 #library(rjson)
 #tmp2 <- tempfile()
 #curl_download("https://bing.com/covid/data", tmp2)
-bing <- fromJSON("https://bing.com/covid/data")
-#https://www.bing.com/covid/local/unitedstates
+bing1 <- fromJSON("https://web.archive.org/web/20200407032518if_/https://bing.com/covid/data")
+bing2 <-  fromJSON("https://web.archive.org/web/20200414040859if_/https://bing.com/covid/data")
+bing3 <- fromJSON("https://web.archive.org/web/20200331030201if_/https://bing.com/covid/data")
+bing_latest <- fromJSON("https://bing.com/covid/data")
+saveRDS(bing_latest, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/bing_latest_" %>% paste0(Sys.Date(),".Rds")   ) #start saving dayly snapshots that we can add to the pile
+areas <- bind_rows(
+  bing1$areas,
+  bing2$areas,
+  bing3$areas,
+  bing_latest$areas,
+)
 
-bing_df0 <- bind_rows(bing$areas) %>% mutate(admin0_name_original=displayName)
-dim(bing_df0) #209  13
+temp1 <- bing1$areas %>% dplyr::select(-areas)
+temp2 <- bing2$areas %>% dplyr::select(-areas)
+temp3 <- bing3$areas %>% dplyr::select(-areas)
+temp4 <- bing_latest$areas %>% dplyr::select(-areas)
 
-bing_df1 <- bind_rows(bing_df0$areas) %>% mutate(admin1_name_original=displayName) %>% left_join(bing_df0 %>% dplyr::select(parentId=id, admin0_name_original=displayName))
+bing_df0 <- bind_rows(areas) %>% mutate(admin0_name_original=id)
+dim(bing_df0) #835 14
+
+bing_df1 <- bind_rows(bing_df0$areas) %>% separate(id, c("admin1_name_original", "admin0_name_original")) 
 dim(bing_df1) #753  13
 
-bing_df2 <- bind_rows(bing_df1$areas) %>% mutate(admin2_name_original=displayName) %>% 
-            left_join(bing_df1 %>% dplyr::select(parentId=id, admin1_name_original=displayName)) %>%
-            left_join(bing_df1 %>% dplyr::select(admin1_name_original,admin0_name_original))
+bing_df2 <- bind_rows(bing_df1$areas) %>% separate(id, c("admin2_name_original","admin1_name_original", "admin0_name_original")) 
 dim(bing_df2) #2872   13
 
 bing_long <- bind_rows(
@@ -939,24 +256,24 @@ bing_long <- bind_rows(
           bing_df2 %>% dplyr::select(-areas)
 ) %>% 
   mutate(date_asdate = ymd(substring(lastUpdated,1,10))) %>%
+  mutate(date_asdate = date_asdate-1 ) %>% #BING data are one day behind other data, subtract a day off
+  
   mutate(dataset="bing") %>% 
   
   mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
   mutate(admin0_name_clean=str_replace(admin0_name_clean,"chinamainland","china")) %>%
-
   mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
-
-  
   mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
-  
-  left_join(admin0 ) %>%
-  left_join(admin1 )  %>%
-  left_join(admin2 ) 
+  rex_admin_function()
 
+forjoining_bing <- bing_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate, confirmed=totalConfirmed, deaths=totalDeaths)
+dim(forjoining_bing)
 
-dim(bing_long)
+#Some of these are wrong
+#russia khanty mansi  is a second level administrative division, it and a bunch of other ones from russia are listed as first order
 
-#temp <- bing_long %>% dplyr::select(admin0_name_clean,admin1_name_clean,admin2_name_clean,gid0,gid1,gid2) %>% distinct()
+#other are ambigious like
+#Russia Voronezh might either be the city or the Oblast
 
 ```
 
@@ -966,19 +283,22 @@ dim(bing_long)
 WHO <- read_csv(url("https://raw.githubusercontent.com/datasets/covid-19/master/data/countries-aggregated.csv")) 
 
 who_long <- WHO %>%
-            mutate(dataset="bing") %>%
+            mutate(dataset="who") %>%
             mutate(admin0_name_original=Country) %>%
             mutate(date_asdate = ymd(Date)) %>% 
             rename(confirmed=Confirmed  , deaths=Deaths)  %>%
   
              mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
-              left_join(admin0 ) %>%
-              left_join(admin1 )  %>%
-              left_join(admin2 ) 
+             mutate(admin1_name_clean='') %>%
+             mutate(admin2_name_clean='') %>% #you have to remember to put NAs or you'll accidentally over join
+             rex_admin_function()
+
+forjoining_who <- who_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=deaths)
 
 ```
 
 ## CSSEGISandData
+Johns Hopkins
 
 ```{r, echo=F, message=FALSE, results = FALSE, warning=FALSE}
 
@@ -1003,9 +323,20 @@ CSSE_long <- bind_rows(CSSE_us_long, CSSE_global_long) %>%
               mutate(date_asdate = mdy(str_replace(date,"20$","2020"))) %>%
 
               mutate(admin0_name_clean=admin0_name_original %>% rex_clean())  %>%
-              left_join(admin0 ) %>%
-              left_join(admin1 ) %>%
-              left_join(admin2 ) 
+              mutate(admin1_name_clean=admin1_name_original %>% rex_clean())  %>%
+              mutate(admin2_name_clean=admin2_name_original %>% rex_clean())  %>%
+              rex_admin_function() %>%
+              distinct()
+
+test <- CSSE_long %>% group_by(dataset, gid, geonameid, wikidata_id, date_asdate) %>% mutate(n=n()) %>% ungroup() #the dupes are coming either from NA location/date info or deaths and confirmed appearing as two seperate records
+
+
+forjoining_CSSE <- CSSE_long %>% 
+                   dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=deaths) %>%
+                   group_by(dataset, gid, geonameid, wikidata_id,date_asdate) %>% summarize(confirmed=max(confirmed, na.rm=T), deaths=max(deaths, na.rm=T))
+
+test <- forjoining_CSSE %>% group_by(dataset, gid, geonameid, wikidata_id, date_asdate) %>% mutate(n=n()) %>% ungroup() #the dupes are coming either from NA location/date info or deaths and confirmed appearing as two seperate records
+
 
 ```
 
@@ -1030,19 +361,11 @@ nytimes_long <- nytimes %>%
                 mutate(admin0_name_clean=str_replace(admin0_name_clean,"chinamainland","china")) %>%
               
                 mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
-                mutate(admin1_name_clean= ifelse(!is.na(admin1_name_clean) & admin1_name_clean !='', 
-                                          paste0(admin0_name_clean,"_",admin1_name_clean),
-                                          NA)
-                       ) %>%
-                
+
                 mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
-                mutate(admin2_name_clean= ifelse(!is.na(admin2_name_clean) & admin2_name_clean !='', 
-                                          paste0(admin1_name_clean,"_",admin2_name_clean),
-                                          NA)
-                       )  %>%
-              left_join(admin0 ) %>%
-              left_join(admin1 ) %>%
-              left_join(admin2 ) 
+               rex_admin_function()
+
+forjoining_nytimes <- nytimes_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=deaths)
 
 ```
 
@@ -1062,48 +385,27 @@ dim(covidtracking) #1653   25
 covidtracking_t <- t(covidtracking)
 
 covidtracking_long <- covidtracking %>%
+
                       mutate(date_asdate = ymd(date)) %>% 
                       rename(state_abbr=state) %>%
                       left_join(state_codes) %>% 
                       dplyr::select(date_asdate, state_name, state_abbr, positive, negative, death) %>%
+                      mutate(dataset="covidtracking") %>%
                       mutate(admin0_name_original="United States") %>%
                       mutate(admin1_name_original=state_name)  %>%
-                      left_join(admin0 ) %>%
-                      left_join(admin1 ) %>%
-                      left_join(admin2 ) 
-
-```
-
-### wikipedia
-
-```{r}
-
-#https://rviews.rstudio.com/2020/03/05/covid-19-epidemiology-with-r/
-library(rvest)
-wp_page_url = "https://en.wikipedia.org/wiki/COVID-19_testing"
-testing_webpage <- read_html(wp_page_url)
-
-# parse the web page and extract the data from the eighth
-# table
-testing_tables <- testing_webpage %>% html_nodes("table") %>%  html_table(fill = TRUE)
-lapply(testing_tables, colnames)
-
-wikipedia_tests <- testing_tables[[4]] 
-
-data(codelist)
-countries_for_matching <- codelist %>% unlist() %>% unique() %>% sort()
-wikipedia_tests_long <- wikipedia_tests %>% 
-                        mutate(date_asdate = dmy(paste( `As of`, ", 2020" )   )) %>% 
-                        mutate(tests=str_replace(Tests, ",","")) %>%
-                        mutate(confirmed=str_replace(Positive, ",","")) %>% 
-                        rename(text=`Country or region`) %>%
-                        mutate(text=trimws(str_replace(text,"\\(unofficial\\)",""))) %>%
-                        mutate(is_country = text %in% countries_for_matching) %>%
-                        mutate(admin0_name_original = ifelse(is_country,text, NA  )) %>%
-                        fill(admin0_name_original) %>%
-                        mutate(admin1_name_original = ifelse(!is_country,text, NA  )   ) 
+                      mutate(admin2_name_original='')  %>%
   
+                      mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                      mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                      mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                      rex_admin_function()
+
+forjoining_covidtracking <- covidtracking_long %>%
+                            mutate(tested_people=negative+positive) %>%
+                            dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=positive, deaths=death, tested_people)
+
 ```
+
 metabiota.com
 
 ```{r}
@@ -1124,7 +426,11 @@ metabiota_confirmed <- metabiota %>% filter(CUMULATIVE_FLAG==T) %>% filter(OUTCO
                        group_by(AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME, LOCALITY_NAME, DATE_LOW) %>%
                        filter(row_number()==1) %>%
                        ungroup() %>%
-                       dplyr::select(date=DATE_LOW,AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME,LOCALITY_NAME,confirmed=VALUE) 
+                       dplyr::select(date=DATE_REPORT,
+                                          AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME,LOCALITY_NAME,confirmed=VALUE) 
+
+#test <- metabiota_confirmed %>% group_by(AL0_NAME,AL1_CODE, AL1_NAME, AL2_NAME, AL3_NAME, LOCALITY_NAME, DATE_LOW) %>% mutate(n=n()) %>% ungroup() #the entire problem is that we're not handling cities correctly.
+
 
 metabiota_deaths <- metabiota %>% filter(CUMULATIVE_FLAG==T) %>% filter(OUTCOME=="DEATH") %>% filter(CONFIRM_STATUS=="CONFIRMED") %>% 
                        filter( DATE_LOW==DATE_HIGH) %>%
@@ -1134,7 +440,8 @@ metabiota_deaths <- metabiota %>% filter(CUMULATIVE_FLAG==T) %>% filter(OUTCOME=
                        group_by(AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME, LOCALITY_NAME, DATE_LOW) %>%
                        filter(row_number()==1) %>%
                        ungroup() %>%
-                       dplyr::select(date=DATE_LOW,AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME,LOCALITY_NAME,deaths=VALUE) 
+                       dplyr::select(date=DATE_REPORT, #DATE_LOW #changing this to date of the report to align it with other 
+                                     AL0_NAME,AL1_NAME,AL2_NAME ,AL3_NAME,LOCALITY_NAME,deaths=VALUE) 
 
 metabiota_long <- metabiota_confirmed %>% 
                   full_join(metabiota_deaths) %>%
@@ -1147,7 +454,8 @@ metabiota_long <- metabiota_confirmed %>%
                          admin3_name_original=LOCALITY_NAME
                          ) %>%
                   dplyr::select(-AL3_NAME) %>%
-
+                  mutate(dataset="metabiota") %>%
+                  mutate(date_asdate = ymd(date)) %>% 
                   mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
                   mutate(admin0_name_clean=str_replace(admin0_name_clean,"chinamainland","china")) %>%
                 
@@ -1156,14 +464,17 @@ metabiota_long <- metabiota_confirmed %>%
                   mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
 
                   mutate(admin3_name_clean=admin3_name_original %>% rex_clean()) %>%
-                      left_join(admin0 ) %>%
-                      left_join(admin1 ) %>%
-                      left_join(admin2 ) 
+                  rex_admin_function()
 
+forjoining_metabiota <- metabiota_long %>% 
+                        filter(is.na(admin3_name_original) | admin3_name_original=='') %>% #we don't handle cities correctly so we have to exclude them here for now %>%
+                        dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=deaths) %>% 
+                        distinct()
 
+test <- forjoining_metabiota %>% group_by(dataset,gid, geonameid, wikidata_id,date_asdate) %>% mutate(n=n()) %>% ungroup() #the entire problem is that we're not handling cities correctly.
 
-temp <- metabiota_long %>% dplyr::select(admin0_name_clean,admin1_name_clean,admin2_name_clean,admin3_name_clean,
-                                         gid0,gid1,gid2,gid3) %>% distinct()
+#The problem is ISO31662 is merging up multiple times
+#ISO31662
 
 
 #Drop any with no variation
@@ -1177,90 +488,105 @@ temp <- metabiota_long %>% dplyr::select(admin0_name_clean,admin1_name_clean,adm
 
 ```
 
-All wikipedia covid pages
+All the relevant data used in this paper are publicy available and accessible at
+https://lab.gedidigital.it/gedi-visual/2020/coronavirus-i-contagi-in-italia/
+
+## Wikipedia national testing page
+
 
 ```{r}
-library(countrycode)
-data(codelist)
-countries_for_matching <- codelist %>% unlist() %>% unique() %>% sort()
-
-library(rvest)
-
-#link has
-"2020_coronavirus_pandemic_in_"
-url <- "https://en.wikipedia.org/wiki/2019%E2%80%9320_coronavirus_pandemic_by_country_and_territory"
-
-#the 5000 is to say don't limit number of hits on the page, 5k 
-url <- "https://en.wikipedia.org/w/index.php?title=Special:Search&limit=5000&offset=0&profile=default&search=%22coronavirus+pandemic+in%22&advancedSearch-current={}&ns0=1" #here's a search querry that captures both countries and places
-wikipedia_by_country_webpage <- read_html(url)
-
-links <- wikipedia_by_country_webpage %>% html_nodes("a") %>% html_attr(c('href'))
-titles <- wikipedia_by_country_webpage %>% html_nodes("a") %>% html_attr(c('title')) 
-text <- wikipedia_by_country_webpage %>% html_nodes("a") %>% html_text() 
-wikipedia_by_country_links <- data.frame(link=paste0("https://en.wikipedia.org/",links) , 
-                                         title=titles,
-                                         text=text) %>% 
-                              filter(!is.na(title)) %>% 
-                              filter(!str_detect(title,"Template")) %>% 
-                              filter(!str_detect(title,"Timeline")) %>% 
-                              filter(!str_detect(title,"Chronology of the|Economic impact|Responses to|page does not exist")) %>% 
-  
-                              filter(str_detect(title,"coronavirus pandemic in")) %>%
-                              mutate(is_country = text %in% countries_for_matching) %>%
-                              mutate_if(is.factor, as.character) %>%
-                              mutate(place=str_replace(title, ".*coronavirus pandemic in ","")) %>%
-                              distinct()
-dim(wikipedia_by_country_links) #345   4
-
-tables_keep_list <- list()
-for(i in 1:nrow(wikipedia_by_country_links)){
-  temp_place=wikipedia_by_country_links$place[i]
-  print(temp_place)
-  temp_html <- read_html(wikipedia_by_country_links$link[i])
-  temp_tables <- temp_html  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=F) 
-  
-  test <- temp_tables[[10]] %>%  html_table(fill = TRUE, header=F) 
-  test2 <- temp_tables[[10]] %>%  html_table(fill = F, header=F) #nope still throws an error
-  
-  library(htmltab) ; #install.packages('htmltab')
-  url <- wikipedia_by_country_links$link[i]
-  ukLang <- htmltab(doc = url, which = 1)
-  ukLang <- htmltab(doc = url, which = 10, complementary=F, headerSep="_")
-  
-  head(ukLang)
-
-  
-  temp_tables_df <- lapply(temp_tables, FUN=function(x) { 
-                        tryCatch({
-                           html_table(x,fill = TRUE, header=F)} ,
-                           error = function(e) return(data.frame()) 
-                        )   } )  #the one I want is throwing an error
-  
-  condition <- which(sapply(temp_tables_df, ncol)>3 & sapply(temp_tables_df, nrow)>3)
-  temp_tables_deaths <- temp_tables_df[condition]
-
-  #do any of these tables have the word death
-  condition <- which(  sapply(temp_tables_deaths, FUN=function(x) sum(str_detect(unique(unlist(x)), "death|Death"), na.rm=T)  )>0)
-  temp_tables_deaths <- temp_tables_deaths[condition]
-
-  condition <- which(  sapply(temp_tables_deaths, FUN=function(x) sum(str_detect(unique(unlist(x)), "Data \\(templates\\)|Medical professional|SARS-CoV-2 \\(virus\\) COVID-19 \\(disease\\)"), na.rm=T)  )==0)
-  temp_tables_deaths <- temp_tables_deaths[condition]
-  
-  #lapply(temp_tables_deaths, dim)
-  #lapply(temp_tables_deaths, colnames)
-
-  tables_keep_list[[temp_place]] <- temp_tables_deaths
-  temp1 <- temp_tables_deaths[[1]]
-  temp2 <- temp_tables_deaths[[2]]
-  temp3 <- temp_tables_deaths[[3]]
-  temp4 <- temp_tables_deaths[[4]]
-  
-}
-
+#https://webapps.stackexchange.com/questions/35822/get-the-version-of-a-wikipedia-page-from-a-specific-date
+#Go to the history page of your desired page, and then add &YYYYMMDDHHMMSS to the URL.
+#http://en.wikipedia.org/w/index.php?title=COVID-19_testing&action=history&offset=20200415000000
 
 
 ```
 
+
+
+```{r}
+
+lhs_long <- bind_rows(
+  forjoining_CSSE,
+  forjoining_who,
+  forjoining_bing,
+  forjoining_ecdc,
+  forjoining_nytimes,
+  forjoining_covidtracking,
+  forjoining_metabiota,
+  forjoining_covid19india
+)   %>% 
+  mutate(confirmed=ifelse(confirmed==0,NA,confirmed)) %>% #we don't believe zeros
+  mutate(deaths=ifelse(deaths==0,NA,deaths)) %>%
+  filter(!(is.na(confirmed & is.na(deaths) & is.na(tested_people)))) %>%
+  distinct() %>%
+  arrange(dataset,gid ,  geonameid ,wikidata_id, date_asdate) %>%
+  group_by(dataset,gid ,  geonameid ,wikidata_id) %>% 
+    mutate(confirmed_fd=confirmed, deaths_fd=deaths, tested_people_fd=tested_people, tested_samples_fd=tested_samples) %>%
+    tidyr::fill( ends_with("_fd")) %>%
+    mutate_at(vars(ends_with("_fd")), difference) %>%
+  ungroup() %>%
+  #About 4k of these observations show a decrease from one time step to the next which suggests either an original error or a joining error
+  #We're going to straight drop those observations as a cleaning step
+  filter( (is.na(confirmed_fd) | confirmed_fd>=0) & 
+          (is.na(deaths_fd) | deaths_fd>=0) & 
+          (is.na(tested_people_fd) | tested_people_fd>=0) & 
+          (is.na(tested_samples_fd) | tested_samples_fd>=0)  
+          )
+
+dim(lhs_long) #174028 #174691  #179,748
+
+
+#test <- lhs_long %>% group_by(dataset, gid, geonameid, wikidata_id, date_asdate) %>% summarize(n=n())
+
+all_na <- function(x) any(!is.na(x)) #https://intellipaat.com/community/12999/remove-columns-from-dataframe-where-all-values-are-na
+
+#bing looks off by a day from the other ones
+lhs_wide_qcode <- lhs_long %>% 
+                  filter(!is.na(wikidata_id) & !is.na(date_asdate)) %>%
+                  group_by(gid, geonameid, wikidata_id, date_asdate) %>%  mutate(confirmed_var=var(confirmed, na.rm=T), deaths_var=var(deaths, na.rm=T)) %>% ungroup() %>%
+                  dplyr::select(dataset, gid, geonameid, wikidata_id, date_asdate,confirmed, deaths, tested_samples, tested_people) %>%
+                  group_by(dataset, gid, geonameid, wikidata_id, date_asdate) %>%  summarise_if(is.numeric,max,na.rm=T) %>% ungroup() %>% #this is a hack, we should have dupes within datasets
+                  pivot_wider(names_from = dataset, values_from = c(confirmed, deaths, tested_samples, tested_people) ) %>% 
+                  mutate_if(is.numeric, list(~na_if(abs(.), Inf))) %>% #https://stackoverflow.com/questions/12188509/cleaning-inf-values-from-an-r-dataframe
+                  select_if(all_na) 
+
+dim(lhs_wide_qcode) #82,157 82k place/day observations
+
+length(unique(lhs_wide_qcode$wikidata_id)) #3697 #almost 4k 
+
+test <- lhs_wide_qcode %>% dplyr::select(starts_with("confirmed")) %>% distinct() 
+
+cor(test, use="pairwise.complete.obs")
+
+#some of these are screwups. LIke bexar county for bing is not montonic
+library(tsibble); #install.packages('tsibble')
+lhs_wide_qcode_monotonic <- lhs_wide_qcode %>% arrange(date_asdate) %>%
+                            group_by(wikidata_id) %>% 
+                              tidyr::fill( starts_with("confirmed|deaths|tested")) %>%
+                              mutate_if(is.numeric, difference) %>%
+                            ungroup() #I think the way to do this is on the long version. If any of the cumulative counts is a decrease then regeject the whole observation.
+
+lhs_temp <- lhs_long %>% group_by(gid, geonameid, wikidata_id, date_asdate) %>% summarize(n=n())
+lhs_temp %>% filter(n<=6) %>% pull(n) %>% quantile() #median of only a single data point
+
+lhs_temp %>% filter(n<=6) %>% ggplot(aes(x=date_asdate,y=n)) + geom_point()
+
+library(lfe) #install.packages('lfe'), quietly=TRUE
+xy_all <- lhs_long %>% group_by(gid, geonameid, wikidata_id, date_asdate) %>% mutate(n=n()) %>% filter(n<=6) %>% ungroup() %>% 
+             filter(!is.na(wikidata_id) & !is.na(date_asdate)) %>% 
+             mutate(date_place=paste(wikidata_id,date_asdate))  %>% 
+             dplyr::select(confirmed, dataset, date_asdate, wikidata_id, date_place) %>% arrange(date_place) %>% mutate_if(is.character, as.factor) %>%
+             filter(confirmed!=0) 
+dim(xy_all)
+table(xy_all$dataset)
+est <- felm( confirmed ~ 1 + dataset | date_asdate + wikidata_id + date_place, data=xy_all)
+summary(est)
+
+#lm1 <- lm(confirmed ~ factor(dataset) + factor(date_asdate) + factor(wikidata_id) , data=lhs_long)
+
+
+```
 
 # RHS
 
@@ -1284,11 +610,11 @@ tmp <- tempfile()
 #
 worldindata_github <- read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/testing/covid-testing-all-observations.csv") 
 
-curl_download("https://drive.google.com/uc?export=download&id=18QE3wScRXL-ARIaBl6yh7xUVNlnitvW_", tmp)
-worldindata_googledrive <- read_csv(tmp) 
+#curl_download("https://drive.google.com/uc?export=download&id=18QE3wScRXL-ARIaBl6yh7xUVNlnitvW_", tmp)
+#worldindata_googledrive <- read_csv(tmp) 
 
 dim(worldindata_github)
-dim(worldindata_googledrive) #The github one is longer
+#dim(worldindata_googledrive) #The github one is longer
 
 worldindata_long <- worldindata_github %>%
                     mutate(date_asdate = ymd(Date)) %>%  
@@ -1296,11 +622,14 @@ worldindata_long <- worldindata_github %>%
                     mutate(admin0_name_original=trimws(admin0_name_original)) %>%
                     rename(tests=`Cumulative total`) %>%
                     mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
-                    left_join(admin0 %>% dplyr::select(geonameid0=geonameid,gid0=gid,admin0_name_clean=name))
+                     mutate(admin1_name_clean='') %>%
+                     mutate(admin2_name_clean='') %>% #you have to remember to put NAs or you'll accidentally over join
+          
+                    left_join(admin0 ) %>%
+                    left_join(admin1 )  %>%
+                    left_join(admin2 ) 
 
 ```
-
-
 
 
 ## Demographics
@@ -1328,9 +657,13 @@ counties_2 <- counties %>% filter(as.numeric(substring(FIPS,3,5))>0 & Area_Name!
 
 counties_long <- bind_rows(counties_1,counties_2) %>%
                     mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                    mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                    mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+
                       left_join(admin0 ) %>%
                       left_join(admin1 ) %>%
                       left_join(admin2 ) 
+
 
 
 ```
@@ -1340,9 +673,10 @@ The international political economy data resource
 https://link.springer.com/article/10.1007/s11558-017-9285-0
 
 ```{r}
+
 tmp2 <- tempfile()
 temp_url <- "https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/X093TV/XHEWU3"
-curl_download(temp_url, tmp2)
+curl::curl_download(temp_url, tmp2)
 load(tmp2) #the object's name is ipe_full
 glimpse(ipe_full)
 #$ country                     <chr> "United States of America", "United States of America", "United States of America", "United States of America", "United States of America", "United States of America", "United States of America", "United States of America", "United States of…
@@ -1367,7 +701,12 @@ ipe_long <- ipe_full %>%
             filter(year==max(year)) %>% 
             ungroup()  %>%
             mutate(admin0_name_clean=country %>% rex_clean()) %>%
-            left_join(admin0 %>% dplyr::select(geonameid0=geonameid,gid0=gid,admin0_name_clean=name))
+            mutate(admin1_name_clean='') %>%
+            mutate(admin2_name_clean='') %>% #you have to remember to put NAs or you'll accidentally over join
+  
+            left_join(admin0 ) %>%
+            left_join(admin1 )  %>%
+            left_join(admin2 ) 
 
 ```
 
@@ -1387,7 +726,6 @@ WDIData_long <- WDIData %>%
                 group_by(`Country Name`, `Indicator Name`) %>% 
                 filter(year==max(year)) %>% 
                 ungroup() 
-                
 
 colnames(WDIData_long) <- colnames(WDIData_long) %>% str_replace_all(" ","_") %>% tolower()
 
@@ -1395,7 +733,13 @@ WDIData_long <- WDIData_long %>%
                 mutate(indicator_name=indicator_name%>% str_replace_all(" ","_") %>% tolower()) %>%
                 rename(admin0_name_original=country_name) %>%
                 mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
-                left_join(admin0 %>% dplyr::select(geonameid0=geonameid,gid0=gid,admin0_name_clean=name))
+                 mutate(admin1_name_clean='') %>%
+                 mutate(admin2_name_clean='') %>% #you have to remember to put NAs or you'll accidentally over join
+      
+                left_join(admin0 ) %>%
+                left_join(admin1 )  %>%
+                left_join(admin2 ) 
+
 
 temp <- WDIData_long %>% count(indicator_name)
 
@@ -1445,8 +789,12 @@ google_mobility_long <-
                          google_residential=Residential) %>% 
                   distinct() %>%
                 mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
-                left_join(admin0 %>% dplyr::select(geonameid0=geonameid,gid0=gid,admin0_name_clean=name))
-  
+                mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                left_join(admin0 ) %>%
+                left_join(admin1 )  %>%
+                left_join(admin2 )   
+
 ```
 
 
@@ -1456,76 +804,7 @@ NYT state order issued
 #https://www.nytimes.com/interactive/2020/us/coronavirus-stay-at-home-order.html
 ```
 
-# Munging
 
-```{r, eval=F}
-
-places <- bind_rows(
-            google_mobility_long %>% dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original),
-            counties_long %>% dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original, fips=FIPS) %>% mutate(fips=as.character(fips)),
-            worldindata_long %>% dplyr::select(admin0_name_original),
-            covidtracking_long %>% dplyr::select(admin0_name_original, admin1_name_original),
-            nytimes_long %>% dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original, fips),
-            CSSE_long %>% dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original,fips=FIPS) %>% mutate(fips=as.character(fips)),
-            who_long %>% dplyr::select(admin0_name_original),
-            bing_long %>% dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original),
-            wikipedia_tests_long %>% dplyr::select(admin0_name_original, admin1_name_original),
-            metabiota_long %>% dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original,admin3_name_original),
-            WDIData_long %>% dplyr::select(admin0_name_original)
-) %>%
-  dplyr::select(admin0_name_original, admin1_name_original, admin2_name_original,admin3_name_original,fips) %>% 
-  distinct() %>%
-  arrange(admin0_name_original, admin1_name_original, admin2_name_original) %>%
-  mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
-  mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
-  mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
-  mutate(admin3_name_clean=admin3_name_original %>% rex_clean()) %>%
-  left_join(gadm_long %>% dplyr::select(gadm0,admin0_name_clean) %>% na.omit() ) %>%
-  left_join(gadm_long %>% dplyr::select(gadm0,gadm1,admin1_name_clean) %>% na.omit() ) %>%
-  left_join(gadm_long %>% dplyr::select(gadm0,gadm1,gadm2,admin2_name_clean) %>% na.omit())
-  
-dim(places) #12203     4
-
-
-places <- all_long %>% dplyr::select(country,state) %>% distinct() %>% mutate(search=paste0(state,", ", country ))  %>% mutate(search= ifelse(is.na(state) | state=="none", country, state ) )
-library(WikidataR)
-wiki_searches <- list()
-for(q in places$search){
-  print(q)
-  try({
-    #wiki <- find_item("Bexas County")
-    wiki <- find_item(q)
-    temp <- as.data.frame(wiki[[1]])
-    temp$search <- q
-    wiki_searches[[q]] <- temp
-  })
-}
-wiki_searches_df <- bind_rows(wiki_searches)
-
-
-```
-
-
-# Points
-
-
-# Comparison by source
-
-# 
-
-# Case Fatality Rates
-
-# Case Fatality Rates as a function of Cases
-
-# Case Fataility Rates as a function of cases and testing
-
-# Case Fataility Rates as a function of cases and testing and Time
-
-# Rates of Change and R0
-
-# Crests 
-
-# Residuals
 
 What areas have more or fewer cases/deaths than we would expect?
 

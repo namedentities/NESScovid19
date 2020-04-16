@@ -1,0 +1,93 @@
+---
+title: "How to Be Careful with Covid-19 Counts: 10 Lessons for Modeling Drawn from a New Global Aggregation of measurements"
+output:
+  html_notebook:
+    toc: yes
+date: 
+author: 
+affiliation: Director, Machine Learning for Social Science Lab, Center for Peace and Security Studies, University of California San Diego
+editor_options: 
+  chunk_output_type: inline
+---
+
+Rex W. Douglass
+
+<style type="text/css">
+blockquote {
+    padding: 10px 20px;
+    margin: 0 0 20px;
+    font-size: 14px;
+    border-left: 5px solid #eee;
+}
+</style>
+
+
+Rates of change
+
+Exaggerated amounts of precision. Day to day fluctuations not actually important.
+
+Growth models, and how few parameters can we use to describe each location's change over time. Might be very few.
+
+
+
+# Scale Variance
+
+Just because the disease spreads the same way in each location doesn't mean the reporting and hospital infrustructure is the same in each location. Still expect scale variance depending on unit of aggregation.
+
+Show how positive and CFR vary by geographic scale of reporting.
+
+# Variation as a function of the percent of the population that has been tested
+
+CFR and positive rate on the LHS, percent of the popultaion tested on the RHS
+
+# CFR and how fractions give you two chances to be wrong
+
+
+
+
+# Points
+
+
+# Comparison by source
+
+# 
+
+# Case Fatality Rates
+
+# Case Fatality Rates as a function of Cases
+
+# Case Fataility Rates as a function of cases and testing
+
+# Case Fataility Rates as a function of cases and testing and Time
+
+# Rates of Change and R0
+
+# Crests 
+
+# Residuals
+
+
+
+# Introduction
+
+Measurement is not reality
+Correlation is not causation
+Scale
+
+ratios are the worst
+
+How should we responsibly use COVID-19 counts? 
+
+We want to know in a given population, how many people at some point have had COVID-19 and could have spread it to others. This is an unobserved latent variable.
+
+Tests provide some information. 
+There's some selection process by which a person from the population self selects and is selected to be tested. That test then has some true positive and true negative rate (and false positive and false negative rate).
+
+Assume that more severe cases die. And more severe cases get tested.
+
+Deaths provide some information. Assume a death implies a test with the same rates as the above. Might want to question that, there's some attribution process by which a death is either attributed to COVID or not. Some deaths are happening outside of the medical system and not getting tested or attributed to COVID.
+
+So tests are at best a lower bound for how many in the population have the disease.
+
+What do we learn from negative tests? Very crudely it could be how many people don't have COVID, which could be an upper bound on the number of infected. But it's out of date almost immediately, because all of those people could get infected tomorrow.
+
