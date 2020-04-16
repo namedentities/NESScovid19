@@ -4,3 +4,6 @@
 .Ruserdata
 /data_temp/
 logs
+BEL_adm2.sf.rds
+USA_adm0.sf.rds
+USA_adm2.sf.rds
