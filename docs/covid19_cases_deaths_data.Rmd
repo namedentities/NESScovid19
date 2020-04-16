@@ -52,6 +52,9 @@ data(state_codes)
 library(tidyverse)
 library(sf)
 
+library(jsonlite)
+
+
 ```
 
 Can start back from here
@@ -203,7 +206,7 @@ covid19india_long <- bind_rows(
                 mutate(dataset="covid19india") %>%
                 rex_admin_function()
 
-forjoining_covid19india <- rootnet_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate,
+forjoining_covid19india <- covid19india_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate,
                                                      tested_samples,
                                                      tested_people,
                                                      confirmed=total,
@@ -495,16 +498,102 @@ https://lab.gedidigital.it/gedi-visual/2020/coronavirus-i-contagi-in-italia/
 
 
 ```{r}
+
 #https://webapps.stackexchange.com/questions/35822/get-the-version-of-a-wikipedia-page-from-a-specific-date
 #Go to the history page of your desired page, and then add &YYYYMMDDHHMMSS to the URL.
 #http://en.wikipedia.org/w/index.php?title=COVID-19_testing&action=history&offset=20200415000000
+#&limit=1&action=history  #limits it further to just one link
+library(rvest)
+url <- "http://en.wikipedia.org/w/index.php?title=COVID-19_testing&action=history&offset=20200415000000&limit=1&action=history"
+wikipedia_history_page <- read_html(url)
 
+#https://en.wikipedia.org/w/index.php?title=COVID-19_testing&oldid=950235147
+
+#Aim at the template not the page
+#https://en.wikipedia.org/w/index.php?title=Template:COVID-19_testing&action=history
+
+#The first appearence is feb 25 2020
+month_start=3
+month_end=4
+dates_to_grab <- apply(expand.grid(str_pad(month_start:month_end, 2, pad = "0") , str_pad(1:31, 2, pad = "0") ), 1, paste, collapse="")
+histor_links_list <- list()
+for(q in dates_to_grab){
+  url <- paste0("https://en.wikipedia.org/w/index.php?title=Template:COVID-19_testing&action=history&offset=2020",q,"000000&limit=1&action=history")
+  print(url)
+  wikipedia_history_page <- read_html(url)
+  links <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('href'))
+  titles <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('title')) 
+  text <- wikipedia_history_page %>% html_nodes("a") %>% html_text() 
+  wikipedia_history_page_links <- data.frame(link=paste0("https://en.wikipedia.org/",links) , 
+                                             title=titles,
+                                             text=text) %>%
+                                  filter(str_detect(link,"oldid") & text!="cur" & text!="prev")
+  histor_links_list[[q]] <- wikipedia_history_page_links
+}
+
+history_links_df <- bind_rows(histor_links_list)
+
+#Ah it's a fixed table that just gets included so scraping the whole page doesn't show any variation
+
+tables_list <- list()
+for(q in history_links_df$link %>% unique() ){
+  print(q)
+  thepage = readLines(q)
+  #temp_html <- read_html(q)
+  #temp_tables <- temp_html  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=F) 
+
+  library(htmltab) ; #install.packages('htmltab')
+  temp_tables <- read_html(q)  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=T) 
+  try({
+    for(h in temp_tables){
+        #table_temp <- htmltab(doc = thepage, which = i, complementary=F, headerSep="_") #,header=1 htmltab doesn't just fail it crashes R which is sad because I liked it better
+        if( 
+          names(h) %>% tolower() %>% str_detect( c("country","tests","positive")) %>% any() #had to take out date because it triggers on "update"
+          ){
+          tables_list[[q]] <- h
+          print("Table Found")
+          break
+        }
+    }
+  })
+}
+length(tables_list)
+lapply(tables_list, names) #41 snapshots all with the same names god bless them
+
+library(janitor) #install.packages("janitor")
+
+wikipedia_national_test <- bind_rows(lapply(tables_list, clean_names))
+
+wikipedia_national_test_long <- wikipedia_national_test %>% rowwise() %>% 
+                                mutate(dataset="wikipedia") %>%
+                                mutate(tested_people = coalesce(tests,total_tests,totaltests) ) %>%
+                                mutate(date = coalesce(as_of,date) ) %>%
+                                mutate(place = coalesce(country_or_region,country) ) %>% 
+                                separate(place, c("admin0_name_original", "admin1_name_original"),sep=":")  %>%
+
+                                mutate(date_asdate1 = dmy(paste0(date,", 2020"))) %>% 
+                                mutate(date_asdate2 = mdy(paste0(date,", 2020"))) %>% 
+                                mutate(date_asdate = coalesce(date_asdate1,date_asdate2)  ) %>% 
+  
+                                mutate(admin0_name_clean = admin0_name_original %>% rex_clean()) %>%
+                                mutate(admin1_name_clean = admin1_name_original %>% rex_clean()) %>%
+                                mutate(admin2_name_clean = '' %>% rex_clean()) %>%
+                                rex_admin_function()
+
+forjoining_wikipedia_national_test <- wikipedia_national_test_long %>%   
+                                      dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, tested_people) %>% 
+                                      mutate(tested_people = str_replace_all(tested_people,",|>| ","") %>% as.numeric()) %>%
+                                      distinct()
+
+dim(forjoining_wikipedia_national_test) #
 
 ```
 
 
 
 ```{r}
+
+library(tsibble)
 
 lhs_long <- bind_rows(
   forjoining_CSSE,
@@ -514,7 +603,8 @@ lhs_long <- bind_rows(
   forjoining_nytimes,
   forjoining_covidtracking,
   forjoining_metabiota,
-  forjoining_covid19india
+  forjoining_covid19india,
+  forjoining_wikipedia_national_test
 )   %>% 
   mutate(confirmed=ifelse(confirmed==0,NA,confirmed)) %>% #we don't believe zeros
   mutate(deaths=ifelse(deaths==0,NA,deaths)) %>%
@@ -533,6 +623,7 @@ lhs_long <- bind_rows(
           (is.na(tested_people_fd) | tested_people_fd>=0) & 
           (is.na(tested_samples_fd) | tested_samples_fd>=0)  
           )
+
 
 dim(lhs_long) #174028 #174691  #179,748
 
