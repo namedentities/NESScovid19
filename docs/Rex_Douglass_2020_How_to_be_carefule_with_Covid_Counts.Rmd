@@ -42,7 +42,8 @@ CFR and positive rate on the LHS, percent of the popultaion tested on the RHS
 
 # CFR and how fractions give you two chances to be wrong
 
-
+# Positive rate
+https://www.theatlantic.com/technology/archive/2020/04/us-coronavirus-outbreak-out-control-test-positivity-rate/610132/
 
 
 # Points

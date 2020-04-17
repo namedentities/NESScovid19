@@ -62,7 +62,214 @@ library(GADMTools)
 
 ```{r, fig.width=10, fig.height=8}
 lhs_long <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long.Rds")
+dim(lhs_long) #187,305
 
+lhs_long_clean <- lhs_long %>%
+  filter(!is.na(date_asdate)) %>%
+  group_by(dataset,gid ,  geonameid ,wikidata_id) %>% 
+    arrange(date_asdate) %>%
+    mutate(confirmed_fd=confirmed, deaths_fd=deaths, tested_people_fd=tested_people, tested_samples_fd=tested_samples) %>%
+    tidyr::fill( ends_with("_fd")) %>%
+    mutate_at(vars(ends_with("_fd")), difference) %>%
+  ungroup() %>%
+  #About 4k of these observations show a decrease from one time step to the next which suggests either an original error or a joining error
+  #We're going to straight drop those observations as a cleaning step
+  filter( (is.na(confirmed_fd) | confirmed_fd>=0) & 
+          (is.na(deaths_fd) | deaths_fd>=0) & 
+          (is.na(tested_people_fd) | tested_people_fd>=0) & 
+          (is.na(tested_samples_fd) | tested_samples_fd>=0)  
+          ) %>%
+  #Also reject any where deaths are greater than confirmed
+  filter(is.na(confirmed) | is.na(deaths) | confirmed>=deaths)
+dim(lhs_long_clean) #181,563
+
+
+
+```
+
+
+```{r}
+
+#has new york city as a single entitiy but not the constituent counties which is frustrating
+
+library(strucchange) ; #install.packages('strucchange')
+temp <- lhs_long_clean %>% arrange(date_asdate) %>% filter(wikidata_id %in% "Q16861") %>%  mutate(confirmed_log=log(confirmed+1)) %>% mutate(date_rank= rank(date_asdate))  
+temp_nyt <- temp %>% filter(dataset=="nyt")
+bp_nyt <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_nyt)
+temp_nyt$y_hat <- fitted.values(bp_nyt)
+temp_nyt$groups <- 0; temp_nyt$groups[bp_nyt$breakpoints+1] <- 1 ; temp_nyt$groups <- cumsum(temp_nyt$groups)+1
+
+temp_CSSE <- temp %>% filter(dataset=="CSSE")
+bp_CSSE <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_CSSE)
+temp_CSSE$y_hat <- fitted.values(bp_CSSE)
+temp_CSSE$groups <- 0; temp_CSSE$groups[bp_CSSE$breakpoints+1] <- 1 ; temp_CSSE$groups <- cumsum(temp_CSSE$groups)+1
+
+temp_bing <- temp %>% filter(dataset=="bing")
+bp_bing <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_bing) #this fails bc too few
+lm_bing <-lm(confirmed_log ~ 1 + date_rank, data=temp_bing)
+temp_bing$y_hat <- fitted.values(lm_bing)
+temp_bing$groups <-1
+
+bind_rows(temp_nyt, temp_CSSE, temp_bing) %>% 
+   arrange(dataset,date_asdate) %>% mutate(groups=paste(dataset,groups)) %>%
+   ggplot() + 
+   geom_point(aes(x=rank(date_asdate), y=confirmed_log, color=dataset)) +
+   geom_line(aes(x=rank(date_asdate), y=y_hat, color=dataset, group=groups)) #+
+   #geom_vline(xintercept=bp$breakpoints)
+
+#####
+#China Q148
+temp <- lhs_long_clean %>% arrange(date_asdate) %>% 
+        filter(wikidata_id %in% "Q148") %>% 
+        group_by(dataset, date_asdate) %>%
+          summarise(confirmed=max(confirmed, na.rm=T) ) %>% #this is a problem dupes with the same date  #this fixes a lot of things but we need to figure out the origin of this problem
+        ungroup() %>%
+        mutate(confirmed_log=log(confirmed+1)) %>% mutate(date_rank= rank(date_asdate))  
+
+temp_wikipedia <- temp %>% filter(dataset=="wikipedia")
+bp_wikipedia <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_wikipedia)
+temp_wikipedia$y_hat <- fitted.values(bp_wikipedia)
+temp_wikipedia$groups <- 0; temp_wikipedia$groups[bp_nyt$breakpoints+1] <- 1 ; temp_wikipedia$groups <- cumsum(temp_wikipedia$groups)+1
+
+
+temp_ecdc <- temp %>% filter(dataset=="ecdc")
+bp_ecdc <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_ecdc)
+temp_ecdc$y_hat <- fitted.values(bp_ecdc)
+temp_ecdc$groups <- 0; temp_ecdc$groups[bp_nyt$breakpoints+1] <- 1 ; temp_ecdc$groups <- cumsum(temp_ecdc$groups)+1
+
+temp_who <- temp %>% filter(dataset=="who")
+bp_who <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_who)
+temp_who$y_hat <- fitted.values(bp_who)
+temp_who$groups <- 0; temp_who$groups[bp_nyt$breakpoints+1] <- 1 ; temp_who$groups <- cumsum(temp_who$groups)+1
+
+
+temp_metabiota <- temp %>% filter(dataset=="metabiota")
+bp_metabiota <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_metabiota)
+temp_metabiota$y_hat <- fitted.values(bp_metabiota)
+temp_metabiota$groups <- 0; temp_metabiota$groups[bp_CSSE$breakpoints+1] <- 1 ; temp_metabiota$groups <- cumsum(temp_metabiota$groups)+1
+
+temp_bing <- temp %>% filter(dataset=="bing")
+bp_bing <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_bing) #this fails bc too few
+lm_bing <-lm(confirmed_log ~ 1 + date_rank, data=temp_bing)
+temp_bing$y_hat <- fitted.values(lm_bing)
+temp_bing$groups <-1
+
+temp_df <- bind_rows(temp_ecdc, temp_metabiota, temp_bing, temp_who, temp_wikipedia) %>% 
+            arrange(dataset,date_asdate) %>% 
+           mutate(groups=paste(dataset,groups))
+
+temp_df2 <- bind_rows(temp_ecdc, temp_metabiota, temp_bing, temp_who, temp_wikipedia) %>% 
+            arrange(date_asdate) %>% 
+            group_by(date_asdate) %>%
+              summarise(y_hat_mean=mean(y_hat, na.rm=T)) %>%
+            mutate(groups=99)
+
+ggplot() + 
+   geom_point(data=temp_df, aes(x=date_asdate, y=confirmed_log, color=dataset)) +
+   geom_line(data=temp_df, aes(x=date_asdate, y=y_hat, color=dataset, group=groups)) +
+   geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black") 
+     
+   #geom_vline(xintercept=bp$breakpoints)
+
+
+
+
+
+
+
+temp <- nytimes_long %>% arrange(date_asdate) %>% filter(county %in% "New York City") %>% 
+        mutate(confirmed_log=log(confirmed+1)) %>%
+        mutate(t= rank(date_asdate))  
+bp <- breakpoints(confirmed_log ~ 1, data=temp)
+bp <- breakpoints(confirmed_log ~ 1 + t, data=temp)
+
+tmin <- min(temp$t)
+tmax <- max(temp$t)
+c(tmin, bp$breakpoints, tmax)
+
+
+cdf <- data.frame(
+                  t= c(1,bp$breakpoints), 
+                  t_slope= coef(bp)[,2]
+                  )
+
+temp <- temp %>% 
+        mutate(y_hat = fitted.values(bp)) %>%
+        left_join(cdf) %>% 
+        fill(t_slope) %>%
+        mutate(t_slope_percent_change = round((exp(t_slope)-1)*100,2))
+
+temp %>% ggplot() +
+         geom_point(aes(x=rank(date_asdate), y=confirmed_log)) + 
+         geom_line(aes(x=rank(date_asdate), y=y_hat)) + 
+         geom_vline(xintercept=bp$breakpoints)
+```
+
+```{r}
+
+temp_list <- list()
+for(q in places$place){
+  print(q)
+  temp <- NULL
+  temp <- nytimes_long %>% 
+          arrange(date_asdate) %>% 
+          filter(place %in% q) %>% 
+          mutate(confirmed_log=log(confirmed+1)) %>%
+          mutate(t= rank(date_asdate))  
+  if( nrow(temp)==0 ) {print("error"); break}
+
+  #bp <- breakpoints(confirmed_log ~ 1, data=temp)
+  bp <- NULL
+  lm1 <- NULL
+  y_hat <- NA
+  cdf <- NULL
+  try({
+        #if it fails fall back to just a lm
+    lm1 <- lm(confirmed_log ~ 1 + t, data=temp)
+
+    cdf <- data.frame(
+                      t= 1, 
+                      t_slope= coef(lm1)[2],
+                      t_slope_break=0
+                      )
+    y_hat=fitted.values(lm1)
+  })
+  
+  try({
+    bp <- breakpoints(confirmed_log ~ 1 + t, data=temp)
+    
+    cdf <- data.frame(
+                      t= c(1,bp$breakpoints), 
+                      t_slope= coef(bp)[,2],
+                      t_slope_break=1
+                      )
+    y_hat=fitted.values(bp)
+  })
+  
+  try({
+    temp <- temp %>% 
+            mutate(y_hat = y_hat) %>%
+            left_join(cdf) %>% 
+            fill(t_slope) %>%
+            mutate(t_slope_percent_change = round((exp(t_slope)-1)*100,2))
+    
+    temp_list[[as.character(q)]] <- temp
+  })
+  #if( is.na( temp_list[[as.character(q)]]$y_hat) ) {print("error"); break}
+}
+#"13055"
+temp_df <- bind_rows(temp_list)
+dim(temp_df)
+
+temp_list[["New York_New York City_NA"]]
+
+
+```
+
+
+
+
+```{r}
 #gadm36 = st_read("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSgadm/data_in/gadm36_gpkg/gadm36.gpkg")
 st_layers("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/gadm36_bycountry/gadm36_levels_gpkg/gadm36_levels.gpkg")
 gadm36_levels_0 = st_read("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/gadm36_bycountry/gadm36_levels_gpkg/gadm36_levels.gpkg", layer="level0")  %>%
@@ -84,10 +291,11 @@ p0 <- gadm36_levels_0 %>%
     scale_fill_gradient(low="blue", high="red") +
     theme_bw() 
 p0
+
 ```
 
 
-```{r, fig.width=10, fig.height=8}
+```{r, fig.width=10, fig.height=12}
 gadm36_levels_1 = st_read("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/gadm36_bycountry/gadm36_levels_gpkg/gadm36_levels.gpkg", layer="level1")  %>%
   st_simplify(preserveTopology = FALSE, dTolerance =0.1) #  0.025 this is supposedly broken up by 6 levels and so should have u.s. 
 
@@ -116,3 +324,140 @@ p2 <- gadm36_levels_2 %>%
   theme_bw() 
 p2
 ```
+
+```{r}
+
+#test <- lhs_long %>% group_by(dataset, gid, geonameid, wikidata_id, date_asdate) %>% summarize(n=n())
+
+all_na <- function(x) any(!is.na(x)) #https://intellipaat.com/community/12999/remove-columns-from-dataframe-where-all-values-are-na
+
+#bing looks off by a day from the other ones
+lhs_wide_qcode <- lhs_long %>% 
+                  filter(!is.na(wikidata_id) & !is.na(date_asdate)) %>%
+                  group_by(gid, geonameid, wikidata_id, date_asdate) %>%  mutate(confirmed_var=var(confirmed, na.rm=T), deaths_var=var(deaths, na.rm=T)) %>% ungroup() %>%
+                  dplyr::select(dataset, gid, geonameid, wikidata_id, date_asdate,confirmed, deaths, tested_samples, tested_people) %>%
+                  group_by(dataset, gid, geonameid, wikidata_id, date_asdate) %>%  summarise_if(is.numeric,max,na.rm=T) %>% ungroup() %>% #this is a hack, we should have dupes within datasets
+                  pivot_wider(names_from = dataset, values_from = c(confirmed, deaths, tested_samples, tested_people) ) %>% 
+                  mutate_if(is.numeric, list(~na_if(abs(.), Inf))) %>% #https://stackoverflow.com/questions/12188509/cleaning-inf-values-from-an-r-dataframe
+                  select_if(all_na) 
+
+dim(lhs_wide_qcode) #82,157 82k place/day observations
+
+length(unique(lhs_wide_qcode$wikidata_id)) #3697 #almost 4k 
+
+test <- lhs_wide_qcode %>% dplyr::select(starts_with("confirmed")) %>% distinct() 
+cor(test, use="pairwise.complete.obs")
+
+lhs_long_median <- lhs_long %>% group_by(gid, geonameid, wikidata_id, date_asdate) %>% summarize_if(is.numeric, median, na.rm=T) %>% dplyr::select(-ends_with("_fd")) %>% #we take the median across observations
+                   mutate(CFR=deaths/confirmed)
+dim(lhs_long_median)
+summary(lhs_long_median)
+```
+
+# Variation Over Time
+
+## Confirmed
+
+```{r}
+lhs_long_median %>% ggplot(aes(x=date_asdate, y=confirmed, color=wikidata_id)) + geom_line() + theme(legend.position = "none")
+```
+
+```{r}
+lhs_long_median %>% ggplot(aes(x=date_asdate, y=deaths, color=wikidata_id)) + geom_line() + theme(legend.position = "none")
+
+lhs_long_median %>% ggplot(aes(x=date_asdate, y=deaths, color=wikidata_id)) + geom_line() + theme(legend.position = "none") + scale_y_log10()
+
+```
+```{r}
+library(tsibble)
+lhs_long_median %>% arrange(wikidata_id,date_asdate) %>%
+  group_by(wikidata_id) %>%
+  mutate(deaths_fd=difference(deaths)) %>% 
+  ungroup() %>%
+  filter(deaths_fd>0) %>%
+  ggplot(aes(x=date_asdate, y=deaths_fd, color=wikidata_id)) + 
+  geom_line() +
+  #stat_smooth(method="loess", se = F) +
+  theme(legend.position = "none") # + scale_y_log10()
+```
+
+
+
+```{r}
+
+lm1 <- lm(deaths ~  confirmed,data=lhs_long_median %>% filter(CFR<1))
+lm2 <- lm(deaths ~ tested_people + confirmed,data=lhs_long_median %>% filter(CFR<1))
+
+library(ggRandomForests); #install.packages('ggRandomForests')
+rf1 <- rfsrc(deaths~ confirmed,
+                      data=lhs_long_median %>% filter(CFR<1) %>% as.data.frame() )
+gg_e <- gg_error(rf1)
+gg_v <- gg_variable(rf1)
+plot(gg_v, panel=TRUE, se=.95, span=1.2, alpha=.4) 
+
+rf1 <- rfsrc(deaths~ confirmed + tested_people,
+                      data=lhs_long_median %>% filter(CFR<1) %>% as.data.frame() )
+gg_e <- gg_error(rf1)
+gg_v <- gg_variable(rf1)
+plot(gg_v, panel=TRUE, se=.95, span=1.2, alpha=.4)
+
+
+rf2 <- rfsrc(CFR ~  tested_people_log,
+                      data=lhs_long_median %>% 
+                      mutate(CFR=deaths/confirmed) %>%
+                      mutate(tested_people_log=log(tested_people+1)) %>%
+                      filter(CFR<1) %>% as.data.frame()
+             )
+gg_v <- gg_variable(rf2)
+plot(gg_v, panel=TRUE, se=.95, span=1.2, alpha=.4)
+
+rf2 <- rfsrc(CFR ~  tested_people_log + confirmed_log,
+                      data=lhs_long_median %>% 
+                      mutate(CFR=deaths/confirmed) %>%
+                      mutate(tested_people_log=log(tested_people+1)) %>%
+                      mutate(confirmed_log=log(confirmed+1)) %>%
+                      filter(CFR<1) %>% as.data.frame()
+             )
+gg_v <- gg_variable(rf2)
+plot(gg_v, panel=TRUE, se=.95, span=1.2, alpha=.4)
+
+
+#Throw in time
+rf3 <- rfsrc(CFR ~  positive_perc + tested_people_log,
+                                    data=lhs_long_median %>% 
+                                    mutate(CFR=deaths/confirmed) %>%
+                                    mutate(positive_perc=confirmed/tested_people) %>%
+                                    mutate(tested_people_log=log(tested_people+1)) %>%
+                                    mutate(confirmed_log=log(confirmed+1)) %>%
+                                    filter(CFR<1) %>% as.data.frame()
+             )
+gg_v <- gg_variable(rf3)
+plot(gg_v, panel=TRUE, se=.95, span=1.2, alpha=.4)
+
+partial_Boston <- plot.variable(rf3,
+partial=TRUE, sorted=FALSE,
+show.plots = FALSE )
+
+gg_p <- gg_partial(partial_Boston)
+plot(gg_p, panel=TRUE, points = F )
+
+
+copper_cts <-quantile_pts(lhs_long_median$tested_people_log, groups = 6, intervals = TRUE)
+partial_coplot_Boston <- gg_partial_coplot(rf2, xvar="confirmed_log",
+                                         groups=rm_grp,
+                                         show.plots=FALSE)
+
+
+
+summary(lhs_long_median$CFR)
+
+lhs_long_median %>% filter(confirmed>10) %>% filter(CFR<1) %>% pull(CFR) %>% summary() #0.0297297  that's a median CFR of about 3%
+lhs_long_median %>% filter(confirmed>10) %>% filter(CFR<1) %>% pull(CFR) %>% hist(breaks=50)
+
+lhs_long_median %>% filter(confirmed>10) %>% filter(CFR<1) %>% ggplot(aes(x=CFR)) + geom_density()
+
+
+```
+
+
+

@@ -496,7 +496,6 @@ https://lab.gedidigital.it/gedi-visual/2020/coronavirus-i-contagi-in-italia/
 
 ## Wikipedia national testing page
 
-
 ```{r}
 
 #https://webapps.stackexchange.com/questions/35822/get-the-version-of-a-wikipedia-page-from-a-specific-date
@@ -548,7 +547,7 @@ for(q in history_links_df$link %>% unique() ){
     for(h in temp_tables){
         #table_temp <- htmltab(doc = thepage, which = i, complementary=F, headerSep="_") #,header=1 htmltab doesn't just fail it crashes R which is sad because I liked it better
         if( 
-          names(h) %>% tolower() %>% str_detect( c("country","tests","positive")) %>% any() #had to take out date because it triggers on "update"
+          names(h) %>% tolower() %>% str_detect( pattern=c("country|test|positive")) %>% any() #had to take out date because it triggers on "update"
           ){
           tables_list[[q]] <- h
           print("Table Found")
@@ -564,7 +563,9 @@ library(janitor) #install.packages("janitor")
 
 wikipedia_national_test <- bind_rows(lapply(tables_list, clean_names))
 
-wikipedia_national_test_long <- wikipedia_national_test %>% rowwise() %>% 
+wikipedia_national_test_long <- wikipedia_national_test %>% 
+                                mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
+                                rowwise() %>% 
                                 mutate(dataset="wikipedia") %>%
                                 mutate(tested_people = coalesce(tests,total_tests,totaltests) ) %>%
                                 mutate(date = coalesce(as_of,date) ) %>%
@@ -589,6 +590,109 @@ dim(forjoining_wikipedia_national_test) #
 
 ```
 
+## Wikipedia National Cases
+
+```{r}
+
+#https://webapps.stackexchange.com/questions/35822/get-the-version-of-a-wikipedia-page-from-a-specific-date
+#Go to the history page of your desired page, and then add &YYYYMMDDHHMMSS to the URL.
+#http://en.wikipedia.org/w/index.php?title=COVID-19_testing&action=history&offset=20200415000000
+#&limit=1&action=history  #limits it further to just one link
+library(rvest)
+
+#https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data
+
+#The first appearence is feb 25 2020
+month_start=1
+month_end=4
+dates_to_grab <- apply(expand.grid(str_pad(month_start:month_end, 2, pad = "0") , str_pad(1:31, 2, pad = "0") ), 1, paste, collapse="")
+histor_links_list <- list()
+for(q in dates_to_grab){ 
+  url <- paste0("https://en.wikipedia.org/w/index.php?title=Template:2019%E2%80%9320_coronavirus_pandemic_data&dir=prev&action=history&offset=2020",q,"000000&limit=1&action=history")
+  print(url)
+  wikipedia_history_page <- read_html(url)
+  links <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('href'))
+  titles <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('title')) 
+  text <- wikipedia_history_page %>% html_nodes("a") %>% html_text() 
+  wikipedia_history_page_links <- data.frame(link=paste0("https://en.wikipedia.org/",links) , 
+                                             title=titles,
+                                             text=text) %>%
+                                  filter(str_detect(link,"oldid") & text!="cur" & text!="prev")
+  histor_links_list[[q]] <- wikipedia_history_page_links
+}
+
+history_links_df <- bind_rows(histor_links_list) %>% arrange(link) %>% filter(!duplicated(link))
+
+#Ah it's a fixed table that just gets included so scraping the whole page doesn't show any variation
+
+tables_list <- list()
+for(i in 1:nrow(history_links_df) ){
+  q <- history_links_df$link[i]
+  edit_date <- history_links_df$text[i]
+  print(q)
+  thepage = readLines(q)
+  #temp_html <- read_html(q)
+  #temp_tables <- temp_html  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=F) 
+
+  library(htmltab) ; #install.packages('htmltab')
+  temp_tables <- read_html(q)  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=T) 
+  try({
+    for(h in temp_tables){
+        #table_temp <- htmltab(doc = thepage, which = i, complementary=F, headerSep="_") #,header=1 htmltab doesn't just fail it crashes R which is sad because I liked it better
+        if( 
+          names(h) %>% tolower() %>% str_detect( pattern=c("countr|deaths")) %>% any() #had to take out date because it triggers on "update"
+          ){
+          tables_list[[q]] <- h
+          tables_list[[q]]$edit_date <- edit_date
+          print("Table Found")
+          break
+        }
+    }
+  })
+}
+length(tables_list)
+lapply(tables_list, names) #41 snapshots all with the same names god bless them
+
+library(janitor) #install.packages("janitor")
+
+wikipedia_national_cases <- bind_rows(lapply(tables_list, clean_names))
+dim(wikipedia_national_cases)
+
+
+
+wikipedia_national_cases_long <- wikipedia_national_cases %>%
+                                  mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
+                                  rowwise() %>% 
+                                  mutate(dataset="wikipedia") %>%
+  
+                                  mutate(confirmed = coalesce(confirmedcases,confirmed,cases,cases_b,vte2019_20_coronavirus_outbreak_by_country_and_territory_2) ) %>%
+                                  mutate(deaths = coalesce(deaths_c,deaths,deaths_b,vte2019_20_coronavirus_outbreak_by_country_and_territory_3) ) %>%
+
+                                  mutate(confirmed = confirmed %>% str_replace("[^0-9]","") %>% as.numeric() ) %>%
+                                  mutate(deaths = deaths %>% str_replace("[^0-9]","") %>% as.numeric()) %>%
+  
+                                  mutate(place = coalesce(country_region,country_or_territory_a,locations_a,locations_a_2,country_or_region,countries_and_territories_a,country_or_territory,
+                                                                         country_or_territory,countries_and_territories_a_2) ) %>%
+  
+                                  mutate(date = coalesce(edit_date) ) %>%
+                                  mutate(date_asdate = date %>% str_replace("^.*?,","") %>% dmy()) %>%
+  
+                                  mutate(admin0_name_original = place %>% str_replace("\\[.*?\\]|\\(.*?\\)","") ) %>%
+                                  mutate(admin0_name_original = admin0_name_original %>% tolower() %>% str_replace("mainland","") ) %>%
+  
+                                  mutate(admin0_name_clean = admin0_name_original %>% rex_clean()) %>%
+                                  mutate(admin1_name_clean = '' ) %>%
+                                  mutate(admin2_name_clean = '' ) %>%
+                                  rex_admin_function()
+
+forjoining_wikipedia_national_cases <- wikipedia_national_cases_long %>%   
+                                      dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed, deaths) %>% 
+                                      distinct()
+
+dim(forjoining_wikipedia_national_cases) #
+
+```
+
 
 
 ```{r}
@@ -604,58 +708,18 @@ lhs_long <- bind_rows(
   forjoining_covidtracking,
   forjoining_metabiota,
   forjoining_covid19india,
-  forjoining_wikipedia_national_test
+  forjoining_wikipedia_national_test,
+  forjoining_wikipedia_national_cases
 )   %>% 
   mutate(confirmed=ifelse(confirmed==0,NA,confirmed)) %>% #we don't believe zeros
-  mutate(deaths=ifelse(deaths==0,NA,deaths)) %>%
+  mutate(deaths=ifelse(deaths==0,NA,deaths)) %>%  #we don't believe zeros
   filter(!(is.na(confirmed & is.na(deaths) & is.na(tested_people)))) %>%
   distinct() %>%
-  arrange(dataset,gid ,  geonameid ,wikidata_id, date_asdate) %>%
-  group_by(dataset,gid ,  geonameid ,wikidata_id) %>% 
-    mutate(confirmed_fd=confirmed, deaths_fd=deaths, tested_people_fd=tested_people, tested_samples_fd=tested_samples) %>%
-    tidyr::fill( ends_with("_fd")) %>%
-    mutate_at(vars(ends_with("_fd")), difference) %>%
-  ungroup() %>%
-  #About 4k of these observations show a decrease from one time step to the next which suggests either an original error or a joining error
-  #We're going to straight drop those observations as a cleaning step
-  filter( (is.na(confirmed_fd) | confirmed_fd>=0) & 
-          (is.na(deaths_fd) | deaths_fd>=0) & 
-          (is.na(tested_people_fd) | tested_people_fd>=0) & 
-          (is.na(tested_samples_fd) | tested_samples_fd>=0)  
-          ) %>%
-  #Also reject any where deaths are greater than confirmed
-  filter(is.na(confirmed) | is.na(deaths) | confirmed>=deaths)
-
+  arrange(dataset,gid ,  geonameid ,wikidata_id, date_asdate)
 
 dim(lhs_long) #178447 #174028 #174691  #179,748
 
 saveRDS(lhs_long, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long.Rds")
-
-#test <- lhs_long %>% group_by(dataset, gid, geonameid, wikidata_id, date_asdate) %>% summarize(n=n())
-
-all_na <- function(x) any(!is.na(x)) #https://intellipaat.com/community/12999/remove-columns-from-dataframe-where-all-values-are-na
-
-#bing looks off by a day from the other ones
-lhs_wide_qcode <- lhs_long %>% 
-                  filter(!is.na(wikidata_id) & !is.na(date_asdate)) %>%
-                  group_by(gid, geonameid, wikidata_id, date_asdate) %>%  mutate(confirmed_var=var(confirmed, na.rm=T), deaths_var=var(deaths, na.rm=T)) %>% ungroup() %>%
-                  dplyr::select(dataset, gid, geonameid, wikidata_id, date_asdate,confirmed, deaths, tested_samples, tested_people) %>%
-                  group_by(dataset, gid, geonameid, wikidata_id, date_asdate) %>%  summarise_if(is.numeric,max,na.rm=T) %>% ungroup() %>% #this is a hack, we should have dupes within datasets
-                  pivot_wider(names_from = dataset, values_from = c(confirmed, deaths, tested_samples, tested_people) ) %>% 
-                  mutate_if(is.numeric, list(~na_if(abs(.), Inf))) %>% #https://stackoverflow.com/questions/12188509/cleaning-inf-values-from-an-r-dataframe
-                  select_if(all_na) 
-
-dim(lhs_wide_qcode) #82,157 82k place/day observations
-
-length(unique(lhs_wide_qcode$wikidata_id)) #3697 #almost 4k 
-
-test <- lhs_wide_qcode %>% dplyr::select(starts_with("confirmed")) %>% distinct() 
-cor(test, use="pairwise.complete.obs")
-
-lhs_long_median <- lhs_long %>% group_by(gid, geonameid, wikidata_id, date_asdate) %>% summarize_if(is.numeric, median, na.rm=T) %>% dplyr::select(-ends_with("_fd")) %>% #we take the median across observations
-                   mutate(CFR=deaths/confirmed)
-dim(lhs_long_median)
-summary(lhs_long_median)
 
 ```
 
