@@ -79,6 +79,10 @@ lhs_long_clean <- lhs_long %>%
           (is.na(tested_people_fd) | tested_people_fd>=0) & 
           (is.na(tested_samples_fd) | tested_samples_fd>=0)  
           ) %>%
+  #we're going to go one step further and require either confirmed or tested to be strictly higher
+  #In words, during an episode we don't believe reports mean "no new cases" just no new good reporting
+  filter( (is.na(confirmed_fd) | confirmed_fd>0)  ) %>% #rejects a lot
+  
   #Also reject any where deaths are greater than confirmed
   filter(is.na(confirmed) | is.na(deaths) | confirmed>=deaths)
 dim(lhs_long_clean) #181,563
@@ -87,35 +91,56 @@ dim(lhs_long_clean) #181,563
 
 ```
 
+#
+
+There's still missalignment between sources. You can see for example CSSE and NYT are identical except shifted by 1
+Except that's only true for parts of the series. So as sources start using each other varies and allignment has to be local
 
 ```{r}
 
-#has new york city as a single entitiy but not the constituent counties which is frustrating
+count_datasets <- lhs_long_clean %>% dplyr::select(wikidata_id, dataset) %>% distinct() %>% count(wikidata_id)
 
+formula = confirmed_log ~ 1 + date_rank #+ I(date_rank^2) + I(date_rank^3)
+
+#bexar county
 library(strucchange) ; #install.packages('strucchange')
-temp <- lhs_long_clean %>% arrange(date_asdate) %>% filter(wikidata_id %in% "Q16861") %>%  mutate(confirmed_log=log(confirmed+1)) %>% mutate(date_rank= rank(date_asdate))  
+temp <- lhs_long_clean %>% arrange(date_asdate) %>% filter(wikidata_id %in% "Q16861") %>%  mutate(confirmed_log=log(confirmed+1)) %>%
+        mutate(date_rank= as.numeric(date_asdate) - min(as.numeric(date_asdate)))  
+
 temp_nyt <- temp %>% filter(dataset=="nyt")
-bp_nyt <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_nyt)
+bp_nyt <- breakpoints(formula, data=temp_nyt)
 temp_nyt$y_hat <- fitted.values(bp_nyt)
 temp_nyt$groups <- 0; temp_nyt$groups[bp_nyt$breakpoints+1] <- 1 ; temp_nyt$groups <- cumsum(temp_nyt$groups)+1
 
 temp_CSSE <- temp %>% filter(dataset=="CSSE")
-bp_CSSE <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_CSSE)
+bp_CSSE <- breakpoints(formula, data=temp_CSSE)
 temp_CSSE$y_hat <- fitted.values(bp_CSSE)
 temp_CSSE$groups <- 0; temp_CSSE$groups[bp_CSSE$breakpoints+1] <- 1 ; temp_CSSE$groups <- cumsum(temp_CSSE$groups)+1
 
 temp_bing <- temp %>% filter(dataset=="bing")
-bp_bing <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_bing) #this fails bc too few
-lm_bing <-lm(confirmed_log ~ 1 + date_rank, data=temp_bing)
+bp_bing <- breakpoints(formula, data=temp_bing) #this fails bc too few
+lm_bing <-lm(formula, data=temp_bing)
 temp_bing$y_hat <- fitted.values(lm_bing)
 temp_bing$groups <-1
 
-bind_rows(temp_nyt, temp_CSSE, temp_bing) %>% 
-   arrange(dataset,date_asdate) %>% mutate(groups=paste(dataset,groups)) %>%
-   ggplot() + 
-   geom_point(aes(x=rank(date_asdate), y=confirmed_log, color=dataset)) +
-   geom_line(aes(x=rank(date_asdate), y=y_hat, color=dataset, group=groups)) #+
-   #geom_vline(xintercept=bp$breakpoints)
+temp_df <- bind_rows(temp_nyt, temp_CSSE, temp_bing)  %>% 
+            arrange(dataset,date_asdate) %>% 
+           mutate(groups=paste(dataset,groups))
+
+temp_df2 <- bind_rows(temp_nyt, temp_CSSE, temp_bing) %>% 
+            arrange(date_asdate) %>% 
+            group_by(date_asdate) %>%
+              summarise(y_hat_mean=mean(y_hat, na.rm=T)) %>%
+            mutate(groups=99)
+
+ggplot() + 
+   geom_point(data=temp_df, aes(x=date_asdate, y=confirmed_log, color=dataset)) +
+   geom_line(data=temp_df, aes(x=date_asdate, y=y_hat, color=dataset, group=groups)) +
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("Bexar County (Q16861) Confirmed")
+
+
 
 #####
 #China Q148
@@ -124,33 +149,35 @@ temp <- lhs_long_clean %>% arrange(date_asdate) %>%
         group_by(dataset, date_asdate) %>%
           summarise(confirmed=max(confirmed, na.rm=T) ) %>% #this is a problem dupes with the same date  #this fixes a lot of things but we need to figure out the origin of this problem
         ungroup() %>%
-        mutate(confirmed_log=log(confirmed+1)) %>% mutate(date_rank= rank(date_asdate))  
+        mutate(confirmed_log=log(confirmed+1)) %>% 
+        mutate(date_rank= as.numeric(date_asdate) - min(as.numeric(date_asdate)))  
+
 
 temp_wikipedia <- temp %>% filter(dataset=="wikipedia")
-bp_wikipedia <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_wikipedia)
+bp_wikipedia <- breakpoints(formula, data=temp_wikipedia)
 temp_wikipedia$y_hat <- fitted.values(bp_wikipedia)
-temp_wikipedia$groups <- 0; temp_wikipedia$groups[bp_nyt$breakpoints+1] <- 1 ; temp_wikipedia$groups <- cumsum(temp_wikipedia$groups)+1
+temp_wikipedia$groups <- 0; temp_wikipedia$groups[bp_wikipedia$breakpoints+1] <- 1 ; temp_wikipedia$groups <- cumsum(temp_wikipedia$groups)+1
 
 
 temp_ecdc <- temp %>% filter(dataset=="ecdc")
-bp_ecdc <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_ecdc)
+bp_ecdc <- breakpoints(formula, data=temp_ecdc)
 temp_ecdc$y_hat <- fitted.values(bp_ecdc)
-temp_ecdc$groups <- 0; temp_ecdc$groups[bp_nyt$breakpoints+1] <- 1 ; temp_ecdc$groups <- cumsum(temp_ecdc$groups)+1
+temp_ecdc$groups <- 0; temp_ecdc$groups[bp_ecdc$breakpoints+1] <- 1 ; temp_ecdc$groups <- cumsum(temp_ecdc$groups)+1
 
 temp_who <- temp %>% filter(dataset=="who")
-bp_who <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_who)
+bp_who <- breakpoints(formula, data=temp_who)
 temp_who$y_hat <- fitted.values(bp_who)
-temp_who$groups <- 0; temp_who$groups[bp_nyt$breakpoints+1] <- 1 ; temp_who$groups <- cumsum(temp_who$groups)+1
+temp_who$groups <- 0; temp_who$groups[bp_who$breakpoints+1] <- 1 ; temp_who$groups <- cumsum(temp_who$groups)+1
 
 
 temp_metabiota <- temp %>% filter(dataset=="metabiota")
-bp_metabiota <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_metabiota)
+bp_metabiota <- breakpoints(formula, data=temp_metabiota)
 temp_metabiota$y_hat <- fitted.values(bp_metabiota)
-temp_metabiota$groups <- 0; temp_metabiota$groups[bp_CSSE$breakpoints+1] <- 1 ; temp_metabiota$groups <- cumsum(temp_metabiota$groups)+1
+temp_metabiota$groups <- 0; temp_metabiota$groups[bp_metabiota$breakpoints+1] <- 1 ; temp_metabiota$groups <- cumsum(temp_metabiota$groups)+1
 
 temp_bing <- temp %>% filter(dataset=="bing")
-bp_bing <- breakpoints(confirmed_log ~ 1 + date_rank, data=temp_bing) #this fails bc too few
-lm_bing <-lm(confirmed_log ~ 1 + date_rank, data=temp_bing)
+bp_bing <- breakpoints(formula, data=temp_bing) #this fails bc too few
+lm_bing <-lm(formula, data=temp_bing)
 temp_bing$y_hat <- fitted.values(lm_bing)
 temp_bing$groups <-1
 
@@ -167,10 +194,125 @@ temp_df2 <- bind_rows(temp_ecdc, temp_metabiota, temp_bing, temp_who, temp_wikip
 ggplot() + 
    geom_point(data=temp_df, aes(x=date_asdate, y=confirmed_log, color=dataset)) +
    geom_line(data=temp_df, aes(x=date_asdate, y=y_hat, color=dataset, group=groups)) +
-   geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black") 
-     
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("China (Q148) Confirmed")
    #geom_vline(xintercept=bp$breakpoints)
 
+
+#India
+#"Q668"
+temp <- lhs_long_clean %>% arrange(date_asdate) %>% 
+        filter(wikidata_id %in% "Q668") %>% 
+        group_by(dataset, date_asdate) %>%
+          summarise(confirmed=max(confirmed, na.rm=T) ) %>% #this is a problem dupes with the same date  #this fixes a lot of things but we need to figure out the origin of this problem
+        ungroup() %>%
+        mutate(confirmed_log=log(confirmed+1)) %>% 
+        mutate(date_rank= as.numeric(date_asdate) - min(as.numeric(date_asdate)))  
+table(temp$dataset)
+
+temp_covid19india <- temp %>% filter(dataset=="covid19india")
+bp_covid19india <- breakpoints(formula, data=temp_covid19india)
+temp_covid19india$y_hat <- fitted.values(bp_covid19india)
+temp_covid19india$groups <- 0; temp_covid19india$groups[bp_covid19india$breakpoints+1] <- 1 ; temp_covid19india$groups <- cumsum(temp_covid19india$groups)+1
+
+temp_wikipedia <- temp %>% filter(dataset=="wikipedia")
+bp_wikipedia <- breakpoints(formula, data=temp_wikipedia)
+temp_wikipedia$y_hat <- fitted.values(bp_wikipedia)
+temp_wikipedia$groups <- 0; temp_wikipedia$groups[bp_wikipedia$breakpoints+1] <- 1 ; temp_wikipedia$groups <- cumsum(temp_wikipedia$groups)+1
+
+temp_CSSE <- temp %>% filter(dataset=="CSSE")
+bp_CSSE <- breakpoints(formula, data=temp_CSSE)
+temp_CSSE$y_hat <- fitted.values(bp_CSSE)
+temp_CSSE$groups <- 0; temp_CSSE$groups[bp_CSSE$breakpoints+1] <- 1 ; temp_CSSE$groups <- cumsum(temp_CSSE$groups)+1
+
+temp_ecdc <- temp %>% filter(dataset=="ecdc")
+bp_ecdc <- breakpoints(formula, data=temp_ecdc)
+temp_ecdc$y_hat <- fitted.values(bp_ecdc)
+temp_ecdc$groups <- 0; temp_ecdc$groups[bp_ecdc$breakpoints+1] <- 1 ; temp_ecdc$groups <- cumsum(temp_ecdc$groups)+1
+
+temp_who <- temp %>% filter(dataset=="who")
+bp_who <- breakpoints(formula, data=temp_who)
+temp_who$y_hat <- fitted.values(bp_who)
+temp_who$groups <- 0; temp_who$groups[bp_who$breakpoints+1] <- 1 ; temp_who$groups <- cumsum(temp_who$groups)+1
+
+temp_metabiota <- temp %>% filter(dataset=="metabiota")
+bp_metabiota <- breakpoints(formula, data=temp_metabiota)
+temp_metabiota$y_hat <- fitted.values(bp_metabiota)
+temp_metabiota$groups <- 0; temp_metabiota$groups[bp_metabiota$breakpoints+1] <- 1 ; temp_metabiota$groups <- cumsum(temp_metabiota$groups)+1
+
+temp_bing <- temp %>% filter(dataset=="bing")
+bp_bing <- breakpoints(formula, data=temp_bing) #this fails bc too few
+lm_bing <-lm(formula, data=temp_bing)
+temp_bing$y_hat <- fitted.values(lm_bing)
+temp_bing$groups <-1
+
+temp_df <- bind_rows(temp_covid19india, temp_wikipedia, temp_CSSE, temp_ecdc, temp_who, temp_metabiota, temp_bing) %>% 
+            arrange(dataset,date_asdate) %>% 
+           mutate(groups=paste(dataset,groups))
+
+temp_df2 <- bind_rows(temp_covid19india, temp_wikipedia, temp_CSSE, temp_ecdc, temp_who, temp_metabiota, temp_bing) %>% 
+            arrange(date_asdate) %>% 
+            group_by(date_asdate) %>%
+              summarise(y_hat_mean=mean(y_hat, na.rm=T)) %>%
+            mutate(groups=99)
+
+ggplot() + 
+   geom_point(data=temp_df, aes(x=date_asdate, y=confirmed_log, color=dataset), alpha=.3) +
+   geom_line(data=temp_df, aes(x=date_asdate, y=y_hat, color=dataset, group=groups)) +
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("India (Q668) Confirmed")
+
+
+#Florida
+#Q812
+temp <- lhs_long_clean %>% arrange(date_asdate) %>% 
+        filter(wikidata_id %in% "Q812") %>% 
+        group_by(dataset, date_asdate) %>%
+          summarise(confirmed=max(confirmed, na.rm=T) ) %>% #this is a problem dupes with the same date  #this fixes a lot of things but we need to figure out the origin of this problem
+        ungroup() %>%
+        mutate(confirmed_log=log(confirmed+1)) %>%
+        mutate(date_rank= as.numeric(date_asdate) - min(as.numeric(date_asdate)))  
+table(temp$dataset)
+
+temp_covidtracking <- temp %>% filter(dataset=="covidtracking")
+bp_covidtracking <- breakpoints(formula, data=temp_covidtracking)
+temp_covidtracking$y_hat <- fitted.values(bp_covidtracking)
+temp_covidtracking$groups <- 0; temp_covidtracking$groups[bp_covidtracking$breakpoints+1] <- 1 ; temp_covidtracking$groups <- cumsum(temp_covidtracking$groups)+1
+
+temp_wikipedia <- temp %>% filter(dataset=="wikipedia")
+bp_wikipedia <- breakpoints(formula, data=temp_wikipedia)
+temp_wikipedia$y_hat <- fitted.values(bp_wikipedia)
+temp_wikipedia$groups <- 0; temp_wikipedia$groups[bp_wikipedia$breakpoints+1] <- 1 ; temp_wikipedia$groups <- cumsum(temp_wikipedia$groups)+1
+
+temp_metabiota <- temp %>% filter(dataset=="metabiota")
+bp_metabiota <- breakpoints(formula, data=temp_metabiota)
+temp_metabiota$y_hat <- fitted.values(bp_metabiota)
+temp_metabiota$groups <- 0; temp_metabiota$groups[bp_metabiota$breakpoints+1] <- 1 ; temp_metabiota$groups <- cumsum(temp_metabiota$groups)+1
+
+temp_bing <- temp %>% filter(dataset=="bing")
+bp_bing <- breakpoints(formula, data=temp_bing) #this fails bc too few
+lm_bing <-lm(formula, data=temp_bing)
+temp_bing$y_hat <- fitted.values(lm_bing)
+temp_bing$groups <-1
+
+temp_df <- bind_rows(temp_covidtracking, temp_wikipedia, temp_metabiota, temp_bing) %>% 
+            arrange(dataset,date_asdate) %>% 
+           mutate(groups=paste(dataset,groups))
+
+temp_df2 <- bind_rows(temp_covidtracking, temp_wikipedia, temp_metabiota, temp_bing) %>% 
+            arrange(date_asdate) %>% 
+            group_by(date_asdate) %>%
+              summarise(y_hat_mean=mean(y_hat, na.rm=T)) %>%
+            mutate(groups=99)
+
+ggplot() + 
+   geom_point(data=temp_df, aes(x=date_asdate, y=confirmed_log, color=dataset), alpha=.3) +
+   geom_line(data=temp_df, aes(x=date_asdate, y=y_hat, color=dataset, group=groups)) +
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("Florida (Q812) Confirmed")
 
 
 
