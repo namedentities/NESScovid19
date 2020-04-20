@@ -56,7 +56,8 @@ library(jsonlite)
 
 #This is too slow it's downloading each
 library(GADMTools)
-
+library(strucchange) ; #install.packages('strucchange')
+library(tsibble)
 
 ```
 
@@ -101,33 +102,41 @@ Except that's only true for parts of the series. So as sources start using each 
 count_datasets <- lhs_long_clean %>% dplyr::select(wikidata_id, dataset) %>% distinct() %>% count(wikidata_id)
 
 formula = confirmed_log ~ 1 + date_rank #+ I(date_rank^2) + I(date_rank^3)
-
+h=5
 #bexar county
 library(strucchange) ; #install.packages('strucchange')
 temp <- lhs_long_clean %>% arrange(date_asdate) %>% filter(wikidata_id %in% "Q16861") %>%  mutate(confirmed_log=log(confirmed+1)) %>%
         mutate(date_rank= as.numeric(date_asdate) - min(as.numeric(date_asdate)))  
 
+table(temp$dataset)
+
+temp_usafacts <- temp %>% filter(dataset=="usafacts")
+bp_usafacts <- breakpoints(formula, data=temp_usafacts,h=h)
+temp_usafacts$y_hat <- fitted.values(bp_usafacts)
+temp_usafacts$groups <- 0; temp_usafacts$groups[bp_usafacts$breakpoints+1] <- 1 ; temp_usafacts$groups <- cumsum(temp_usafacts$groups)+1
+
 temp_nyt <- temp %>% filter(dataset=="nyt")
-bp_nyt <- breakpoints(formula, data=temp_nyt)
+bp_nyt <- breakpoints(formula, data=temp_nyt,h=h)
 temp_nyt$y_hat <- fitted.values(bp_nyt)
 temp_nyt$groups <- 0; temp_nyt$groups[bp_nyt$breakpoints+1] <- 1 ; temp_nyt$groups <- cumsum(temp_nyt$groups)+1
 
+
 temp_CSSE <- temp %>% filter(dataset=="CSSE")
-bp_CSSE <- breakpoints(formula, data=temp_CSSE)
+bp_CSSE <- breakpoints(formula, data=temp_CSSE,h=h)
 temp_CSSE$y_hat <- fitted.values(bp_CSSE)
 temp_CSSE$groups <- 0; temp_CSSE$groups[bp_CSSE$breakpoints+1] <- 1 ; temp_CSSE$groups <- cumsum(temp_CSSE$groups)+1
 
 temp_bing <- temp %>% filter(dataset=="bing")
-bp_bing <- breakpoints(formula, data=temp_bing) #this fails bc too few
+bp_bing <- breakpoints(formula, data=temp_bing,h=h) #this fails bc too few
 lm_bing <-lm(formula, data=temp_bing)
 temp_bing$y_hat <- fitted.values(lm_bing)
 temp_bing$groups <-1
 
-temp_df <- bind_rows(temp_nyt, temp_CSSE, temp_bing)  %>% 
+temp_df <- bind_rows(temp_nyt, temp_CSSE, temp_bing, temp_usafacts)  %>% 
             arrange(dataset,date_asdate) %>% 
            mutate(groups=paste(dataset,groups))
 
-temp_df2 <- bind_rows(temp_nyt, temp_CSSE, temp_bing) %>% 
+temp_df2 <- bind_rows(temp_nyt, temp_CSSE, temp_bing, temp_usafacts) %>% 
             arrange(date_asdate) %>% 
             group_by(date_asdate) %>%
               summarise(y_hat_mean=mean(y_hat, na.rm=T)) %>%
@@ -154,29 +163,29 @@ temp <- lhs_long_clean %>% arrange(date_asdate) %>%
 
 
 temp_wikipedia <- temp %>% filter(dataset=="wikipedia")
-bp_wikipedia <- breakpoints(formula, data=temp_wikipedia)
+bp_wikipedia <- breakpoints(formula, data=temp_wikipedia,h=h)
 temp_wikipedia$y_hat <- fitted.values(bp_wikipedia)
 temp_wikipedia$groups <- 0; temp_wikipedia$groups[bp_wikipedia$breakpoints+1] <- 1 ; temp_wikipedia$groups <- cumsum(temp_wikipedia$groups)+1
 
 
 temp_ecdc <- temp %>% filter(dataset=="ecdc")
-bp_ecdc <- breakpoints(formula, data=temp_ecdc)
+bp_ecdc <- breakpoints(formula, data=temp_ecdc,h=h)
 temp_ecdc$y_hat <- fitted.values(bp_ecdc)
 temp_ecdc$groups <- 0; temp_ecdc$groups[bp_ecdc$breakpoints+1] <- 1 ; temp_ecdc$groups <- cumsum(temp_ecdc$groups)+1
 
 temp_who <- temp %>% filter(dataset=="who")
-bp_who <- breakpoints(formula, data=temp_who)
+bp_who <- breakpoints(formula, data=temp_who,h=h)
 temp_who$y_hat <- fitted.values(bp_who)
 temp_who$groups <- 0; temp_who$groups[bp_who$breakpoints+1] <- 1 ; temp_who$groups <- cumsum(temp_who$groups)+1
 
 
 temp_metabiota <- temp %>% filter(dataset=="metabiota")
-bp_metabiota <- breakpoints(formula, data=temp_metabiota)
+bp_metabiota <- breakpoints(formula, data=temp_metabiota,h=h)
 temp_metabiota$y_hat <- fitted.values(bp_metabiota)
 temp_metabiota$groups <- 0; temp_metabiota$groups[bp_metabiota$breakpoints+1] <- 1 ; temp_metabiota$groups <- cumsum(temp_metabiota$groups)+1
 
 temp_bing <- temp %>% filter(dataset=="bing")
-bp_bing <- breakpoints(formula, data=temp_bing) #this fails bc too few
+bp_bing <- breakpoints(formula, data=temp_bing,h=h) #this fails bc too few
 lm_bing <-lm(formula, data=temp_bing)
 temp_bing$y_hat <- fitted.values(lm_bing)
 temp_bing$groups <-1
@@ -212,37 +221,37 @@ temp <- lhs_long_clean %>% arrange(date_asdate) %>%
 table(temp$dataset)
 
 temp_covid19india <- temp %>% filter(dataset=="covid19india")
-bp_covid19india <- breakpoints(formula, data=temp_covid19india)
+bp_covid19india <- breakpoints(formula, data=temp_covid19india,h=h)
 temp_covid19india$y_hat <- fitted.values(bp_covid19india)
 temp_covid19india$groups <- 0; temp_covid19india$groups[bp_covid19india$breakpoints+1] <- 1 ; temp_covid19india$groups <- cumsum(temp_covid19india$groups)+1
 
 temp_wikipedia <- temp %>% filter(dataset=="wikipedia")
-bp_wikipedia <- breakpoints(formula, data=temp_wikipedia)
+bp_wikipedia <- breakpoints(formula, data=temp_wikipedia,h=h)
 temp_wikipedia$y_hat <- fitted.values(bp_wikipedia)
 temp_wikipedia$groups <- 0; temp_wikipedia$groups[bp_wikipedia$breakpoints+1] <- 1 ; temp_wikipedia$groups <- cumsum(temp_wikipedia$groups)+1
 
 temp_CSSE <- temp %>% filter(dataset=="CSSE")
-bp_CSSE <- breakpoints(formula, data=temp_CSSE)
+bp_CSSE <- breakpoints(formula, data=temp_CSSE,h=h)
 temp_CSSE$y_hat <- fitted.values(bp_CSSE)
 temp_CSSE$groups <- 0; temp_CSSE$groups[bp_CSSE$breakpoints+1] <- 1 ; temp_CSSE$groups <- cumsum(temp_CSSE$groups)+1
 
 temp_ecdc <- temp %>% filter(dataset=="ecdc")
-bp_ecdc <- breakpoints(formula, data=temp_ecdc)
+bp_ecdc <- breakpoints(formula, data=temp_ecdc,h=h)
 temp_ecdc$y_hat <- fitted.values(bp_ecdc)
 temp_ecdc$groups <- 0; temp_ecdc$groups[bp_ecdc$breakpoints+1] <- 1 ; temp_ecdc$groups <- cumsum(temp_ecdc$groups)+1
 
 temp_who <- temp %>% filter(dataset=="who")
-bp_who <- breakpoints(formula, data=temp_who)
+bp_who <- breakpoints(formula, data=temp_who,h=h)
 temp_who$y_hat <- fitted.values(bp_who)
 temp_who$groups <- 0; temp_who$groups[bp_who$breakpoints+1] <- 1 ; temp_who$groups <- cumsum(temp_who$groups)+1
 
 temp_metabiota <- temp %>% filter(dataset=="metabiota")
-bp_metabiota <- breakpoints(formula, data=temp_metabiota)
+bp_metabiota <- breakpoints(formula, data=temp_metabiota,h=h)
 temp_metabiota$y_hat <- fitted.values(bp_metabiota)
 temp_metabiota$groups <- 0; temp_metabiota$groups[bp_metabiota$breakpoints+1] <- 1 ; temp_metabiota$groups <- cumsum(temp_metabiota$groups)+1
 
 temp_bing <- temp %>% filter(dataset=="bing")
-bp_bing <- breakpoints(formula, data=temp_bing) #this fails bc too few
+bp_bing <- breakpoints(formula, data=temp_bing,h=h) #this fails bc too few
 lm_bing <-lm(formula, data=temp_bing)
 temp_bing$y_hat <- fitted.values(lm_bing)
 temp_bing$groups <-1
@@ -277,22 +286,22 @@ temp <- lhs_long_clean %>% arrange(date_asdate) %>%
 table(temp$dataset)
 
 temp_covidtracking <- temp %>% filter(dataset=="covidtracking")
-bp_covidtracking <- breakpoints(formula, data=temp_covidtracking)
+bp_covidtracking <- breakpoints(formula, data=temp_covidtracking,h=h)
 temp_covidtracking$y_hat <- fitted.values(bp_covidtracking)
 temp_covidtracking$groups <- 0; temp_covidtracking$groups[bp_covidtracking$breakpoints+1] <- 1 ; temp_covidtracking$groups <- cumsum(temp_covidtracking$groups)+1
 
 temp_wikipedia <- temp %>% filter(dataset=="wikipedia")
-bp_wikipedia <- breakpoints(formula, data=temp_wikipedia)
+bp_wikipedia <- breakpoints(formula, data=temp_wikipedia,h=h)
 temp_wikipedia$y_hat <- fitted.values(bp_wikipedia)
 temp_wikipedia$groups <- 0; temp_wikipedia$groups[bp_wikipedia$breakpoints+1] <- 1 ; temp_wikipedia$groups <- cumsum(temp_wikipedia$groups)+1
 
 temp_metabiota <- temp %>% filter(dataset=="metabiota")
-bp_metabiota <- breakpoints(formula, data=temp_metabiota)
+bp_metabiota <- breakpoints(formula, data=temp_metabiota,h=h)
 temp_metabiota$y_hat <- fitted.values(bp_metabiota)
 temp_metabiota$groups <- 0; temp_metabiota$groups[bp_metabiota$breakpoints+1] <- 1 ; temp_metabiota$groups <- cumsum(temp_metabiota$groups)+1
 
 temp_bing <- temp %>% filter(dataset=="bing")
-bp_bing <- breakpoints(formula, data=temp_bing) #this fails bc too few
+bp_bing <- breakpoints(formula, data=temp_bing,h=h) #this fails bc too few
 lm_bing <-lm(formula, data=temp_bing)
 temp_bing$y_hat <- fitted.values(lm_bing)
 temp_bing$groups <-1
@@ -317,93 +326,501 @@ ggplot() +
 
 
 
-
-
-temp <- nytimes_long %>% arrange(date_asdate) %>% filter(county %in% "New York City") %>% 
-        mutate(confirmed_log=log(confirmed+1)) %>%
-        mutate(t= rank(date_asdate))  
-bp <- breakpoints(confirmed_log ~ 1, data=temp)
-bp <- breakpoints(confirmed_log ~ 1 + t, data=temp)
-
-tmin <- min(temp$t)
-tmax <- max(temp$t)
-c(tmin, bp$breakpoints, tmax)
-
-
-cdf <- data.frame(
-                  t= c(1,bp$breakpoints), 
-                  t_slope= coef(bp)[,2]
-                  )
-
-temp <- temp %>% 
-        mutate(y_hat = fitted.values(bp)) %>%
-        left_join(cdf) %>% 
-        fill(t_slope) %>%
-        mutate(t_slope_percent_change = round((exp(t_slope)-1)*100,2))
-
-temp %>% ggplot() +
-         geom_point(aes(x=rank(date_asdate), y=confirmed_log)) + 
-         geom_line(aes(x=rank(date_asdate), y=y_hat)) + 
-         geom_vline(xintercept=bp$breakpoints)
 ```
+
+
+Figure out interpolation
 
 ```{r}
 
+# # Q668  Q16861  Q148  Q30 Q148 Q16861 Q30
+temp <- temp_df %>% filter(wikidata_id=="Q148") %>% mutate(date_asnumeric=as.numeric(date_asdate))
+temp %>% ggplot() + geom_point(aes(date_asdate,confirmed_log))  + facet_wrap(~dataset) #+ geom_point(aes(date_asdate,confirmed_log_y_hat), color="blue")
+
+#library(rpart)
+#rt <- rpart(confirmed_log ~ 1 + date_asdate , data=temp)
+#temp$y_hat <- predict( rt, newdata=temp )
+
+#temp$dataset <- as.factor(temp$dataset)
+#fmBH <- mob(confirmed_log ~ 1 + t + I(t^2) + I(t^3) | t + dataset, control = mob_control(minsplit = 3), data = temp,  model = linearModel) #this fits a piecewise linear to each dataset #have to use t, doesn't like data objects
+#plot(fmBH)
+#coef(fmBH)
+#temp$y_hat <- predict( fmBH, newdata=temp )
+
+#The trick is fitting only to one dataset at a time
 temp_list <- list()
-for(q in places$place){
-  print(q)
-  temp <- NULL
-  temp <- nytimes_long %>% 
-          arrange(date_asdate) %>% 
-          filter(place %in% q) %>% 
-          mutate(confirmed_log=log(confirmed+1)) %>%
-          mutate(t= rank(date_asdate))  
-  if( nrow(temp)==0 ) {print("error"); break}
+for( d in temp$dataset %>% unique() ){
+  temptemp <- temp %>% filter(dataset==d)
+  fmBH <- mob(confirmed_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temptemp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
+  temptemp$y_hat <- predict( fmBH, newdata=temptemp , type = c("response") )
+  temptemp$group_number <-  predict( fmBH, newdata=temptemp , type = c("node"))
+  temptemp <- temptemp %>% group_by(group_number) %>% arrange(date_asnumeric) %>% mutate(slope=difference(y_hat)) %>% fill(slope, .direction="up") %>% ungroup() %>%
+                      mutate(percent_change = round((exp(slope)-1)*100,2)) 
 
-  #bp <- breakpoints(confirmed_log ~ 1, data=temp)
-  bp <- NULL
-  lm1 <- NULL
-  y_hat <- NA
-  cdf <- NULL
-  try({
-        #if it fails fall back to just a lm
-    lm1 <- lm(confirmed_log ~ 1 + t, data=temp)
-
-    cdf <- data.frame(
-                      t= 1, 
-                      t_slope= coef(lm1)[2],
-                      t_slope_break=0
-                      )
-    y_hat=fitted.values(lm1)
-  })
-  
-  try({
-    bp <- breakpoints(confirmed_log ~ 1 + t, data=temp)
-    
-    cdf <- data.frame(
-                      t= c(1,bp$breakpoints), 
-                      t_slope= coef(bp)[,2],
-                      t_slope_break=1
-                      )
-    y_hat=fitted.values(bp)
-  })
-  
-  try({
-    temp <- temp %>% 
-            mutate(y_hat = y_hat) %>%
-            left_join(cdf) %>% 
-            fill(t_slope) %>%
-            mutate(t_slope_percent_change = round((exp(t_slope)-1)*100,2))
-    
-    temp_list[[as.character(q)]] <- temp
-  })
-  #if( is.na( temp_list[[as.character(q)]]$y_hat) ) {print("error"); break}
+  temp_list[[d]] <- temptemp
 }
-#"13055"
-temp_df <- bind_rows(temp_list)
-dim(temp_df)
 
-temp_list[["New York_New York City_NA"]]
+combined <- bind_rows(temp_list) 
+p0 <- combined %>%
+     mutate(group=paste(wikidata_id, dataset, group_number)) %>%
+     ggplot() + geom_point(aes(date_asdate,confirmed_log, color=dataset), alpha=.5) + 
+                                    geom_line(aes(date_asdate,y_hat, group=group), color="blue", alpha=1) + facet_wrap(~dataset) + theme_bw() #it shits the bed in that big gap in wikipedia
+
+fmBH_slope <- mob(confirmed_log ~ 1   | date_asnumeric , control = mob_control(minsplit = 3, alpha=.1), data = combined,  model = linearModel)  #it doesn't want to do 
+rt1 <- rpart(formula = percent_change ~ date_asnumeric, data=combined)
+combined$percent_change_y_hat <-  predict(rt1, newdata=combined)
+#combined$slope_y_hat <- predict( fmBH_slope, newdata=combined  , type = c("response") )
+#combined$group_number <- predict( fmBH_slope, newdata=combined  , type = c("node") )
+
+p1 <- combined %>%
+     mutate(group=paste(wikidata_id, dataset, group_number)) %>%
+     ggplot() + geom_point(aes(date_asdate,confirmed_log, color=dataset), alpha=.5) + 
+                                    geom_line(aes(date_asdate,y_hat, group=group, color=dataset), alpha=.1) + theme_bw() + facet_wrap(~dataset)#  #it shits the bed in that big gap in wikipedia
+
+
+p2 <- combined %>% ggplot() + geom_point(aes(date_asdate,percent_change_y_hat, color=dataset), alpha=.5) + 
+             geom_line(aes(date_asdate,percent_change_y_hat), color="black", alpha=1) + theme_bw() + facet_wrap(~dataset) #+ facet_wrap(~dataset) #it shits the bed in that big gap in wikipedia
+
+p1 / p2
+
+
+```
+
+Interpolate and find slope for confirmed, deaths, and tests
+
+```{r}
+
+places <- lhs_long_clean$wikidata_id %>% unique() %>% na.omit() ; length(places)
+datasets <- lhs_long_clean$dataset %>% unique() %>% na.omit() ; table(dataset)
+
+temp_list <- list()
+for(p in places){
+    print(p)
+    for(d in datasets){
+      try({
+        temp <- NULL
+        temp <- lhs_long_clean %>%
+                filter(dataset %in% d) %>% 
+                filter(wikidata_id %in% p) %>% 
+                arrange(date_asdate) %>% 
+                mutate(confirmed_log=log(confirmed+1)) %>%
+                mutate(deaths_log=log(deaths+1)) %>%
+                mutate(tested_people_log=log(tested_people+1)) 
+        if(nrow(temp)==0){next()}
+        
+        temp <- temp %>% expand(dataset,gid, geonameid,wikidata_id,  date_asdate=min(date_asdate):max(date_asdate) %>% as.Date() ) %>% full_join(temp) %>% mutate(date_asnumeric= as.numeric(date_asdate) ) 
+                
+        tryCatch({  
+          tree_confirmed <- mob(confirmed_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
+          temp$confirmed_log_y_hat <- predict( tree_confirmed, newdata=temp , type = c("response") )
+          temp$confirmed_log_group_number <-  predict( tree_confirmed, newdata=temp , type = c("node"))
+          temp <- temp %>% group_by(confirmed_log_group_number) %>% arrange(date_asnumeric) %>% mutate(confirmed_log_y_hat_slope=difference(confirmed_log_y_hat)) %>% fill(confirmed_log_y_hat_slope, .direction="up") %>% ungroup() %>%
+                              mutate(confirmed_log_y_hat_percent_change = round((exp(confirmed_log_y_hat_slope)-1)*100,2)) 
+        }, error = function(e) {})
+        
+        tryCatch({  
+          tree_deaths <- mob(deaths_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
+          temp$deaths_log_y_hat <- predict( tree_deaths, newdata=temp , type = c("response") )
+          temp$deaths_log_group_number <-  predict( tree_deaths, newdata=temp , type = c("node"))
+          temp <- temp %>% group_by(deaths_log_group_number) %>% arrange(date_asnumeric) %>% mutate(deaths_log_y_hat_slope=difference(deaths_log_y_hat)) %>% fill(deaths_log_y_hat_slope, .direction="up") %>% ungroup() %>%
+                              mutate(deaths_log_y_hat_percent_change = round((exp(deaths_log_y_hat_slope)-1)*100,2)) 
+        }, error = function(e) {})
+        
+        tryCatch({  
+          tree_tested_people <- mob(tested_people_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
+          temp$tested_people_log_y_hat <- predict( tree_tested_people, newdata=temp , type = c("response") )
+          temp$tested_people_log_group_number <-  predict( tree_tested_people, newdata=temp , type = c("node"))
+          temp <- temp %>% group_by(tested_people_log_group_number) %>% arrange(date_asnumeric) %>% mutate(tested_people_log_y_hat_slope=difference(tested_people_log_y_hat)) %>% fill(tested_people_log_y_hat_slope, .direction="up") %>% ungroup() %>%
+                              mutate(tested_people_log_y_hat_percent_change = round((exp(tested_people_log_y_hat_slope)-1)*100,2)) 
+        }, error = function(e) {})
+        
+        temp_list[[paste(p,d) ]] <- temp
+  
+      })
+    }
+}
+
+lhs_long_clean_imputed <- bind_rows(temp_list)
+dim(lhs_long_clean_imputed) #bigger because we're interpolating now
+
+rt1 <- rpart(formula = confirmed_log_y_hat_percent_change ~ date_asnumeric, data=test)
+interpolated = data.frame(date_asnumeric=min(test$date_asnumeric):max(test$date_asnumeric) )
+interpolated$confirmed_log_y_hat_percent_change_y_hat <-  predict(rt1, newdata=interpolated)
+interpolated$date_asdate <- as.Date(interpolated$date_asnumeric)
+
+
+minsplit=6
+minbucket=3
+temp_list <- list()
+for(p in places){
+  print(p)
+  temp <- lhs_long_clean_imputed %>% filter(wikidata_id==p) %>% arrange(date_asnumeric)
+          
+  tryCatch({  
+    rt1 <- rpart(formula = confirmed_log_y_hat_percent_change ~ date_asnumeric, data=temp, control = rpart.control(minsplit = minsplit, minbucket=minbucket))
+    temp$confirmed_log_y_hat_percent_change_y_hat <-  predict(rt1, newdata=temp)
+  }, error = function(e) {})
+  
+  tryCatch({  
+    rt2 <- rpart(formula = deaths_log_y_hat_percent_change ~ date_asnumeric, data=temp, control = rpart.control(minsplit = minsplit, minbucket=minbucket))
+    temp$deaths_log_y_hat_percent_change_y_hat <-  predict(rt2, newdata=temp)
+  }, error = function(e) {})
+
+  tryCatch({  
+    rt3 <- rpart(formula = tested_people_log ~ date_asnumeric, data=temp)
+    temp$tested_people_log_y_hat_percent_change_y_hat <-  predict(rt3, newdata=temp, control = rpart.control(minsplit = minsplit, minbucket=minbucket))
+  }, error = function(e) {})
+  
+  temp_list[[paste(p) ]] <- temp
+}
+lhs_long_clean_imputed2 <- bind_rows(temp_list)
+
+saveRDS(lhs_long_clean_imputed2, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_clean_imputed.Rds")
+
+```
+
+#Plot some specific countries
+
+```{r}
+
+lhs_long_clean_imputed <- readRDS( "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_clean_imputed.Rds")
+dim(lhs_long_clean_imputed)
+
+lhs_long_clean %>% 
+        mutate(group=paste(dataset,wikidata_id)) %>% filter(wikidata_id=="Q16861") %>% 
+        arrange(date_asdate)  %>%
+        mutate(confirmed_log= confirmed %>% log()) %>%
+        ggplot() + 
+        geom_point( aes(x=date_asdate, y=confirmed_log, color=dataset), alpha=.3)
+
+test <- lhs_long_clean_imputed %>% 
+        mutate(group=paste(dataset,wikidata_id,confirmed_log_group_number)) %>% filter(wikidata_id=="Q869") %>% 
+        arrange(date_asdate) # %>%
+
+p0a <- test %>%
+        ggplot() + 
+           geom_point( aes(x=date_asdate, y=confirmed_log, color=dataset), alpha=.3) +
+           geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+           #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+           theme_bw() +
+           ggtitle("Thailand Q869 Confirmed")
+
+p0b <- test %>%
+      ggplot() + 
+         geom_point( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change_y_hat), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+         ggtitle("Thailand Q869 Confirmed")
+
+
+library(patchwork)
+p0a / p0b
+
+
+
+#####
+#USA Q30
+
+#bp_temp <- breakpoints(formula=confirmed_log_y_hat_percent_change ~ 1, data=temp_df %>% mutate(group=paste(dataset,wikidata_id,confirmed_log_y_hat_percent_change)) %>% filter(wikidata_id=="Q30"))
+#confirmed_log_y_hat_percent_change=fitted.values(bp_temp)
+
+test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,confirmed_log_group_number)) %>%
+        filter(wikidata_id=="Q30") %>% 
+        mutate(group=paste(dataset, wikidata_id,confirmed_log_group_number)) %>%
+        arrange(date_asdate)  %>%
+        mutate(date_asnumeric = date_asdate %>% as.numeric() )
+
+#rt1 <- rpart(formula = confirmed_log_y_hat_percent_change ~ date_asnumeric, data=test)
+#interpolated = data.frame(date_asnumeric=min(test$date_asnumeric):max(test$date_asnumeric) )
+#interpolated$confirmed_log_y_hat_percent_change_y_hat <-  predict(rt1, newdata=interpolated)
+#interpolated$date_asdate <- as.Date(interpolated$date_asnumeric)
+
+p0a <- test %>%
+        ggplot() + 
+           geom_point( aes(x=date_asdate, y=confirmed_log, color=dataset), alpha=.3) +
+           geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+           #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+           theme_bw() +
+           ggtitle("USA Q30 Confirmed") # + facet_wrap(~dataset) 
+
+p0b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line(aes(x=date_asdate , y=confirmed_log_y_hat_percent_change_y_hat ), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+         ggtitle("USA Q30 Confirmed") # + facet_wrap(~dataset)
+
+p0a / p0b
+
+
+
+#####
+#China Q148
+
+test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,confirmed_log_group_number)) %>% filter(wikidata_id=="Q148") %>% 
+        mutate(group=paste(dataset, wikidata_id,confirmed_log_group_number)) %>%
+        arrange(date_asdate) #%>%
+
+p1a <- test %>% 
+ggplot() + 
+   geom_point( aes(x=date_asdate, y=confirmed_log, color=dataset), alpha=.3) +
+   geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("China Q148 Confirmed")
+
+p1b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line(aes(x=date_asdate , y=confirmed_log_y_hat_percent_change_y_hat ), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+   ggtitle("China Q148 Confirmed")
+   
+
+p1a / p1b
+
+#India
+#"Q668"
+
+test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,confirmed_log_y_hat_percent_change)) %>% filter(wikidata_id=="Q668") %>% 
+        mutate(group=paste(dataset, wikidata_id,confirmed_log_group_number)) %>%
+        arrange(date_asdate) #%>%
+        #mutate( confirmed_log_y_hat_percent_change = breakpoints(formula=confirmed_log_y_hat_percent_change ~ 1, data=. ) %>% fitted.values() )
+
+
+p2a <- test %>%
+ggplot() + 
+   geom_point( aes(x=date_asdate, y=confirmed_log, color=dataset), alpha=.3) +
+   geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("India Q668 Confirmed")
+
+p2b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line(aes(x=date_asdate , y=confirmed_log_y_hat_percent_change_y_hat ), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+   ggtitle("India Q668 Confirmed")
+   
+    
+library(patchwork)
+p2a / p2b
+
+
+
+#Bexar
+#"Q16861"
+
+test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,confirmed_log_y_hat_percent_change)) %>% filter(wikidata_id=="Q16861") %>% 
+        mutate(group=paste(dataset, wikidata_id,confirmed_log_group_number)) %>%
+        arrange(date_asdate) #%>%
+        #mutate( confirmed_log_y_hat_percent_change = breakpoints(formula=confirmed_log_y_hat_percent_change ~ 1, data=. ) %>% fitted.values() )
+
+
+p3a <- test %>%
+      ggplot() + 
+         geom_point( aes(x=date_asdate, y=confirmed_log, color=dataset), alpha=.3) +
+         geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+         ggtitle("Bexar County Q16861 Confirmed")
+
+p3b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line(aes(x=date_asdate , y=confirmed_log_y_hat_percent_change_y_hat ), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+   ggtitle("Bexar County Q16861 Confirmed") + ylim(0,100)
+   
+    
+library(patchwork)
+p3a / p3b
+
+
+
+#Italy
+#"Q38"
+
+test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,confirmed_log_y_hat_percent_change)) %>% filter(wikidata_id=="Q38") %>% 
+        mutate(group=paste(dataset, wikidata_id,confirmed_log_group_number)) %>%
+        arrange(date_asdate) #%>%
+        #mutate( confirmed_log_y_hat_percent_change = breakpoints(formula=confirmed_log_y_hat_percent_change ~ 1, data=. ) %>% fitted.values() )
+
+
+p4a <- test %>%
+ggplot() + 
+   geom_point( aes(x=date_asdate, y=confirmed_log, color=dataset), alpha=.3) +
+   geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("Italy Q38 Confirmed")
+
+p4b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line(aes(x=date_asdate , y=confirmed_log_y_hat_percent_change_y_hat ), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+   ggtitle("Italy Q38 Confirmed")
+   
+    
+library(patchwork)
+p4a / p4b
+
+
+
+#South Korea
+#"Q884"
+
+test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,confirmed_log_y_hat_percent_change)) %>% filter(wikidata_id=="Q38") %>% 
+        mutate(group=paste(dataset, wikidata_id,confirmed_log_group_number)) %>%
+        arrange(date_asdate) #%>%
+        #mutate( confirmed_log_y_hat_percent_change = breakpoints(formula=confirmed_log_y_hat_percent_change ~ 1, data=. ) %>% fitted.values() )
+
+
+p5a <- test %>%
+ggplot() + 
+   geom_point( aes(x=date_asdate, y=confirmed_log, color=dataset), alpha=.3) +
+   geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("South Korea Q884  Confirmed")
+
+p5b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line(aes(x=date_asdate , y=confirmed_log_y_hat_percent_change_y_hat ), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+   ggtitle("South Korea Q884 Confirmed")
+   
+    
+library(patchwork)
+p5a / p5b
+
+
+(p0a + p1a + p2a + p3a + p4a + p5a) / (p0b + p1b + p2b + p3b + p4b + p5b)
+
+
+```
+
+We can already start to ask some questions like how does rate of growth vary as a function of how many infected people there are/time
+
+```{r}
+
+head(temp_df)
+temp_df %>% mutate(group=paste(wikidata_id, dataset)) %>%
+ggplot() + 
+   geom_line( aes(x=date_asdate , y=confirmed_log_y_hat, group=group), alpha=.01, color="blue") +
+   theme_bw() +
+   ggtitle("Interpolated log count by date") + ylim(0,12)
+
+
+temp_df %>% mutate(group=paste(wikidata_id, dataset)) %>%
+ggplot() + 
+   geom_line( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change, group=group), alpha=.05, color="blue") +
+   theme_bw() +
+   ggtitle("Interpolated log count by date") + ylim(0,.7)
+
+library(tsibble)
+df_slopes %>% 
+  group_by(wikidata_id) %>%
+    mutate(random=runif(1)) %>% 
+  ungroup() %>%
+  filter(random>.9) %>%
+ggplot() + 
+   geom_line( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change, group=wikidata_id), alpha=.2, color="blue") +
+   theme_bw() +
+   ggtitle("Interpolated log count by Alligned T") + ylim(0,.5)
+
+
+df_slopes <- temp_df %>% group_by(wikidata_id) %>% 
+             arrange(date_asdate) %>% 
+             filter(!duplicated(date_asdate)) %>% 
+             mutate(confirmed_log_y_hat_percent_change_fd=difference(confirmed_log_y_hat_percent_change)) %>%
+             mutate(t = row_number()) %>%
+             mutate(t_alligned = ifelse(confirmed_log_y_hat_percent_change_fd==max(confirmed_log_y_hat_percent_change_fd,na.rm=T), t, NA) ) %>%
+             mutate(t_alligned = max(t_alligned, na.rm=T) ) %>%
+             mutate(t_alligned = t-max(t_alligned, na.rm=T) ) 
+  
+df_slopes %>% mutate(group=paste(wikidata_id)) %>%
+ggplot() + 
+   geom_line( aes(x=t_alligned , y=confirmed_log_y_hat_percent_change, group=group), alpha=.05, color="blue") +
+   theme_bw() +
+   ggtitle("Interpolated log count by Alligned T") + ylim(0,.5)
+
+
+df_slopes %>% mutate(group=paste(wikidata_id)) %>% filter(wikidata_id %in% c('Q30','Q1439','Q668','Q884','Q16861','Q159','Q38')) %>%
+ggplot() + 
+   geom_line( aes(x=t_alligned , y=confirmed_log_y_hat_percent_change, group=group, color=wikidata_id), alpha=.5) +
+   theme_bw() +
+   ggtitle("Interpolated log count by Alligned T") + ylim(0,.5) +
+   gghighlight()
+
+
+df_slopes %>% 
+  group_by(wikidata_id) %>%
+    mutate(random=runif(1)) %>% 
+  ungroup() %>%
+  filter(random>.9) %>%
+ggplot() + 
+   geom_line( aes(x=t_alligned , y=confirmed_log_y_hat_percent_change, group=wikidata_id), alpha=.2, color="blue") +
+   theme_bw() +
+   ggtitle("Interpolated log count by Alligned T") + ylim(0,.5)
+
+
+temp_df %>% 
+  group_by(wikidata_id) %>%
+    arrange(date_asdate) %>%
+    mutate(confirmed_log_y_hat_percent_change_fd= difference(confirmed_log_y_hat_percent_change)) %>%
+    filter(confirmed_log_y_hat_percent_change_fd==max(confirmed_log_y_hat_percent_change_fd,na.rm=T)  ) %>%
+  ungroup() %>% 
+  pull(confirmed) %>%
+  summary() #the jump happens at a median of 10 and mean of 358
+  
+
+
+
+#There are some negatives which should be possible.
+temp_df %>%
+ggplot() + 
+   geom_point( aes(x=confirmed_log , y=confirmed_log_y_hat_percent_change_percent_change, color=dataset), alpha=.2) +
+   geom_smooth( aes(x=confirmed_log , y=confirmed_log_y_hat_percent_change_percent_change), alpha=.2, span=.05) + #
+   #geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("Rate of growth as a function of confirmed")
+
+temp_df %>%
+ggplot() + 
+   geom_point( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change_percent_change, color=dataset), alpha=.2) +
+   geom_smooth( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change_percent_change), alpha=.2, span=.05) + #
+   #geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("Rate of growth as a function of date")
+
+
 
 
 ```
@@ -598,6 +1015,141 @@ lhs_long_median %>% filter(confirmed>10) %>% filter(CFR<1) %>% pull(CFR) %>% his
 
 lhs_long_median %>% filter(confirmed>10) %>% filter(CFR<1) %>% ggplot(aes(x=CFR)) + geom_density()
 
+
+```
+
+
+
+
+Fit linear structural breaks model to each place and dataset, get y_hats, breaks, and slopes
+This fits piecewise linear approximations to each individual dataset
+
+```{r, eval=F}
+#This code is now depricated in favor of the tree base method above
+
+places <- lhs_long_clean$wikidata_id %>% unique() %>% na.omit() ; length(places)
+datasets <- lhs_long_clean$dataset %>% unique() %>% na.omit() ; table(dataset)
+
+temp_list <- list()
+for(p in places){
+    print(p)
+    for(d in datasets){
+      temp <- NULL
+      temp <- lhs_long_clean %>% 
+              arrange(date_asdate) %>% 
+              filter(dataset %in% d) %>% 
+              filter(wikidata_id %in% p) %>% 
+              mutate(confirmed_log=log(confirmed+1)) %>%
+              mutate(deaths_log=log(deaths+1)) %>%
+              mutate(tested_people_log=log(tested_people+1)) %>%
+              mutate(t= as.numeric(date_asdate) - min(as.numeric(date_asdate)) +1  ) %>% #start at 1 to make indexing easier
+              mutate(i= row_number()  ) # actually need this
+        
+      i_original <- temp$i
+      
+      if( nrow(temp)==0 ) { next} #print("error");
+      print(p)
+      
+      #bp <- breakpoints(confirmed_log ~ 1, data=temp)
+      bp <- NULL
+      lm1 <- NULL
+      y_hat <- NA
+      cdf <- NULL
+      try({
+            #if it fails fall back to just a lm
+        lm1 <- lm(confirmed_log ~ 1 + t, data=temp)
+    
+        cdf <- data.frame(
+                          t= 1, 
+                          confirmed_log_intercept= coef(lm1)[1],
+                          confirmed_log_slope= coef(lm1)[2],
+                          confirmed_log_slope_break=0
+                          )
+        confirmed_log_y_hat=fitted.values(lm1)
+      })
+      
+      try({
+        bp <- breakpoints(confirmed_log ~ 1 + t, data=temp, h=3)
+        
+        cdf <- data.frame(
+                          i= c(1,bp$breakpoints), 
+                          confirmed_log_intercept= coef(bp)[,1],
+                          confirmed_log_slope= coef(bp)[,2],
+                          confirmed_log_slope_break=1
+                          )
+        confirmed_log_y_hat=fitted.values(bp)
+      })
+      
+      try({
+        temp2 <- temp
+        temp2$confirmed_log_y_hat <- NA
+        temp2$confirmed_log_y_hat <- confirmed_log_y_hat
+        
+        temp2 <- temp2 %>% 
+                left_join(cdf) 
+        q=paste0(p,"_",d)
+        temp2 <- temp2 %>% 
+                  expand(dataset, gid,geonameid, wikidata_id,t=min(temp$t):max(temp$t)) %>% #expand this to include all the t 
+                  left_join(temp2) %>% 
+                  mutate(date_asdate=min(date_asdate, na.rm=T)-1+t) %>% #go back interp date again
+                  mutate(confirmed_log_slope_break = confirmed_log_slope_break %>% replace_na(0) %>% cumsum() ) %>%
+                  fill(confirmed_log_intercept) %>%
+                  fill(confirmed_log_slope) %>%
+                  mutate(confirmed_log_y_hat= confirmed_log_intercept + confirmed_log_slope*t ) %>% 
+                  mutate(confirmed_log_slope_percent_change = round((exp(confirmed_log_slope)-1)*100,2)) 
+
+        temp_list[[as.character(q)]] <- temp2
+      })
+      #if( is.na( temp_list[[as.character(q)]]$y_hat) ) {print("error"); break}
+    }
+}
+#"13055"
+temp_df <- bind_rows(temp_list)
+dim(temp_df) #bigger because we're interpolating now
+
+# install.packages("devtools")
+#devtools::install_github("tidyverse/multidplyr")
+
+library(multidplyr)
+library(dplyr, warn.conflicts = FALSE)
+#cluster <- new_cluster(4)
+
+#need to supress messages
+rex_function <- function(x){
+  temp=data.frame(confirmed_log_slope=x)
+  tryCatch({
+    #if there's an NA in x we get an error because breakpoints is one short
+    prediction <- breakpoints(formula=confirmed_log_slope ~ 1, data=temp, h=3) %>% fitted.values()
+    result=rep(NA, length(x) )
+    result[!is.na(x)] <-prediction
+    return(result)
+    
+  }, error=function(e){})
+  
+  return( rep(NA, length(x) ) )
+         
+}
+#didn't take too long now
+
+#library(multidplyr)
+#library(dplyr, warn.conflicts = FALSE)
+#cluster <- new_cluster(4)
+
+library(tictoc)
+tic()
+library(strucchange)
+test <- temp_df %>% head(20000)
+test3 <- test %>% 
+                group_by(wikidata_id) %>% 
+                #partition(cluster) %>%
+                arrange(date_asdate) %>%
+                #mutate( confirmed_log_slope_y_hat = breakpoints(formula=confirmed_log_slope ~ 1, data=. ) %>% fitted.values() ) %>% 
+                mutate( confirmed_log_slope_y_hat = rex_function(confirmed_log_slope) ) %>%  #fails on the cluster
+                ungroup() #%>%
+                #collect()
+toc() #48 seconds for 10k #122 seconds for 20k
+
+saveRDS(temp_df, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_interpolated.Rds")
 
 ```
 

@@ -366,11 +366,50 @@ nytimes_long <- nytimes %>%
                 mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
 
                 mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
-               rex_admin_function()
+                rex_admin_function()
 
 forjoining_nytimes <- nytimes_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=deaths)
 
 ```
+
+
+
+### USA Facts
+
+COVID-19 deaths dataset. USA Facts. Accessed on 03-31-2020 at https://www.reuters.
+com/article/us-health-coronavirus-who/covid-19-spread-map
+https://www.stat.berkeley.edu/~binyu/ps/papers2020/covid19_paper.pdf
+https://github.com/Yu-Group/covid19-severity-prediction/tree/master/data
+https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/
+
+
+
+
+```{r}
+
+usafacts_confirmed <- read_csv("https://usafactsstatic.blob.core.windows.net/public/data/covid-19/covid_confirmed_usafacts.csv")
+usafacts_deaths <- read_csv("https://usafactsstatic.blob.core.windows.net/public/data/covid-19/covid_deaths_usafacts.csv")
+
+usafacts_confirmed_long <-  pivot_longer(usafacts_confirmed, names_to = "date", cols = ends_with("20"), values_to = "confirmed")
+usafacts_deaths_long <-  pivot_longer(usafacts_deaths, names_to = "date", cols = ends_with("20"), values_to = "deaths")
+
+usafacts_long <- usafacts_confirmed_long %>% full_join(usafacts_deaths_long) %>%
+                  mutate(date_asdate = mdy(str_replace(date,"20$","2020"))) %>%  
+                  mutate(dataset="usafacts") %>%
+                  mutate(admin0_name_original="United States") %>%
+                  mutate(admin1_name_original=State) %>%
+                  mutate(admin2_name_original=`County Name`)  %>%
+  
+                  mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                  mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                  mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                  rex_admin_function()
+
+forjoining_usafacts <- usafacts_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=deaths)
+
+
+```
+
 
 ### Covidtracking.com
 
@@ -514,10 +553,10 @@ wikipedia_history_page <- read_html(url)
 #The first appearence is feb 25 2020
 month_start=3
 month_end=4
-dates_to_grab <- apply(expand.grid(str_pad(month_start:month_end, 2, pad = "0") , str_pad(1:31, 2, pad = "0") ), 1, paste, collapse="")
+dates_to_grab <- apply(expand.grid(str_pad(month_start:month_end, 2, pad = "0") , str_pad(1:31, 2, pad = "0") ), 1, paste, collapse="") %>% sort()
 histor_links_list <- list()
 for(q in dates_to_grab){
-  url <- paste0("https://en.wikipedia.org/w/index.php?title=Template:COVID-19_testing&action=history&offset=2020",q,"000000&limit=1&action=history")
+  url <- paste0("https://en.wikipedia.org/w/index.php?title=Template:COVID-19_testing_by_country&action=history&offset=2020",q,"000000&limit=1")
   print(url)
   wikipedia_history_page <- read_html(url)
   links <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('href'))
@@ -557,7 +596,7 @@ for(q in history_links_df$link %>% unique() ){
   })
 }
 length(tables_list)
-lapply(tables_list, names) #41 snapshots all with the same names god bless them
+lapply(tables_list, names) #
 
 library(janitor) #install.packages("janitor")
 
@@ -567,11 +606,15 @@ wikipedia_national_test_long <- wikipedia_national_test %>%
                                 mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
                                 rowwise() %>% 
                                 mutate(dataset="wikipedia") %>%
-                                mutate(tested_people = coalesce(tests,total_tests,totaltests) ) %>%
-                                mutate(date = coalesce(as_of,date) ) %>%
-                                mutate(place = coalesce(country_or_region,country) ) %>% 
-                                separate(place, c("admin0_name_original", "admin1_name_original"),sep=":")  %>%
-
+                                mutate(tested_people = coalesce(total_tests,totaltests_a, totaltests, vte_volume_of_testing_2, vte_volume_of_testing, vte_covid_19_testing_volume_2) ) %>%
+  
+                                mutate(date = coalesce(as_of,as_of_2, vte_covid_19_testing_volume_3, ) ) %>%
+                                mutate(place = coalesce(country_or_region,country, vte_covid_19_testing_volume, country_or_territory, vte_volume_of_testing) ) %>% 
+                                mutate(place = str_replace_all(place,"Mainland|mainland","") %>% trimws()  ) %>%
+                                separate(place, c("admin0_name_original", "admin1_name_original"),sep=":|  |  |, ")  %>% #seperated by either a colon or a weird double space
+                                mutate(admin0_name_original = str_replace_all(admin0_name_original,"\\[.*?\\]|\\(.*?\\)","")  ) %>%
+                                mutate(admin1_name_original = str_replace_all(admin1_name_original,"\\[.*?\\]|\\(.*?\\)","")  ) %>%
+  
                                 mutate(date_asdate1 = dmy(paste0(date,", 2020"))) %>% 
                                 mutate(date_asdate2 = mdy(paste0(date,", 2020"))) %>% 
                                 mutate(date_asdate = coalesce(date_asdate1,date_asdate2)  ) %>% 
@@ -589,6 +632,107 @@ forjoining_wikipedia_national_test <- wikipedia_national_test_long %>%
 dim(forjoining_wikipedia_national_test) #
 
 ```
+
+
+
+## Wikipedia Subnational Testing
+
+https://en.wikipedia.org/wiki/Template:COVID-19_testing_by_country_subdivision
+
+```{r}
+
+
+library(rvest)
+
+#https://en.wikipedia.org/wiki/Template:COVID-19_testing_by_country_subdivision
+
+
+month_start=4 #starts in april
+month_end=4
+dates_to_grab <- apply(expand.grid(str_pad(month_start:month_end, 2, pad = "0") , str_pad(1:31, 2, pad = "0") ), 1, paste, collapse="")
+histor_links_list <- list()
+for(q in dates_to_grab){ 
+  url <- paste0("https://en.wikipedia.org/w/index.php?title=Template:COVID-19_testing_by_country_subdivision&action=history&offset=2020",q,"000000&limit=1&action=history")
+  print(url)
+  wikipedia_history_page <- read_html(url)
+  links <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('href'))
+  titles <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('title')) 
+  text <- wikipedia_history_page %>% html_nodes("a") %>% html_text() 
+  wikipedia_history_page_links <- data.frame(link=paste0("https://en.wikipedia.org/",links) , 
+                                             title=titles,
+                                             text=text) %>%
+                                  filter(str_detect(link,"oldid") & text!="cur" & text!="prev")
+  histor_links_list[[q]] <- wikipedia_history_page_links
+}
+
+history_links_df <- bind_rows(histor_links_list) %>% arrange(link) %>% filter(!duplicated(link))
+
+#Ah it's a fixed table that just gets included so scraping the whole page doesn't show any variation
+
+tables_list <- list()
+for(i in 1:nrow(history_links_df) ){
+  q <- history_links_df$link[i]
+  edit_date <- history_links_df$text[i]
+  print(q)
+  thepage = readLines(q)
+  #temp_html <- read_html(q)
+  #temp_tables <- temp_html  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=F) 
+
+  library(htmltab) ; #install.packages('htmltab')
+  temp_tables <- read_html(q)  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=T) 
+  try({
+    for(h in temp_tables){
+        #table_temp <- htmltab(doc = thepage, which = i, complementary=F, headerSep="_") #,header=1 htmltab doesn't just fail it crashes R which is sad because I liked it better
+        if( 
+          names(h) %>% tolower() %>% str_detect( pattern=c("countr|deaths")) %>% any() #had to take out date because it triggers on "update"
+          ){
+          tables_list[[q]] <- h
+          tables_list[[q]]$edit_date <- edit_date
+          print("Table Found")
+          break
+        }
+    }
+  })
+}
+length(tables_list)
+lapply(tables_list, names) #41 snapshots all with the same names god bless them
+
+library(janitor) #install.packages("janitor")
+
+wikipedia_subnational_tests <- bind_rows(lapply(tables_list, clean_names))
+dim(wikipedia_subnational_tests)
+
+wikipedia_subnational_tests_long <- wikipedia_subnational_tests %>%
+                                  mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
+                                  rowwise() %>% 
+                                  mutate(dataset="wikipedia") %>%
+  
+                                  mutate(confirmed = coalesce(positive) ) %>%
+                                  mutate(tested_people = coalesce(tests) ) %>%
+
+                                  mutate(place0 = coalesce(country_a) ) %>%
+                                  mutate(place1 = coalesce(subdivision) ) %>%
+  
+                                  mutate(date = coalesce(date) ) %>%
+                                  mutate(date_asdate = date %>% paste0("., 2020") %>% dmy() ) %>% 
+  
+                                  mutate(admin0_name_clean = place0 %>% rex_clean()) %>%
+                                  mutate(admin1_name_clean = place1 %>% rex_clean()) %>%
+                                  mutate(admin2_name_clean = '' ) %>%
+                                  rex_admin_function()
+
+forjoining_wikipedia_subnational_tests <- wikipedia_subnational_tests_long %>%   
+                                          dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed, tested_people) %>% 
+                                          mutate(confirmed = str_replace_all(confirmed,",|>| ","") %>% as.numeric()) %>%
+                                          mutate(tested_people = str_replace_all(tested_people,",|>| ","") %>% as.numeric()) %>%
+                                          distinct()
+
+dim(forjoining_wikipedia_subnational_tests) #
+
+```
+
+
+
 
 ## Wikipedia National Cases
 
@@ -705,11 +849,13 @@ lhs_long <- bind_rows(
   forjoining_bing,
   forjoining_ecdc,
   forjoining_nytimes,
+  forjoining_usafacts,
   forjoining_covidtracking,
   forjoining_metabiota,
   forjoining_covid19india,
   forjoining_wikipedia_national_test,
-  forjoining_wikipedia_national_cases
+  forjoining_wikipedia_subnational_tests,
+  forjoining_wikipedia_national_cases,
 )   %>% 
   mutate(confirmed=ifelse(confirmed==0,NA,confirmed)) %>% #we don't believe zeros
   mutate(deaths=ifelse(deaths==0,NA,deaths)) %>%  #we don't believe zeros
