@@ -456,13 +456,16 @@ rawdata_df$date <- ymd("2020-01-08"):(ymd("2020-01-08")+nrow(rawdata_df)-1) %>% 
 
 library(tidyselect)
 covid19japan_prefecture_long <- pivot_longer(rawdata_df, names_to = "admin1_name_original", cols = Tokyo:HIroshima, values_to = "confirmed") %>% #-ends_with("date")
-                              mutate(date_asdate = ymd(date)) %>% dplyr::select(-date) %>%
+                                mutate(date_asdate = ymd(date)) %>% dplyr::select(-date) %>%
                                 mutate(admin0_name_original="Japan") %>%
+                                mutate(admin2_name_original=admin1_name_original)  %>%
                                 mutate(admin2_name_original='')  %>%
                                 mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
                                 mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
                                 mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
-                                rex_admin_function()
+                                rex_admin_function() %>%
+                                group_by(gid, geonameid, wikidata_id) %>% arrange(date_asdate) %>%
+                                mutate(confirmedCumulative=confirmed %>% replace_na(0) %>% cumsum())  %>% ungroup()
 
 covid19japan_national_long <- covid19japan_national %>%
                                mutate(date_asdate = ymd(date)) %>% dplyr::select(-date) %>%
@@ -476,7 +479,7 @@ covid19japan_national_long <- covid19japan_national %>%
 
 forjoining_covid19japan <- bind_rows(covid19japan_national_long,covid19japan_prefecture_long) %>% 
                            mutate(dataset="covid19japan") %>%
-                           dplyr::select(dataset,gid, geonameid, wikidata_id, date_asdate, confirmed=confirmed, deaths=deceasedCumulative, tested_people=testedCumulative)
+                           dplyr::select(dataset,gid, geonameid, wikidata_id, date_asdate, confirmed=confirmedCumulative, deaths=deceasedCumulative, tested_people=testedCumulative)
 
 ```
 
@@ -541,8 +544,92 @@ https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_provinci
 https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_provincial_cumulative_timeline_deaths.csv
 https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_timeline_testing.csv
 
+
+openZH <- read_csv("https://raw.githubusercontent.com/openZH/covid_19/master/COVID19_Fallzahlen_CH_total_v2.csv")
+
+openZH_long <- openZH %>%
+                mutate(date_asdate = ymd(date)) %>% 
+                 mutate(admin0_name_original="Switzerland") %>%
+                 mutate(admin1_name_original=abbreviation_canton_and_fl)  %>%
+                 mutate(admin2_name_original='')  %>%
+                 mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                 mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                 mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                 rex_admin_function()
+
+forjoining_openZH <-openZH_long %>% 
+                     mutate(dataset="openZH") %>%
+                     dplyr::select(dataset,gid, geonameid, wikidata_id, date_asdate, confirmed=ncumul_conf, deaths=ncumul_deceased, tested_people=ncumul_tested)
+
+
 ```
 
+#### Wikipedia
+
+```{r}
+
+library(rvest)
+
+q ="https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/South_Africa_medical_cases"
+
+library(htmltab) ; #install.packages('htmltab')
+temp_tables <- read_html(q)  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=NA) 
+tables_list <- NULL
+try({
+  for(h in temp_tables){
+      #table_temp <- htmltab(doc = thepage, which = i, complementary=F, headerSep="_") #,header=1 htmltab doesn't just fail it crashes R which is sad because I liked it better
+      if( 
+        names(h) %>% tolower() %>% str_detect( pattern=c("confirmed")) %>% any() #it has a stupid extra header that hangs it up, so added search term for the header
+        ){
+        tables_list[[q]] <- h
+        tables_list[[q]]$edit_date <- edit_date
+        print("Table Found")
+        break
+      }
+  }
+})
+
+wikipedia_subnational_south_africa <-  t(tables_list[[1]])  
+provinces <- rownames(wikipedia_subnational_south_africa)
+wikipedia_subnational_south_africa <- wikipedia_subnational_south_africa %>%  as.data.frame()
+colnames(wikipedia_subnational_south_africa) <- wikipedia_subnational_south_africa[1,] %>% unlist() %>% as.character()
+wikipedia_subnational_south_africa$provinces <- provinces
+wikipedia_subnational_south_africa$Date <- NULL
+wikipedia_subnational_south_africa$`Notes:` <- NULL
+names(wikipedia_subnational_south_africa)[names(wikipedia_subnational_south_africa)==''] <- paste0("trash",1:(  (names(wikipedia_subnational_south_africa)=="") %>% sum()  ))
+wikipedia_subnational_south_africa$`2020` <- NULL
+wikipedia_subnational_south_africa$`trash1` <- NULL
+wikipedia_subnational_south_africa$`trash2` <- NULL
+
+
+df <- data.frame(
+  provinces_fullname=c("Eastern Cape", "Free State", "Gauteng", "KwaZulu-Natal", "Limpopo", "Mpumalanga", "Northern Cape", "North-West", "Western Cape"),
+  provinces=c("EC", "FS", "GP", "KZN", "LP", "MP", "NC", "NW", "WC")
+)
+
+
+wikipedia_subnational_south_africa_long <- pivot_longer(wikipedia_subnational_south_africa, names_to = "date", cols = starts_with("0"), values_to = "confirmed") %>% 
+                                           mutate(confirmed=confirmed %>% as.character() %>% as.numeric()) %>%
+                                           filter(provinces!="Date") %>%
+                                           left_join(df) %>% filter(!is.na(provinces_fullname)) %>%
+                                           mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
+                                           mutate(dataset="wikipedia") %>%
+                                           mutate(date_asdate = date %>% paste0("-2020") %>%  mdy() ) %>% 
+            
+                                            mutate(admin0_name_clean = "South Africa"  %>% rex_clean()) %>%
+                                            mutate(admin1_name_clean =  provinces_fullname %>% rex_clean()) %>%
+                                            mutate(admin2_name_clean = '' ) %>%
+                                            rex_admin_function()
+
+forjoining_wikipedia_subnational_south_africa_long <- wikipedia_subnational_south_africa_long %>%   
+                                                      dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed) %>% 
+                                                      distinct()
+
+dim(forjoining_wikipedia_subnational_south_africa_long) #
+
+
+
+```
 
 ### Mexico
   
@@ -826,8 +913,8 @@ wikipedia_subnational_turkey_long <- wikipedia_subnational_turkey %>%
                                       mutate(dataset="wikipedia") %>%
                                       rowwise() %>% 
 
-                                      mutate(confirmed = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_2) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") ) %>%
-                                      mutate(tested_people = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_3) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","")  ) %>%
+                                      mutate(confirmed = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_2) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") %>% as.numeric() ) %>%
+                                      mutate(tested_people = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_3) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") %>% as.numeric() ) %>%
     
                                       mutate(place0 = "Turkey" ) %>%
                                       mutate(place1 = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province) ) %>%
@@ -846,8 +933,6 @@ forjoining_wikipedia_subnational_turkey_long <- wikipedia_subnational_turkey_lon
 
 dim(forjoining_wikipedia_subnational_turkey_long) #
 
-
-
 ```
 
 ### Iran
@@ -856,21 +941,99 @@ dim(forjoining_wikipedia_subnational_turkey_long) #
 
 ```{r}
 
-https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/Iran_medical_cases
+library(rvest)
+
+#https://en.wikipedia.org/wiki/Template:COVID-19_testing_by_country_subdivision
+#https://en.wikipedia.org/w/index.php?title=Template:2019%E2%80%9320_coronavirus_pandemic_data/Turkey_medical_cases_by_province&action=history
+
+q ="https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/Iran_medical_cases"
+
+library(htmltab) ; #install.packages('htmltab')
+temp_tables <- read_html(q)  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=NA) 
+tables_list <- NULL
+try({
+  for(h in temp_tables){
+      #table_temp <- htmltab(doc = thepage, which = i, complementary=F, headerSep="_") #,header=1 htmltab doesn't just fail it crashes R which is sad because I liked it better
+      if( 
+        names(h) %>% tolower() %>% str_detect( pattern=c("region")) %>% any() #it has a stupid extra header that hangs it up, so added search term for the header
+        ){
+        tables_list[[q]] <- h
+        tables_list[[q]]$edit_date <- edit_date
+        print("Table Found")
+        break
+      }
+  }
+})
+
+wikipedia_subnational_iran <-  t(tables_list[[1]])  
+regions <- rownames(wikipedia_subnational_iran)
+provinces <- wikipedia_subnational_iran[,1]
+wikipedia_subnational_iran <- wikipedia_subnational_iran %>%  as.data.frame()
+wikipedia_subnational_iran$Date <- NULL
+colnames(wikipedia_subnational_iran) <- wikipedia_subnational_iran[1,] %>% unlist() %>% as.character()
+wikipedia_subnational_iran$regions <- regions
+wikipedia_subnational_iran$provinces <- provinces
+wikipedia_subnational_iran$Date <- NULL
+wikipedia_subnational_iran$`Notes:` <- NULL
+
+df=bind_rows(
+  data.frame(regions="Region 1", province_full=c("Alborz Province", "Golestan Province", "Mazandaran Province", "Qazvin Province", "Qom Province", "Semnan Province", "Tehran Province")),
+  data.frame(regions="Region 2", province_full=c("Bushehr Province", "Chaharmahal and Bakhtiari Province", "Fars Province", "Hormozgan Province", "Isfahan Province", "Kohgiluyeh and Boyer-Ahmad Province")),
+  data.frame(regions="Region 3", province_full=c("Ardabil Province", "East Azerbaijan Province", "Gilan Province", "Kordestan Province", "West Azerbaijan Province", "Zanjan Province")),
+  data.frame(regions="Region 4", province_full=c("Hamadan Province", "Ilam Province", "Kermanshah Province", "Khuzestan Province", "Lorestan Province", "Markazi Province")),
+  data.frame(regions="Region 5", province_full=c("Kerman Province", "North Khorasan Province", "Razavi Khorasan Province", "Sistan and Baluchestan Province", "South Khorasan Province", "Yazd Province"))
+)
+df$province <- substr(df$province_full,1,3)
+
+wikipedia_subnational_iran_long <- pivot_longer(wikipedia_subnational_iran, names_to = "date", cols = starts_with("20"), values_to = "confirmed") %>% 
+                                   mutate(confirmed=confirmed %>% as.character() %>% as.numeric()) %>%
+                                   filter(provinces!="Date") %>%
+                                   left_join(df) %>%
+                                    mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
+                                    mutate(dataset="wikipedia") %>%
+                                    mutate(date_asdate = date %>% ymd() ) %>% 
+    
+                                    mutate(admin0_name_clean = "Iran"  %>% rex_clean()) %>%
+                                    mutate(admin1_name_clean =  province_full %>% rex_clean()) %>%
+                                    mutate(admin2_name_clean = '' ) %>%
+                                    rex_admin_function()
+
+forjoining_wikipedia_subnational_iran_long <- wikipedia_subnational_iran_long %>%   
+                                            dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed) %>% 
+                                            distinct()
+
+dim(forjoining_wikipedia_subnational_iran_long) #
 
 
+```
+
+
+### Thailand
+
+https://github.com/pluz85/Covid19TH-DailyData
+
+#### Wikipedia 
+
+https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_Thailand
+
+```{r}
+#https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/Thailand_medical_cases_summary
+
+
+
+#https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/Turkey_medical_cases_by_province
 
 library(rvest)
 
 #https://en.wikipedia.org/wiki/Template:COVID-19_testing_by_country_subdivision
 #https://en.wikipedia.org/w/index.php?title=Template:2019%E2%80%9320_coronavirus_pandemic_data/Turkey_medical_cases_by_province&action=history
 
-month_start=4 #starts in april
+month_start=3 #starts in april
 month_end=4
 dates_to_grab <- apply(expand.grid(str_pad(month_start:month_end, 2, pad = "0") , str_pad(1:31, 2, pad = "0") ), 1, paste, collapse="")
 histor_links_list <- list()
 for(q in dates_to_grab){ 
-  url <- paste0("https://en.wikipedia.org/w/index.php?title=Template:2019%E2%80%9320_coronavirus_pandemic_data/Turkey_medical_cases_by_province&action=history&offset=2020",q,"000000&limit=1&action=history")
+  url <- paste0("https://en.wikipedia.org/w/index.php?title=Template:2019%E2%80%9320_coronavirus_pandemic_data/Thailand_medical_cases_summary&action=history&offset=2020",q,"000000&limit=1&action=history")
   print(url)
   wikipedia_history_page <- read_html(url)
   links <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('href'))
@@ -902,7 +1065,7 @@ for(i in 1:nrow(history_links_df) ){
     for(h in temp_tables){
         #table_temp <- htmltab(doc = thepage, which = i, complementary=F, headerSep="_") #,header=1 htmltab doesn't just fail it crashes R which is sad because I liked it better
         if( 
-          names(h) %>% tolower() %>% str_detect( pattern=c("countr|deaths|case")) %>% any() #it has a stupid extra header that hangs it up, so added search term for the header
+          names(h) %>% tolower() %>% str_detect( pattern=c("Province|province")) %>% any() #it has a stupid extra header that hangs it up, so added search term for the header
           ){
           tables_list[[q]] <- h
           tables_list[[q]]$edit_date <- edit_date
@@ -917,37 +1080,106 @@ lapply(tables_list, names) #
 
 library(janitor) #install.packages("janitor")
 
-wikipedia_subnational_turkey <- bind_rows(lapply(tables_list, clean_names))
-dim(wikipedia_subnational_turkey)
+wikipedia_subnational_thailand <- bind_rows(lapply(tables_list, clean_names))
+dim(wikipedia_subnational_thailand)
 
-wikipedia_subnational_turkey_long <- wikipedia_subnational_turkey %>%
+wikipedia_subnational_thailand_long <- wikipedia_subnational_thailand %>%
                                       mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
                                       mutate(dataset="wikipedia") %>%
-                                      rowwise() %>% 
 
-                                      mutate(confirmed = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_2) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") ) %>%
-                                      mutate(tested_people = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_3) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","")  ) %>%
-    
-                                      mutate(place0 = "Turkey" ) %>%
-                                      mutate(place1 = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province) ) %>%
+                                      mutate(confirmed = coalesce(cases,total) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") %>% as.numeric() ) %>%
+
+                                      mutate(place0 = "Thailand" ) %>%
+                                      mutate(place1 = coalesce(province) ) %>%
       
                                       mutate(date = coalesce(edit_date) ) %>%
-                                      mutate(date_asdate = date %>% str_replace(".*, ","") %>% dmy() ) %>% 
+                                      mutate(date_asdate = edit_date %>% str_replace(".*, ","") %>% dmy() ) %>% 
       
                                       mutate(admin0_name_clean =  place0 %>% rex_clean()) %>%
                                       mutate(admin1_name_clean =  place1 %>% rex_clean()) %>%
                                       mutate(admin2_name_clean = '' ) %>%
                                       rex_admin_function()
 
-forjoining_wikipedia_subnational_turkey_long <- wikipedia_subnational_turkey_long %>%   
-                                          dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed, tested_people) %>% 
-                                          distinct()
+forjoining_wikipedia_subnational_thailand_long <- wikipedia_subnational_thailand_long %>%   
+                                              dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed) %>% 
+                                              distinct()
 
-dim(forjoining_wikipedia_subnational_turkey_long) #
+dim(forjoining_wikipedia_subnational_thailand_long) #
 
 
 ```
 
+### Myanmar
+
+https://github.com/theananda/myanmar-covid19-data
+https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_Myanmar
+
+#### Wikipedia
+
+```{r}
+
+myanmar_testing_wikipedia <- read_csv("https://raw.githubusercontent.com/theananda/myanmar-covid19-data/master/MOHS_Dashboard_Data/MOHS%20Dashboard%20Data-Summary.csv")
+
+myanmar_testing_wikipedia_long <- myanmar_testing_wikipedia %>%
+                mutate(date_asdate = dmy(Date)) %>% 
+                mutate(admin0_name_original="Myanmar") %>%
+                mutate(admin1_name_original='')  %>%
+                mutate(admin2_name_original='')  %>%
+                mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                rex_admin_function()
+
+forjoining_myanmar_testing_wikipedia <-myanmar_testing_wikipedia_long %>% 
+                     mutate(dataset="wikipedia") %>%
+                     dplyr::select(dataset,gid, geonameid, wikidata_id, date_asdate, confirmed=Confirmed, deaths=Death, tested_people=Tested)
+
+
+```
+
+
+### Kenya
+
+https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_Kenya
+
+```{r}
+
+```
+
+### Colombia
+
+https://github.com/sandrarairan/Covid_Colombia
+
+```{r}
+
+
+
+columbia <- read_csv("https://raw.githubusercontent.com/sandrarairan/Covid_Colombia/master/Casos_positivos_de_COVID-19_en_Colombia.csv")
+
+openZH_long <- openZH %>%
+                mutate(date_asdate = ymd(date)) %>% 
+                 mutate(admin0_name_original="Switzerland") %>%
+                 mutate(admin1_name_original=abbreviation_canton_and_fl)  %>%
+                 mutate(admin2_name_original='')  %>%
+                 mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                 mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                 mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                 rex_admin_function()
+
+forjoining_openZH <-openZH_long %>% 
+                     mutate(dataset="openZH") %>%
+                     dplyr::select(dataset,gid, geonameid, wikidata_id, date_asdate, confirmed=ncumul_conf, deaths=ncumul_deceased, tested_people=ncumul_tested)
+
+
+
+```
+
+### Uganda
+
+https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_Uganda
+
+```{r}
+```
 
 
 ## Multinational
@@ -1444,8 +1676,8 @@ wikipedia_subnational_tests_long <- wikipedia_subnational_tests %>%
                                   rowwise() %>% 
                                   mutate(dataset="wikipedia") %>%
   
-                                  mutate(confirmed = coalesce(positive) ) %>%
-                                  mutate(tested_people = coalesce(tests) ) %>%
+                                  mutate(confirmed = coalesce(positive) %>% as.character() %>% as.numeric() ) %>%
+                                  mutate(tested_people = coalesce(tests) %>% as.character() %>% as.numeric()  ) %>%
 
                                   mutate(place0 = coalesce(country_a) ) %>%
                                   mutate(place1 = coalesce(subdivision) ) %>%
@@ -1617,6 +1849,18 @@ lhs_long <- bind_rows(
   #Turkey
   forjoining_wikipedia_subnational_turkey_long,
   
+  #Iran
+  forjoining_wikipedia_subnational_iran_long,
+  
+  #Thailand
+  forjoining_wikipedia_subnational_thailand_long,
+  
+  #South Africa
+  forjoining_wikipedia_subnational_south_africa_long,
+  
+  #Myanmar
+  forjoining_myanmar_testing_wikipedia,
+  
   #Multinational
   forjoining_ecdc,
   forjoining_CSSE,
@@ -1630,13 +1874,16 @@ lhs_long <- bind_rows(
   forjoining_wikipedia_national_cases,
   
 )   %>% 
+  mutate(confirmed=confirmed %>% as.character() %>% as.numeric() ) %>%
+  mutate(deaths=deaths %>% as.character() %>% as.numeric() ) %>%
+  
   mutate(confirmed=ifelse(confirmed==0,NA,confirmed)) %>% #we don't believe zeros
   mutate(deaths=ifelse(deaths==0,NA,deaths)) %>%  #we don't believe zeros
   filter(!(is.na(confirmed & is.na(deaths) & is.na(tested_people)))) %>%
   distinct() %>%
   arrange(dataset,gid ,  geonameid ,wikidata_id, date_asdate)
 
-dim(lhs_long) #304,376
+dim(lhs_long) #310169 #304,376
 
 lhs_long$dataset %>% table()
 
