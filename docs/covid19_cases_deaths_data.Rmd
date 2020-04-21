@@ -92,18 +92,24 @@ rex_admin_function <- function(x) {
 
 # LHS
 
-## Mexico
+## Country Specific
 
-https://www.reddit.com/r/datasets/comments/fykr5h/json_dataset_about_covid19_in_mexico/
+Country level datasets
+If you are interested in knowing country level data, please refer to the following Kaggle datasets:
 
-## California Hosptilizations
+Switzerland - https://www.kaggle.com/daenuprobst/covid19-cases-switzerland
+Indonesia - https://www.kaggle.com/ardisragen/indonesia-coronavirus-cases
+
+### U.S.
+
+#### California Hosptilizations
 
 https://github.com/CALmatters/covid-19-california-hospitalizations-data
 https://public.tableau.com/profile/ca.open.data#!/vizhome/COVID-19PublicDashboard/Covid-19Hospitals
 
-## ILILNet
+#### ILILNet
 
-#Can download state-week data here
+Can download state-week data here
 https://gis.cdc.gov/grasp/fluview/fluportaldashboard.html
 
 https://wwwn.cdc.gov/ILINet/
@@ -112,7 +118,841 @@ https://www.medrxiv.org/content/10.1101/2020.04.01.20050542v1
 
 https://www.economist.com/graphic-detail/2020/04/11/why-a-study-showing-that-covid-19-is-everywhere-is-good-news?fsrc=scn%2Ftw%2Fte%2Fbl%2Fed%2Ffootprintsoftheinvisibleenemywhyastudyshowingthatcovid19iseverywhereisgoodnewsgraphicdetail&%3Ffsrc%3Dscn%2F=tw%2Fdc
 
-## ECDC
+
+#### NYT
+
+
+```{r}
+#https://www.nytimes.com/article/coronavirus-county-data-us.html
+#https://github.com/nytimes/covid-19-data
+nytimes <- read_csv(url("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")) #
+
+nytimes_long <- nytimes %>%
+                mutate(date_asdate = ymd(date)) %>% 
+                rename(confirmed=cases) %>%
+                mutate(dataset="nyt") %>%
+                mutate(admin0_name_original="United States") %>%
+                mutate(admin1_name_original=state) %>%
+                mutate(admin2_name_original=county)  %>%
+
+                mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                mutate(admin0_name_clean=str_replace(admin0_name_clean,"chinamainland","china")) %>%
+              
+                mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+
+                mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                rex_admin_function()
+
+forjoining_nytimes <- nytimes_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=deaths)
+
+```
+
+
+
+#### USA Facts
+
+COVID-19 deaths dataset. USA Facts. Accessed on 03-31-2020 at https://www.reuters.
+com/article/us-health-coronavirus-who/covid-19-spread-map
+https://www.stat.berkeley.edu/~binyu/ps/papers2020/covid19_paper.pdf
+https://github.com/Yu-Group/covid19-severity-prediction/tree/master/data
+https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/
+
+
+```{r}
+
+usafacts_confirmed <- read_csv("https://usafactsstatic.blob.core.windows.net/public/data/covid-19/covid_confirmed_usafacts.csv")
+usafacts_deaths <- read_csv("https://usafactsstatic.blob.core.windows.net/public/data/covid-19/covid_deaths_usafacts.csv")
+
+usafacts_confirmed_long <-  pivot_longer(usafacts_confirmed, names_to = "date", cols = ends_with("20"), values_to = "confirmed")
+usafacts_deaths_long <-  pivot_longer(usafacts_deaths, names_to = "date", cols = ends_with("20"), values_to = "deaths")
+
+usafacts_long <- usafacts_confirmed_long %>% full_join(usafacts_deaths_long) %>%
+                  mutate(date_asdate = mdy(str_replace(date,"20$","2020"))) %>%  
+                  mutate(dataset="usafacts") %>%
+                  mutate(admin0_name_original="United States") %>%
+                  mutate(admin1_name_original=State) %>%
+                  mutate(admin2_name_original=`County Name`)  %>%
+  
+                  mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                  mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                  mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                  rex_admin_function()
+
+forjoining_usafacts <- usafacts_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=deaths)
+
+
+```
+
+#### Covidtracking.com
+
+```{r}
+#https://covidtracking.com/about-data
+"If you are calculating positive rates, it should only be with states that have an A grade. And be careful going back in time because almost all the states have changed their level of reporting at different times."
+
+#The data contain the u.s. and the states too
+#FIPS the first two digits are the state
+#All 0 is the U.S.
+#
+#https://covidtracking.com/api
+covidtracking <- read_csv(url("https://covidtracking.com/api/states/daily.csv"))
+dim(covidtracking) #1653   25
+covidtracking_t <- t(covidtracking)
+
+covidtracking_long <- covidtracking %>%
+
+                      mutate(date_asdate = ymd(date)) %>% 
+                      rename(state_abbr=state) %>%
+                      left_join(state_codes) %>% 
+                      dplyr::select(date_asdate, state_name, state_abbr, positive, negative, death) %>%
+                      mutate(dataset="covidtracking") %>%
+                      mutate(admin0_name_original="United States") %>%
+                      mutate(admin1_name_original=state_name)  %>%
+                      mutate(admin2_name_original='')  %>%
+  
+                      mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                      mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                      mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                      rex_admin_function()
+
+forjoining_covidtracking <- covidtracking_long %>%
+                            mutate(tested_people=negative+positive) %>%
+                            dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=positive, deaths=death, tested_people)
+
+```
+
+
+### Italy
+
+#### Dati COVID-19 Italia DPC
+Dati COVID-19 Italia
+Italy - https://www.kaggle.com/sudalairajkumar/covid19-in-italy
+https://github.com/pcm-dpc/COVID-19
+
+
+```{r}
+
+dpc_region <- read.csv("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni.csv", na.strings = "", fileEncoding = "UTF-8-BOM")
+dpc_province <- read.csv("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-province/dpc-covid19-ita-province-latest.csv", na.strings = "", fileEncoding = "UTF-8-BOM")
+dpc_national <- read.csv("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv", na.strings = "", fileEncoding = "UTF-8-BOM")
+
+dpc_national_long <- dpc_national %>% 
+                    mutate(date_asdate = ymd(substring(data,1,10))) %>%
+                    mutate(dataset="dpc") %>% 
+  
+                    mutate(admin0_name_clean=stato %>% rex_clean()) %>%
+                    mutate(admin1_name_clean= '') %>%
+                    mutate(admin2_name_clean='') %>%
+                    rex_admin_function() 
+
+dpc_region_long <- dpc_region %>% 
+                    mutate(date_asdate = ymd(substring(data,1,10))) %>%
+                    mutate(dataset="dpc") %>% 
+  
+                    mutate(admin0_name_clean=stato %>% rex_clean()) %>%
+                    mutate(admin1_name_clean=denominazione_regione %>% rex_clean()) %>%
+                    mutate(admin2_name_clean='') %>%
+                    rex_admin_function() 
+
+dpc_province_long <- dpc_province %>% 
+                      mutate(date_asdate = ymd(substring(data,1,10))) %>%
+                      mutate(dataset="dpc") %>% 
+    
+                      mutate(admin0_name_clean=stato %>% rex_clean()) %>%
+                      mutate(admin1_name_clean=denominazione_regione %>% rex_clean()) %>%
+                      mutate(admin2_name_clean=denominazione_provincia %>% rex_clean()) %>%
+                      rex_admin_function() 
+
+forjoining_dpc <- bind_rows(dpc_national_long, dpc_region_long, dpc_province_long) %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate, confirmed=totale_casi, deaths=deceduti, tested_people=casi_testati)
+
+
+```
+
+### India
+
+#### covid19india
+
+India - https://www.kaggle.com/sudalairajkumar/covid19-in-india
+
+https://api.covid19india.org/
+https://docs.google.com/spreadsheets/d/e/2PACX-1vSc_2y5N0I67wDU38DjDh35IZSIS30rQf7_NYZhtYYGU1jJYT6_kDx4YpF-qw0LSlGsBYP8pqM_a1Pd/pubhtml#
+https://github.com/covid19india/api/blob/master/state_test_data.json
+
+https://github.com/amodm/api-covid19-in
+
+```{r}
+#Couldn't get any of this to work
+#library(googlesheets4)
+#temp <- read_csv("http://api.covid19india.org/states_daily_csv/confirmed.csv")
+#temp <- read_sheet("https://docs.google.com/spreadsheets/d/e/2PACX-1vSc_2y5N0I67wDU38DjDh35IZSIS30rQf7_NYZhtYYGU1jJYT6_kDx4YpF-qw0LSlGsBYP8pqM_a1Pd/pubhtml#")
+#install.packages('gsheet')
+#library(gsheet)
+
+#https://github.com/covid19india/api/blob/master/state_test_data.json
+covid19india_test <- fromJSON("https://raw.githubusercontent.com/covid19india/api/master/state_test_data.json")$states_tested_data
+saveRDS(covid19india_test, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/covid19india_test_latest_" %>% paste0(Sys.Date(),".Rds")   ) #start saving daily snapshots that we can add to the pile
+
+covid19india_test_long <- covid19india_test %>% 
+                          mutate(date_asdate = dmy(updatedon )) %>%
+                          mutate(admin0_name_clean="India" %>% rex_clean()) %>%
+                          mutate(admin1_name_clean= state %>% rex_clean()) %>%
+                          mutate(admin2_name_clean= "" %>% rex_clean()) %>%
+                          mutate(totaltested=as.numeric(totaltested)) %>%
+                          mutate(dataset="covid19india") %>%
+                          rex_admin_function()
+
+forjoining_covid19india <- covid19india_test_long %>% 
+                           dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate , tested_people=totaltested)
+                          
+```  
+
+#### IMHFW The Ministry of Health and Family Welfare (IMHFW)
+
+https://github.com/amodm/api-covid19-in
+
+Post Mar 15, data is from The Ministry of Health & Family Welfare
+Pre Mar 15, data is sourced from datameet/covid19
+
+```{r}
+#construct_download_url(url="https://docs.google.com/spreadsheets/d/e/2PACX-1vSc_2y5N0I67wDU38DjDh35IZSIS30rQf7_NYZhtYYGU1jJYT6_kDx4YpF-qw0LSlGsBYP8pqM_a1Pd/pubhtml#", format = "csv", sheetid = 1)
+#temp < gsheet2tbl(url="https://docs.google.com/spreadsheets/d/e/2PACX-1vSc_2y5N0I67wDU38DjDh35IZSIS30rQf7_NYZhtYYGU1jJYT6_kDx4YpF-qw0LSlGsBYP8pqM_a1Pd/pubhtml#", sheetid = 1)
+library(jsonlite)
+rootnet_case_json <- fromJSON("https://api.rootnet.in/covid19-in/stats/history")
+for(i in 1:length(rootnet_case_json$data$regional)){
+  rootnet_case_json$data$regional[[i]]$day <- rootnet_case_json$data$day[i]
+}
+rootnet_cases_regional <- bind_rows(rootnet_case_json$data$regional) %>%
+                           mutate(admin0_name_clean="India" %>% rex_clean()) %>%
+                           mutate(admin1_name_clean= loc %>% rex_clean()) %>%
+                           mutate(admin2_name_clean= "" %>% rex_clean()) %>%
+                          rex_admin_function()
+
+rootnet_cases_national <- rootnet_case_json$data$summary
+rootnet_cases_national$day <- rootnet_case_json$data$day
+
+#This is just national testing
+rootnet_testing <- fromJSON("https://api.rootnet.in/covid19-in/stats/testing/history")$data
+
+rootnet_national <- rootnet_testing %>%
+                     full_join(rootnet_cases_national) %>%
+                     mutate(admin0_name_clean="India" %>% rex_clean()) %>%
+                     mutate(admin1_name_clean= "" %>% rex_clean()) %>%
+                     mutate(admin2_name_clean= "" %>% rex_clean()) %>%
+                     rex_admin_function()
+
+imhfw_long <- bind_rows(
+                rootnet_national %>% 
+                                 rename(confirmed=total, tested_samples=totalSamplesTested, tested_people=totalIndividualsTested) %>% mutate(date_asdate = ymd(day )),
+                rootnet_cases_regional %>% 
+                                 rename(confirmed=totalConfirmed) %>%
+                                 mutate(date_asdate = ymd(day ))
+                ) %>%
+                mutate(dataset="imhfw") 
+
+forjoining_imhfw <- imhfw_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate,
+                                                         tested_samples,
+                                                         tested_people,
+                                                         confirmed=confirmed,
+                                                         deaths=deaths
+                                                         ) %>% distinct()
+
+dim(forjoining_imhfw) #946
+
+
+```
+
+
+### Brazil
+
+#### Brazil Health Ministry
+Brazil - https://www.kaggle.com/unanimad/corona-virus-brazil
+
+COVID19
+Coronavirus panel
+https://covid.saude.gov.br/
+
+following the instructions here I was able to get the direct lnk
+https://stackoverflow.com/questions/42901942/how-do-we-download-a-blob-url-video
+
+State codes from here https://en.wikipedia.org/wiki/States_of_Brazil
+
+
+```{r}
+
+library("clipr")
+df <- data.frame(
+estado=c("AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"),
+admin1_name_original=c("Acre", "Alagoas", "Amapá", "Amazonas", "Bahia", "Ceará", "Distrito Federal", "Espírito Santo", "Goiás", "Maranhão", "Mato Grosso", "Mato Grosso do Sul", "Minas Gerais", "Pará", "Paraíba", "Paraná", "Pernambuco", "Piauí", "Rio de Janeiro", "Rio Grande do Norte", "Rio Grande do Sul", "Rondônia", "Roraima", "Santa Catarina", "São Paulo", "Sergipe", "Tocantins")
+)
+
+bhm <- read_delim("https://mobileapps.saude.gov.br/esus-vepi/files/unAFkcaNDeXajurGB7LChj8SgQYS2ptm/4f4bc815e56dc052ccd547b877f56647_Download_COVID19_20200420.csv", delim=";")
+
+bhm_long <- bhm %>%
+                mutate(date_asdate = ymd(data)) %>% 
+                mutate(dataset="bhm") %>%
+                mutate(admin0_name_original="Brazil") %>%
+                #mutate(admin1_name_original= regiao) %>%
+                mutate(admin2_name_original= '') %>%
+                left_join(df) %>%
+                mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                rex_admin_function()
+
+forjoining_bhm <- bhm_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=casosAcumulados, deaths=obitosAcumulados)
+
+
+```
+
+
+### South Korea
+
+#### DS4C: Data Science for COVID-19 in South Korea
+
+South Korea - https://www.kaggle.com/kimjihoo/coronavirusdataset
+https://github.com/jihoo-kim/Data-Science-for-COVID-19
+
+```{r}
+#national
+ds4c_national <- read_csv("https://raw.githubusercontent.com/jihoo-kim/Data-Science-for-COVID-19/master/dataset/Time/Time.csv")
+
+#province
+ds4c_province <- read_csv("https://raw.githubusercontent.com/jihoo-kim/Data-Science-for-COVID-19/master/dataset/Time/TimeProvince.csv")
+
+
+ds4c_long <- bind_rows(ds4c_national, ds4c_province) %>%
+                mutate(date_asdate = ymd(date)) %>% 
+                mutate(dataset="ds4c") %>%
+                mutate(admin0_name_original="South Korea") %>%
+                mutate(admin1_name_original= province) %>%
+                mutate(admin2_name_original='')  %>%
+                mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                rex_admin_function()
+
+forjoining_ds4c <- ds4c_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=deceased, tested_people=test)
+
+```
+
+### Japan
+
+https://github.com/reustle/covid19japan
+https://github.com/reustle/covid19japan-data/
+
+```{r}
+
+#covid19japan <- fromJSON("https://raw.githubusercontent.com/reustle/covid19japan-data/master/docs/summary/2020-04-21.json")
+covid19japan <- fromJSON("https://data.covid19japan.com/summary/latest.json")
+
+covid19japan_national   <- covid19japan$daily
+covid19japan_prefecture <- covid19japan$prefectures #it has counts folded up inside them
+
+temp <- covid19japan_prefecture
+temp$confirmedByCity <- NULL
+
+rawdata_df <- as.data.frame(temp$dailyConfirmedCount)
+colnames(rawdata_df) <- temp$name
+rawdata_df$date <- ymd("2020-01-08"):(ymd("2020-01-08")+nrow(rawdata_df)-1) %>% as.Date()
+
+library(tidyselect)
+covid19japan_prefecture_long <- pivot_longer(rawdata_df, names_to = "admin1_name_original", cols = Tokyo:HIroshima, values_to = "confirmed") %>% #-ends_with("date")
+                              mutate(date_asdate = ymd(date)) %>% dplyr::select(-date) %>%
+                                mutate(admin0_name_original="Japan") %>%
+                                mutate(admin2_name_original='')  %>%
+                                mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                                mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                                mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                                rex_admin_function()
+
+covid19japan_national_long <- covid19japan_national %>%
+                               mutate(date_asdate = ymd(date)) %>% dplyr::select(-date) %>%
+                               mutate(admin0_name_original="Japan") %>%
+                               mutate(admin1_name_original='')  %>%
+                               mutate(admin2_name_original='')  %>%
+                               mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                               mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                               mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                               rex_admin_function()
+
+forjoining_covid19japan <- bind_rows(covid19japan_national_long,covid19japan_prefecture_long) %>% 
+                           mutate(dataset="covid19japan") %>%
+                           dplyr::select(dataset,gid, geonameid, wikidata_id, date_asdate, confirmed=confirmed, deaths=deceasedCumulative, tested_people=testedCumulative)
+
+```
+
+### Tunesia
+
+https://github.com/kik00/TnCovid-19
+"All Data is based On The offcial press release from the tunisian ministry of health"
+
+```{r}
+
+TnCovid <- fromJSON("https://raw.githubusercontent.com/kik00/TnCovid-19/master/data/dailyPerState.json")
+
+TnCovid_long <- TnCovid %>%
+                mutate(date_asdate = ymd(date)) %>% 
+                 mutate(admin0_name_original="Tunesia") %>%
+                 mutate(admin1_name_original=name)  %>%
+                 mutate(admin2_name_original='')  %>%
+                 mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                 mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                 mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                 rex_admin_function()
+
+forjoining_TnCovid <-TnCovid_long %>% 
+                     mutate(dataset="TnCovid") %>%
+                     dplyr::select(dataset,gid, geonameid, wikidata_id, date_asdate, confirmed=cases, deaths=deaths, tested_people=tests)
+
+
+```
+
+
+### Switzerland
+
+https://github.com/openZH/covid_19
+
+```{r}
+
+openZH <- read_csv("https://raw.githubusercontent.com/openZH/covid_19/master/COVID19_Fallzahlen_CH_total_v2.csv")
+
+openZH_long <- openZH %>%
+                mutate(date_asdate = ymd(date)) %>% 
+                 mutate(admin0_name_original="Switzerland") %>%
+                 mutate(admin1_name_original=abbreviation_canton_and_fl)  %>%
+                 mutate(admin2_name_original='')  %>%
+                 mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                 mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                 mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                 rex_admin_function()
+
+forjoining_openZH <-openZH_long %>% 
+                     mutate(dataset="openZH") %>%
+                     dplyr::select(dataset,gid, geonameid, wikidata_id, date_asdate, confirmed=ncumul_conf, deaths=ncumul_deceased, tested_people=ncumul_tested)
+
+```
+
+### South Africa
+
+https://github.com/dsfsi/covid19za
+
+```{r}
+
+https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_provincial_cumulative_timeline_confirmed.csv
+https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_provincial_cumulative_timeline_deaths.csv
+https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_timeline_testing.csv
+
+```
+
+
+### Mexico
+  
+  https://github.com/carranco-sga/Mexico-COVID-19
+
+```{r}
+
+https://raw.githubusercontent.com/carranco-sga/Mexico-COVID-19/master/Mexico_COVID19_CTD.csv
+
+```
+
+### Russia
+
+https://github.com/snikitin-de/covid19-russia/tree/master/covid_19_time_series
+
+```{r}
+
+https://raw.githubusercontent.com/snikitin-de/covid19-russia/master/covid_19_time_series/covid19-russia-cases.csv
+
+```
+
+### Pakistan
+
+https://github.com/ShahrozTanveer/covid-19-pakistan
+
+```{r}
+
+https://raw.githubusercontent.com/ShahrozTanveer/covid-19-pakistan/master/covid-19-pakistan-data.csv
+
+```
+
+### Nigeria
+
+https://github.com/Kamparia/nigeria-covid19-data
+
+```{r}
+
+https://raw.githubusercontent.com/Kamparia/nigeria-covid19-data/master/data/csv/ncdc-covid19-states.csv
+
+```
+
+### Bangladesh
+
+Institute of Epidemiology, Disease Control and Research (IEDCR)
+http://www.iedcr.gov.bd/
+
+https://github.com/bluedot-bd/covid-19-bd
+https://www.kaggle.com/samratkumardey/bangladesh-covid19-daily-dataset
+https://github.com/bluedot-bd/covid-19-bd/tree/master/source-csv
+
+```{r}
+
+#laziest thing we can do is just try a bunch of urls and see if he's posted new stuff
+#This will need to be updated next month
+df_list <- list()
+for(i in 9:30){
+  #https://raw.githubusercontent.com/bluedot-bd/covid-19-bd/master/source-csv/09-04-2020.csv
+  baseurl <- "https://raw.githubusercontent.com/bluedot-bd/covid-19-bd/master/source-csv/"
+  middle <- str_pad(i, 2, pad = "0")
+  end <- "-04-2020.csv"
+  try({
+    df_list[[as.character(i)]] <- read_csv(paste0(baseurl, middle, end))
+    df_list[[as.character(i)]]$date <- paste0(middle,"-04-2020")
+  })
+}
+
+iedcr <- bind_rows(df_list)
+
+iedcr_long <- iedcr %>% filter(!is.na(cases)) %>%
+              fill(division) %>% #sometimes they don't provide the division but once at the top of each set
+                mutate(date_asdate = dmy(date)) %>%
+                mutate(dataset="iedcr") %>% 
+                
+                mutate(admin0_name_clean= "Bangladesh" %>% rex_clean()) %>%
+                mutate(admin1_name_clean=division %>% rex_clean() ) %>%
+                mutate(admin2_name_clean=district %>% rex_clean() ) %>%
+                rex_admin_function() %>%
+                group_by(gid, geonameid,wikidata_id) %>% arrange(date_asdate) %>%
+                mutate(confirmed=cumsum(cases),
+                       deaths=cumsum(deaths)) %>%
+                ungroup()
+
+forjoining_iedcr <- iedcr_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate, confirmed=cases)
+
+
+
+```
+
+### Ethiopia
+
+```{r}
+https://github.com/Ethiopia-COVID19/Covid19.ET
+```
+
+### Philippines
+
+https://github.com/altcoder/ncov-open-data-ph
+https://drive.google.com/drive/u/0/folders/10VkiUA8x7TS2jkibhSZK1gmWxFM-EoZP
+
+The phillipines is only reporting 7k. They're literally providing data of every single case
+
+https://drive.google.com/drive/u/0/folders/1zgEKsGhx-5VIz3lHdThWcSDlmo3NI7Gr
+"Data is encoded and submitted daily and weekly by hospitals through the DOH
+DataCollect BedTracker App. As of April 12, 2020, the response rates for the DOH
+DataCollect app are currently only at 30.6% for hospitals and 40.7% for infirmaries."
+
+```{r}
+
+#https://drive.google.com/drive/u/0/folders/10VkiUA8x7TS2jkibhSZK1gmWxFM-EoZP
+#https://drive.google.com/open?id=1MLit3Nd8ROrHgGrY3uJ9LpD2tSQ6fGcu
+##pdoh <- read_csv("") #this is the 420 drop, it's great but you have to go grab each one sep
+
+#here's it in json form
+#https://covid19ph-tracker.herokuapp.com/
+#https://raw.githubusercontent.com/raemounz/ph_covid19_tracker/master/src/data/case.json
+
+#These guys update their json pretty regularly so rely on them instead
+
+pdoh <- fromJSON("https://raw.githubusercontent.com/raemounz/ph_covid19_tracker/master/src/data/case.json")
+
+
+
+pdoh_confirmed <- pdoh %>% 
+                  mutate(confirmed=1) %>%
+                  group_by(RegionRes,  DateRepConf) %>% #city was too far, we can't geocode it correctly so we'll take it out and agg at the region ProvCityRes
+                  summarize(confirmed = sum(confirmed)) %>%            
+                  rename(date=DateRepConf)  %>% 
+              ungroup()
+ 
+pdoh_deaths<- pdoh %>% 
+              mutate(deaths=1) %>%
+              filter(!is.na(DateDied)) %>%
+              group_by(RegionRes,  DateDied) %>% #ProvCityRes  #city was too far, we can't geocode it correctly so we'll take it out and agg at the region ProvCityRes
+              summarize(deaths = sum(deaths)) %>%            
+              rename(date=DateDied) %>% 
+              ungroup()
+
+pdoh_long <- pdoh_confirmed %>% 
+             full_join(pdoh_deaths) %>%
+             mutate(date_asdate = mdy(date)) %>% 
+             mutate(admin0_name_original="philippines") %>%
+             mutate(admin1_name_original=RegionRes)  %>%
+             mutate(admin2_name_original='')  %>% # ProvCityRes #city was too far, we can't geocode it correctly so we'll take it out and agg at the region ProvCityRes
+             mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+             mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+             mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+             rex_admin_function() %>%
+             mutate(dataset="pdoh") %>% 
+             group_by(gid, geonameid, wikidata_id) %>% 
+             arrange(date_asdate) %>%
+             mutate(confirmed= confirmed %>% replace_na(0) %>% cumsum()) %>%
+             mutate(deaths= deaths %>% replace_na(0) %>% cumsum()) %>%
+             ungroup() %>%
+             filter(wikidata_id!="Q928") #exclude ones that can't be assigned a region because those really aren't the country as a whole
+
+forjoining_pdoh <-pdoh_long %>% 
+                     mutate(dataset="TnCovid") %>%
+                     dplyr::select(dataset,gid, geonameid, wikidata_id, date_asdate, confirmed=confirmed, deaths=deaths)
+
+```
+
+### Egypt
+
+Gov data is apparently especially sketchy here
+https://www.shorouknews.com/news/view.aspx?cdate=03042020&id=924e6078-02ee-4e81-a414-0f4a0066df72
+https://www.al-monitor.com/pulse/originals/2020/04/egypt-lockdown-coronavirus-economic-irregular-workers.html
+https://www.al-monitor.com/pulse/originals/2020/03/egyptian-superstitions-jokes-on-coronavirus.html
+
+gov figures are like 2k 
+http://english.ahram.org.eg/NewsContent/1/64/367128/Egypt/Politics-/UPDATED-Egypt-sees--new-coronavirus-cases,-bringin.aspx
+
+Outside estimate of 6k to 19k
+https://www.theguardian.com/world/2020/mar/15/egypt-rate-coronavirus-cases-higher-than-figures-suggest
+
+These leaked figures April 2, of 870
+https://www.shorouknews.com/news/view.aspx?cdate=03042020&id=924e6078-02ee-4e81-a414-0f4a0066df72
+
+"Egypt has not conducted PCR tests for all citizens or even for a large number of citizens — as the United States has, for example — so the announced numbers will be much less than the actual cases.
+Meanwhile, the government does not announce the number of PCR tests being conducted daily."
+
+### Vietnam
+
+https://www.npr.org/sections/coronavirus-live-updates/2020/04/16/835748673/in-vietnam-there-have-been-fewer-than-300-covid-19-cases-and-no-deaths-heres-why
+https://www.reuters.com/article/us-health-coronavirus-vietnam-quarantine/vietnam-quarantines-tens-of-thousands-in-camps-amid-vigorous-attack-on-coronavirus-idUSKBN21D0ZU
+
+"Tens of thousands have been put in quarantine camps. By the end of March, Vietnam had banned all international and domestic flights. The government locked down the country on April 1. State-run media say the current social distancing and stay-at-home orders are to be extended for at least another week.
+
+Streets normally buzzing with motorcycles and cars are almost empty in most large cities. As the economic toll of the lockdown becomes apparent, some entrepreneurs are stepping up to help. One has provided "rice ATMs" to dispense free rice to those who are out of work.
+
+Some may still be skeptical of Vietnam's relatively low COVID-19 case numbers. The CDC's MacArthur is not.
+
+"Our team up in Hanoi is working very, very closely with their Ministry of Health counterparts," he says. "The communications I've had with my Vietnam team is that at this point in time, [they] don't have any indication that those numbers are false.""
+
+Vietnam reporting appears to be rough, no deaths!?!
+https://github.com/vncovid19/vncovid19.github.io
+
+```{r}
+
+```
+
+### Congo
+
+Super rough, 143 confirmed cases supposedly
+https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_the_Republic_of_the_Congo
+
+```{r}
+
+```
+
+### Turkey
+
+https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_Turkey
+#### Wikipedia
+
+```{r}
+
+#https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/Turkey_medical_cases_by_province
+
+library(rvest)
+
+#https://en.wikipedia.org/wiki/Template:COVID-19_testing_by_country_subdivision
+#https://en.wikipedia.org/w/index.php?title=Template:2019%E2%80%9320_coronavirus_pandemic_data/Turkey_medical_cases_by_province&action=history
+
+month_start=4 #starts in april
+month_end=4
+dates_to_grab <- apply(expand.grid(str_pad(month_start:month_end, 2, pad = "0") , str_pad(1:31, 2, pad = "0") ), 1, paste, collapse="")
+histor_links_list <- list()
+for(q in dates_to_grab){ 
+  url <- paste0("https://en.wikipedia.org/w/index.php?title=Template:2019%E2%80%9320_coronavirus_pandemic_data/Turkey_medical_cases_by_province&action=history&offset=2020",q,"000000&limit=1&action=history")
+  print(url)
+  wikipedia_history_page <- read_html(url)
+  links <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('href'))
+  titles <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('title')) 
+  text <- wikipedia_history_page %>% html_nodes("a") %>% html_text() 
+  wikipedia_history_page_links <- data.frame(link=paste0("https://en.wikipedia.org/",links) , 
+                                             title=titles,
+                                             text=text) %>%
+                                  filter(str_detect(link,"oldid") & text!="cur" & text!="prev")
+  histor_links_list[[q]] <- wikipedia_history_page_links
+}
+
+history_links_df <- bind_rows(histor_links_list) %>% arrange(link) %>% filter(!duplicated(link))
+
+#Ah it's a fixed table that just gets included so scraping the whole page doesn't show any variation
+
+tables_list <- list()
+for(i in 1:nrow(history_links_df) ){
+  q <- history_links_df$link[i]
+  edit_date <- history_links_df$text[i]
+  print(q)
+  thepage = readLines(q)
+  #temp_html <- read_html(q)
+  #temp_tables <- temp_html  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=F) 
+
+  library(htmltab) ; #install.packages('htmltab')
+  temp_tables <- read_html(q)  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=NA) 
+  try({
+    for(h in temp_tables){
+        #table_temp <- htmltab(doc = thepage, which = i, complementary=F, headerSep="_") #,header=1 htmltab doesn't just fail it crashes R which is sad because I liked it better
+        if( 
+          names(h) %>% tolower() %>% str_detect( pattern=c("countr|deaths|case")) %>% any() #it has a stupid extra header that hangs it up, so added search term for the header
+          ){
+          tables_list[[q]] <- h
+          tables_list[[q]]$edit_date <- edit_date
+          print("Table Found")
+          break
+        }
+    }
+  })
+}
+length(tables_list)
+lapply(tables_list, names) #
+
+library(janitor) #install.packages("janitor")
+
+wikipedia_subnational_turkey <- bind_rows(lapply(tables_list, clean_names))
+dim(wikipedia_subnational_turkey)
+
+wikipedia_subnational_turkey_long <- wikipedia_subnational_turkey %>%
+                                      mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
+                                      mutate(dataset="wikipedia") %>%
+                                      rowwise() %>% 
+
+                                      mutate(confirmed = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_2) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") ) %>%
+                                      mutate(tested_people = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_3) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","")  ) %>%
+    
+                                      mutate(place0 = "Turkey" ) %>%
+                                      mutate(place1 = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province) ) %>%
+      
+                                      mutate(date = coalesce(edit_date) ) %>%
+                                      mutate(date_asdate = date %>% str_replace(".*, ","") %>% dmy() ) %>% 
+      
+                                      mutate(admin0_name_clean =  place0 %>% rex_clean()) %>%
+                                      mutate(admin1_name_clean =  place1 %>% rex_clean()) %>%
+                                      mutate(admin2_name_clean = '' ) %>%
+                                      rex_admin_function()
+
+forjoining_wikipedia_subnational_turkey_long <- wikipedia_subnational_turkey_long %>%   
+                                          dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed, tested_people) %>% 
+                                          distinct()
+
+dim(forjoining_wikipedia_subnational_turkey_long) #
+
+
+
+```
+
+### Iran
+
+#### Wikipedia
+
+```{r}
+
+https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/Iran_medical_cases
+
+
+
+library(rvest)
+
+#https://en.wikipedia.org/wiki/Template:COVID-19_testing_by_country_subdivision
+#https://en.wikipedia.org/w/index.php?title=Template:2019%E2%80%9320_coronavirus_pandemic_data/Turkey_medical_cases_by_province&action=history
+
+month_start=4 #starts in april
+month_end=4
+dates_to_grab <- apply(expand.grid(str_pad(month_start:month_end, 2, pad = "0") , str_pad(1:31, 2, pad = "0") ), 1, paste, collapse="")
+histor_links_list <- list()
+for(q in dates_to_grab){ 
+  url <- paste0("https://en.wikipedia.org/w/index.php?title=Template:2019%E2%80%9320_coronavirus_pandemic_data/Turkey_medical_cases_by_province&action=history&offset=2020",q,"000000&limit=1&action=history")
+  print(url)
+  wikipedia_history_page <- read_html(url)
+  links <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('href'))
+  titles <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('title')) 
+  text <- wikipedia_history_page %>% html_nodes("a") %>% html_text() 
+  wikipedia_history_page_links <- data.frame(link=paste0("https://en.wikipedia.org/",links) , 
+                                             title=titles,
+                                             text=text) %>%
+                                  filter(str_detect(link,"oldid") & text!="cur" & text!="prev")
+  histor_links_list[[q]] <- wikipedia_history_page_links
+}
+
+history_links_df <- bind_rows(histor_links_list) %>% arrange(link) %>% filter(!duplicated(link))
+
+#Ah it's a fixed table that just gets included so scraping the whole page doesn't show any variation
+
+tables_list <- list()
+for(i in 1:nrow(history_links_df) ){
+  q <- history_links_df$link[i]
+  edit_date <- history_links_df$text[i]
+  print(q)
+  thepage = readLines(q)
+  #temp_html <- read_html(q)
+  #temp_tables <- temp_html  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=F) 
+
+  library(htmltab) ; #install.packages('htmltab')
+  temp_tables <- read_html(q)  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=NA) 
+  try({
+    for(h in temp_tables){
+        #table_temp <- htmltab(doc = thepage, which = i, complementary=F, headerSep="_") #,header=1 htmltab doesn't just fail it crashes R which is sad because I liked it better
+        if( 
+          names(h) %>% tolower() %>% str_detect( pattern=c("countr|deaths|case")) %>% any() #it has a stupid extra header that hangs it up, so added search term for the header
+          ){
+          tables_list[[q]] <- h
+          tables_list[[q]]$edit_date <- edit_date
+          print("Table Found")
+          break
+        }
+    }
+  })
+}
+length(tables_list)
+lapply(tables_list, names) #
+
+library(janitor) #install.packages("janitor")
+
+wikipedia_subnational_turkey <- bind_rows(lapply(tables_list, clean_names))
+dim(wikipedia_subnational_turkey)
+
+wikipedia_subnational_turkey_long <- wikipedia_subnational_turkey %>%
+                                      mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
+                                      mutate(dataset="wikipedia") %>%
+                                      rowwise() %>% 
+
+                                      mutate(confirmed = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_2) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") ) %>%
+                                      mutate(tested_people = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_3) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","")  ) %>%
+    
+                                      mutate(place0 = "Turkey" ) %>%
+                                      mutate(place1 = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province) ) %>%
+      
+                                      mutate(date = coalesce(edit_date) ) %>%
+                                      mutate(date_asdate = date %>% str_replace(".*, ","") %>% dmy() ) %>% 
+      
+                                      mutate(admin0_name_clean =  place0 %>% rex_clean()) %>%
+                                      mutate(admin1_name_clean =  place1 %>% rex_clean()) %>%
+                                      mutate(admin2_name_clean = '' ) %>%
+                                      rex_admin_function()
+
+forjoining_wikipedia_subnational_turkey_long <- wikipedia_subnational_turkey_long %>%   
+                                          dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed, tested_people) %>% 
+                                          distinct()
+
+dim(forjoining_wikipedia_subnational_turkey_long) #
+
+
+```
+
+
+
+## Multinational
+
+### ECDC
 https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
 
 Country level
@@ -143,83 +983,8 @@ forjoining_ecdc <- ecdc_log %>% dplyr::select(dataset,gid, geonameid,wikidata_id
 ```
 
 
-## India
-https://api.covid19india.org/
-https://docs.google.com/spreadsheets/d/e/2PACX-1vSc_2y5N0I67wDU38DjDh35IZSIS30rQf7_NYZhtYYGU1jJYT6_kDx4YpF-qw0LSlGsBYP8pqM_a1Pd/pubhtml#
-https://github.com/covid19india/api/blob/master/state_test_data.json
 
-
-https://github.com/amodm/api-covid19-in
-
-
-```{r}
-#Couldn't get any of this to work
-#library(googlesheets4)
-#temp <- read_csv("http://api.covid19india.org/states_daily_csv/confirmed.csv")
-#temp <- read_sheet("https://docs.google.com/spreadsheets/d/e/2PACX-1vSc_2y5N0I67wDU38DjDh35IZSIS30rQf7_NYZhtYYGU1jJYT6_kDx4YpF-qw0LSlGsBYP8pqM_a1Pd/pubhtml#")
-#install.packages('gsheet')
-#library(gsheet)
-
-#The test data is pushed as a json file here but it's not historical
-#https://github.com/covid19india/api/blob/master/state_test_data.json
-covid19india_test <- fromJSON("https://raw.githubusercontent.com/covid19india/api/master/state_test_data.json")$states_tested_data
-saveRDS(covid19india_test, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/covid19india_test_latest_" %>% paste0(Sys.Date(),".Rds")   ) #start saving dayly snapshots that we can add to the pile
-
-covid19india_test_long <- covid19india_test %>% 
-                          mutate(date_asdate = dmy(updatedon )) %>%
-                          mutate(admin0_name_clean="India" %>% rex_clean()) %>%
-                          mutate(admin1_name_clean= state %>% rex_clean()) %>%
-                          mutate(admin2_name_clean= "" %>% rex_clean()) %>%
-                          mutate(totaltested=as.numeric(totaltested)) %>%
-                          dplyr::select(date_asdate, admin0_name_clean, admin1_name_clean, admin2_name_clean, tested_people=totaltested)
-                          
-  
-#construct_download_url(url="https://docs.google.com/spreadsheets/d/e/2PACX-1vSc_2y5N0I67wDU38DjDh35IZSIS30rQf7_NYZhtYYGU1jJYT6_kDx4YpF-qw0LSlGsBYP8pqM_a1Pd/pubhtml#", format = "csv", sheetid = 1)
-#temp < gsheet2tbl(url="https://docs.google.com/spreadsheets/d/e/2PACX-1vSc_2y5N0I67wDU38DjDh35IZSIS30rQf7_NYZhtYYGU1jJYT6_kDx4YpF-qw0LSlGsBYP8pqM_a1Pd/pubhtml#", sheetid = 1)
-library(jsonlite)
-rootnet_case_json <- fromJSON("https://api.rootnet.in/covid19-in/stats/history")
-for(i in 1:length(rootnet_case_json$data$regional)){
-  rootnet_case_json$data$regional[[i]]$day <- rootnet_case_json$data$day[i]
-}
-rootnet_cases_regional <- bind_rows(rootnet_case_json$data$regional)
-rootnet_cases_regional <- rootnet_cases_regional  %>%
-                           mutate(admin0_name_clean="India" %>% rex_clean()) %>%
-                           mutate(admin1_name_clean= loc %>% rex_clean()) %>%
-                           mutate(admin2_name_clean= "" %>% rex_clean())
-
-rootnet_cases_national <- rootnet_case_json$data$summary
-rootnet_cases_national$day <- rootnet_case_json$data$day
-
-#This is just national testing
-rootnet_testing <- fromJSON("https://api.rootnet.in/covid19-in/stats/testing/history")$data
-
-rootnet_national <- rootnet_testing %>%
-                     full_join(rootnet_cases_national) %>%
-                     mutate(admin0_name_clean="India" %>% rex_clean()) %>%
-                     mutate(admin1_name_clean= "" %>% rex_clean()) %>%
-                     mutate(admin2_name_clean= "" %>% rex_clean()) 
-
-covid19india_long <- bind_rows(
-                rootnet_national %>% rename(tested_samples=totalSamplesTested, tested_people=totalIndividualsTested) %>% mutate(date_asdate = ymd(day )),
-                rootnet_cases_regional %>% mutate(date_asdate = ymd(day )) %>% full_join(covid19india_test_long %>% distinct()) 
-                ) %>%
-                mutate(dataset="covid19india") %>%
-                rex_admin_function()
-
-forjoining_covid19india <- covid19india_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate,
-                                                     tested_samples,
-                                                     tested_people,
-                                                     confirmed=total,
-                                                     deaths=deaths
-                                                     )
-
-dim(forjoining_covid19india) #946
-
-
-```
-
-
-## Bing
+### Bing
 
 ```{r}
 
@@ -278,30 +1043,104 @@ dim(forjoining_bing)
 #other are ambigious like
 #Russia Voronezh might either be the city or the Oblast
 
+
 ```
 
-## WHO
+### Our World In Data
 
 ```{r}
-WHO <- read_csv(url("https://raw.githubusercontent.com/datasets/covid-19/master/data/countries-aggregated.csv")) 
 
-who_long <- WHO %>%
-            mutate(dataset="who") %>%
-            mutate(admin0_name_original=Country) %>%
-            mutate(date_asdate = ymd(Date)) %>% 
-            rename(confirmed=Confirmed  , deaths=Deaths)  %>%
+owid <- read_csv(url("https://covid.ourworldindata.org/data/owid-covid-data.csv")) 
+owid$tests_units %>% table()
+owid_long <- owid %>%
+              mutate(dataset="owid") %>%
+              mutate(admin0_name_original=location) %>%
+              mutate(date_asdate = ymd(date)) %>% 
+
+              mutate(tested_people=ifelse(tests_units %in% c('cases tested','people tested'),total_tests, NA))       %>%                         
+              mutate(tested_samples=ifelse(!tests_units %in% c('cases tested','people tested'),total_tests, NA))      %>%                           
   
-             mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
-             mutate(admin1_name_clean='') %>%
-             mutate(admin2_name_clean='') %>% #you have to remember to put NAs or you'll accidentally over join
-             rex_admin_function()
+              mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+              mutate(admin1_name_clean='') %>%
+              mutate(admin2_name_clean='') %>% #you have to remember to put NAs or you'll accidentally over join
+              rex_admin_function()
 
-forjoining_who <- who_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=deaths)
+forjoining_owid <- owid_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=total_cases, deaths=total_deaths, tested_people, tested_samples)
 
 ```
 
-## CSSEGISandData
+### WHO
+
+We're going with WHO's data typed up and cleaned by our world in data though they don't trust them anymore and switched over
+Our World in Data
+Type of the WHO charts as well as others
+https://github.com/owid/covid-19-data/tree/master/public/data
+
+"who: data from the World Health Organization, related to confirmed cases and deaths—we have stopped using and updating this data since 18 March 2020."
+
+```{r}
+
+who_owid <- read_csv(url("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/who/full_data.csv"))  #
+
+who_owid_long <- who_owid %>%
+            mutate(dataset="who_owid") %>%
+            mutate(admin0_name_original=location) %>%
+            mutate(date_asdate = ymd(date)) %>% 
+
+            mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+            mutate(admin1_name_clean='') %>%
+            mutate(admin2_name_clean='') %>% #you have to remember to put NAs or you'll accidentally over join
+            rex_admin_function()
+
+forjoining_who_owid <- who_owid_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=total_cases, deaths=total_deaths)
+
+```
+
+### Who from the WHO Dashboard
+
+https://who.sprinklr.com/
+You have to manually click on the download map data link because it's a leaflet javascript link. Trying to figure out how to do it auto.
+
+https://www.cdc.gov/nchs/nvss/vsrr/COVID19/index.htm
+
+state level data
+
+https://www.cdc.gov/6d30bf37-caf8-4906-8eb1-e848d064534f
+
+https://www.cdc.gov/coronavirus/2019-ncov/cases-updates/cases-in-us.html
+"As of April 14, 2020, CDC case counts and death counts include both confirmed and probable cases and deaths. This change was made to reflect an interim COVID-19 position statementpdf iconexternal icon issued by the Council for State and Territorial Epidemiologists on April 5, 2020. The position statement included a case definition and made COVID-19 a nationally notifiable disease."
+*Total cases includes 1,696 probable cases and total deaths includes 4,752 probable deaths. #not a large number though
+
+
+```{r}
+
+#https://data.humdata.org/dataset/coronavirus-covid-19-cases-and-deaths
+who <- read_csv(url("https://docs.google.com/spreadsheets/d/e/2PACX-1vSe-8lf6l_ShJHvd126J-jGti992SUbNLu-kmJfx1IRkvma_r4DHi0bwEW89opArs8ZkSY5G2-Bc1yT/pub?gid=0&single=true&output=csv"))  #
+
+who_long <- who %>%
+            mutate(dataset="who") %>%
+            mutate(admin0_name_original=ADM0_NAME) %>%
+            mutate(date_asdate = ymd(date_epicrv)) %>% 
+
+            mutate(admin0_name_clean=ADM0_NAME %>% rex_clean()) %>%
+            mutate(admin1_name_clean='') %>%
+            mutate(admin2_name_clean='') %>% #you have to remember to put NAs or you'll accidentally over join
+            rex_admin_function()
+
+forjoining_who <- who_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=CumCase, deaths=CumDeath)
+
+```
+
+National Center for Health and Statistics
+https://www.cdc.gov/nchs/nvss/covid-19.htm
+
+Have state by state pages
+https://www.worldometers.info/coronavirus/country/us/
+
+### CSSEGISandData
+
 Johns Hopkins
+https://bnonews.com/index.php/2020/04/the-latest-coronavirus-cases/
 
 ```{r, echo=F, message=FALSE, results = FALSE, warning=FALSE}
 
@@ -344,111 +1183,7 @@ test <- forjoining_CSSE %>% group_by(dataset, gid, geonameid, wikidata_id, date_
 ```
 
 
-## NYT
-
-
-```{r}
-#https://www.nytimes.com/article/coronavirus-county-data-us.html
-#https://github.com/nytimes/covid-19-data
-nytimes <- read_csv(url("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")) #
-
-nytimes_long <- nytimes %>%
-                mutate(date_asdate = ymd(date)) %>% 
-                rename(confirmed=cases) %>%
-                mutate(dataset="nyt") %>%
-                mutate(admin0_name_original="United States") %>%
-                mutate(admin1_name_original=state) %>%
-                mutate(admin2_name_original=county)  %>%
-
-                mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
-                mutate(admin0_name_clean=str_replace(admin0_name_clean,"chinamainland","china")) %>%
-              
-                mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
-
-                mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
-                rex_admin_function()
-
-forjoining_nytimes <- nytimes_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=deaths)
-
-```
-
-
-
-### USA Facts
-
-COVID-19 deaths dataset. USA Facts. Accessed on 03-31-2020 at https://www.reuters.
-com/article/us-health-coronavirus-who/covid-19-spread-map
-https://www.stat.berkeley.edu/~binyu/ps/papers2020/covid19_paper.pdf
-https://github.com/Yu-Group/covid19-severity-prediction/tree/master/data
-https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/
-
-
-
-
-```{r}
-
-usafacts_confirmed <- read_csv("https://usafactsstatic.blob.core.windows.net/public/data/covid-19/covid_confirmed_usafacts.csv")
-usafacts_deaths <- read_csv("https://usafactsstatic.blob.core.windows.net/public/data/covid-19/covid_deaths_usafacts.csv")
-
-usafacts_confirmed_long <-  pivot_longer(usafacts_confirmed, names_to = "date", cols = ends_with("20"), values_to = "confirmed")
-usafacts_deaths_long <-  pivot_longer(usafacts_deaths, names_to = "date", cols = ends_with("20"), values_to = "deaths")
-
-usafacts_long <- usafacts_confirmed_long %>% full_join(usafacts_deaths_long) %>%
-                  mutate(date_asdate = mdy(str_replace(date,"20$","2020"))) %>%  
-                  mutate(dataset="usafacts") %>%
-                  mutate(admin0_name_original="United States") %>%
-                  mutate(admin1_name_original=State) %>%
-                  mutate(admin2_name_original=`County Name`)  %>%
-  
-                  mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
-                  mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
-                  mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
-                  rex_admin_function()
-
-forjoining_usafacts <- usafacts_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=deaths)
-
-
-```
-
-
-### Covidtracking.com
-
-```{r}
-#https://covidtracking.com/about-data
-"If you are calculating positive rates, it should only be with states that have an A grade. And be careful going back in time because almost all the states have changed their level of reporting at different times."
-
-#The data contain the u.s. and the states too
-#FIPS the first two digits are the state
-#All 0 is the U.S.
-#
-#https://covidtracking.com/api
-covidtracking <- read_csv(url("https://covidtracking.com/api/states/daily.csv"))
-dim(covidtracking) #1653   25
-covidtracking_t <- t(covidtracking)
-
-covidtracking_long <- covidtracking %>%
-
-                      mutate(date_asdate = ymd(date)) %>% 
-                      rename(state_abbr=state) %>%
-                      left_join(state_codes) %>% 
-                      dplyr::select(date_asdate, state_name, state_abbr, positive, negative, death) %>%
-                      mutate(dataset="covidtracking") %>%
-                      mutate(admin0_name_original="United States") %>%
-                      mutate(admin1_name_original=state_name)  %>%
-                      mutate(admin2_name_original='')  %>%
-  
-                      mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
-                      mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
-                      mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
-                      rex_admin_function()
-
-forjoining_covidtracking <- covidtracking_long %>%
-                            mutate(tested_people=negative+positive) %>%
-                            dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=positive, deaths=death, tested_people)
-
-```
-
-metabiota.com
+### metabiota.com
 
 ```{r}
 
@@ -533,7 +1268,9 @@ test <- forjoining_metabiota %>% group_by(dataset,gid, geonameid, wikidata_id,da
 All the relevant data used in this paper are publicy available and accessible at
 https://lab.gedidigital.it/gedi-visual/2020/coronavirus-i-contagi-in-italia/
 
-## Wikipedia national testing page
+### Wikipedia 
+
+#### National Testing Table
 
 ```{r}
 
@@ -600,7 +1337,7 @@ lapply(tables_list, names) #
 
 library(janitor) #install.packages("janitor")
 
-wikipedia_national_test <- bind_rows(lapply(tables_list, clean_names))
+wikipedia_national_test <- bind_rows(lapply(tables_list, FUN=function(x) x %>% clean_names %>% mutate_if(is.numeric, as.character) ))
 
 wikipedia_national_test_long <- wikipedia_national_test %>% 
                                 mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
@@ -635,7 +1372,7 @@ dim(forjoining_wikipedia_national_test) #
 
 
 
-## Wikipedia Subnational Testing
+#### Wikipedia Subnational Testing
 
 https://en.wikipedia.org/wiki/Template:COVID-19_testing_by_country_subdivision
 
@@ -732,9 +1469,7 @@ dim(forjoining_wikipedia_subnational_tests) #
 ```
 
 
-
-
-## Wikipedia National Cases
+#### Wikipedia National Cases
 
 ```{r}
 
@@ -837,25 +1572,63 @@ dim(forjoining_wikipedia_national_cases) #
 
 ```
 
-
+# Mung It all Together
 
 ```{r}
 
 library(tsibble)
 
 lhs_long <- bind_rows(
-  forjoining_CSSE,
-  forjoining_who,
-  forjoining_bing,
-  forjoining_ecdc,
+  #U.S.
   forjoining_nytimes,
   forjoining_usafacts,
   forjoining_covidtracking,
-  forjoining_metabiota,
+  
+  #italy
+  forjoining_dpc, 
+  
+  #India
   forjoining_covid19india,
+  forjoining_imhfw,
+
+  #South Korea
+  forjoining_ds4c,
+  
+  #Brazil
+  forjoining_bhm,
+  
+  #Japan,
+  forjoining_covid19japan,
+  
+  #Switzerland
+  forjoining_openZH,
+
+  #Tunesia
+  forjoining_TnCovid,
+  
+  #Bangladesh
+  forjoining_iedcr,
+  
+  #phillipines
+  forjoining_pdoh,
+  
+  #Congo
+  
+  #Turkey
+  forjoining_wikipedia_subnational_turkey_long,
+  
+  #Multinational
+  forjoining_ecdc,
+  forjoining_CSSE,
+  forjoining_who_owid,
+  forjoining_who,
+  forjoining_bing,
+  forjoining_metabiota,
+
   forjoining_wikipedia_national_test,
   forjoining_wikipedia_subnational_tests,
   forjoining_wikipedia_national_cases,
+  
 )   %>% 
   mutate(confirmed=ifelse(confirmed==0,NA,confirmed)) %>% #we don't believe zeros
   mutate(deaths=ifelse(deaths==0,NA,deaths)) %>%  #we don't believe zeros
@@ -863,7 +1636,9 @@ lhs_long <- bind_rows(
   distinct() %>%
   arrange(dataset,gid ,  geonameid ,wikidata_id, date_asdate)
 
-dim(lhs_long) #178447 #174028 #174691  #179,748
+dim(lhs_long) #304,376
+
+lhs_long$dataset %>% table()
 
 saveRDS(lhs_long, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long.Rds")
 

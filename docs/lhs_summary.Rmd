@@ -88,6 +88,7 @@ lhs_long_clean <- lhs_long %>%
   filter(is.na(confirmed) | is.na(deaths) | confirmed>=deaths)
 dim(lhs_long_clean) #181,563
 
+saveRDS(lhs_long_clean, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_cleand.Rds")
 
 
 ```
@@ -722,6 +723,37 @@ p5a / p5b
 (p0a + p1a + p2a + p3a + p4a + p5a) / (p0b + p1b + p2b + p3b + p4b + p5b)
 
 
+#Alachua County (Q488826)
+
+test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,confirmed_log_y_hat_percent_change)) %>% filter(wikidata_id=="Q488826") %>% 
+        mutate(group=paste(dataset, wikidata_id,confirmed_log_group_number)) %>%
+        arrange(date_asdate) #%>%
+        #mutate( confirmed_log_y_hat_percent_change = breakpoints(formula=confirmed_log_y_hat_percent_change ~ 1, data=. ) %>% fitted.values() )
+
+
+p6a <- test %>%
+ggplot() + 
+   geom_point( aes(x=date_asdate, y=confirmed_log, color=dataset), alpha=.3) +
+   geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("Alachua County (Q488826) Confirmed")
+
+p6b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line(aes(x=date_asdate , y=confirmed_log_y_hat_percent_change_y_hat ), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=confirmed_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+   ggtitle("Alachua County (Q488826) Confirmed")
+   
+    
+library(patchwork)
+p6a / p6b
+
+
 ```
 
 We can already start to ask some questions like how does rate of growth vary as a function of how many infected people there are/time
@@ -754,39 +786,61 @@ ggplot() +
    ggtitle("Interpolated log count by Alligned T") + ylim(0,.5)
 
 
-df_slopes <- temp_df %>% group_by(wikidata_id) %>% 
+df_slopes <- lhs_long_clean_imputed %>% 
+             group_by(wikidata_id) %>% 
              arrange(date_asdate) %>% 
              filter(!duplicated(date_asdate)) %>% 
-             mutate(confirmed_log_y_hat_percent_change_fd=difference(confirmed_log_y_hat_percent_change)) %>%
+             mutate(confirmed_log_y_hat_percent_change_y_hat_fd=difference(confirmed_log_y_hat_percent_change_y_hat)) %>%
              mutate(t = row_number()) %>%
-             mutate(t_alligned = ifelse(confirmed_log_y_hat_percent_change_fd==max(confirmed_log_y_hat_percent_change_fd,na.rm=T), t, NA) ) %>%
+             #So there are ones that start low and build up
+             mutate(t_alligned_maxfd =  confirmed_log_y_hat_percent_change_y_hat_fd==max(confirmed_log_y_hat_percent_change_y_hat_fd,na.rm=T) ) %>% 
+             #but there are other ones that go from zero to high and those aren't getting caught by the top above
+             mutate(t_alligned_max_at_0 =  confirmed_log_y_hat_percent_change_y_hat==max(confirmed_log_y_hat_percent_change_y_hat,na.rm=T) & t==1 ) %>% 
+
+             mutate(t_alligned = ifelse(t_alligned_max_at_0 | (t_alligned_maxfd & max(t_alligned_max_at_0)==F) , t, NA) ) %>% 
              mutate(t_alligned = max(t_alligned, na.rm=T) ) %>%
              mutate(t_alligned = t-max(t_alligned, na.rm=T) ) 
   
 df_slopes %>% mutate(group=paste(wikidata_id)) %>%
+              ggplot() + 
+              geom_line( aes(x=t_alligned , y=confirmed_log_y_hat_percent_change_y_hat, group=wikidata_id), alpha=.05, color="blue") +
+              theme_bw() +
+              ggtitle("Interpolated log count by Alligned T") + ylim(0,100)
+
+
+#df_slopes %>% mutate(group=paste(wikidata_id)) %>%
+#              ggplot() + 
+#              geom_line( aes(x=t_alligned , y=confirmed_log_y_hat_percent_change_y_hat, group=wikidata_id), alpha=.05, color="blue") +
+#              theme_bw() +
+#              ggtitle("Interpolated log count by Alligned T") + ylim(0,100)
+
+
+df_slopes %>% mutate(group=paste(wikidata_id)) %>% #filter(wikidata_id %in% c('Q30','Q1439','Q668','Q884','Q16861','Q159','Q38')) %>%
 ggplot() + 
-   geom_line( aes(x=t_alligned , y=confirmed_log_y_hat_percent_change, group=group), alpha=.05, color="blue") +
+   geom_line( aes(x=t_alligned , y=confirmed_log_y_hat_percent_change_y_hat, group=group, color=wikidata_id), alpha=.5) +
    theme_bw() +
-   ggtitle("Interpolated log count by Alligned T") + ylim(0,.5)
+   ggtitle("Interpolated log count by Alligned T") + ylim(0,100) +
+   gghighlight(wikidata_id %in% c('Q30','Q1439','Q668','Q884','Q16861','Q159','Q38'))
 
-
-df_slopes %>% mutate(group=paste(wikidata_id)) %>% filter(wikidata_id %in% c('Q30','Q1439','Q668','Q884','Q16861','Q159','Q38')) %>%
+#starts right at zero
+#Alachua County (Q488826)
+df_slopes %>% mutate(group=paste(wikidata_id)) %>% 
 ggplot() + 
-   geom_line( aes(x=t_alligned , y=confirmed_log_y_hat_percent_change, group=group, color=wikidata_id), alpha=.5) +
+   geom_line( aes(x=t_alligned , y=confirmed_log_y_hat_percent_change_y_hat, group=group, color=wikidata_id), alpha=.5) +
    theme_bw() +
-   ggtitle("Interpolated log count by Alligned T") + ylim(0,.5) +
-   gghighlight()
+   ggtitle("Interpolated log count by Alligned T") + ylim(0,100) +
+   gghighlight(wikidata_id %in% c('Q488826'))
 
 
-df_slopes %>% 
-  group_by(wikidata_id) %>%
-    mutate(random=runif(1)) %>% 
-  ungroup() %>%
-  filter(random>.9) %>%
+df_slopes %>% mutate(group=paste(wikidata_id)) %>% #filter(wikidata_id %in% c('Q30','Q1439','Q668','Q884','Q16861','Q159','Q38')) %>%
 ggplot() + 
-   geom_line( aes(x=t_alligned , y=confirmed_log_y_hat_percent_change, group=wikidata_id), alpha=.2, color="blue") +
+   geom_line( aes(x=t_alligned , y=confirmed_log_y_hat_percent_change_y_hat, group=group, color=wikidata_id), alpha=.5) +
    theme_bw() +
-   ggtitle("Interpolated log count by Alligned T") + ylim(0,.5)
+   ggtitle("Interpolated log count by Alligned T") + ylim(0,100) + xlim(0,100) +
+   gghighlight(wikidata_id %in% c('Q30','Q1439','Q668','Q884','Q16861','Q159','Q38'))
+
+
+df_slopes %>% filter(confirmed_log_y_hat_percent_change_y_hat>20 & t_alligned<0)   %>% View()
 
 
 temp_df %>% 
@@ -798,8 +852,6 @@ temp_df %>%
   pull(confirmed) %>%
   summary() #the jump happens at a median of 10 and mean of 358
   
-
-
 
 #There are some negatives which should be possible.
 temp_df %>%
@@ -824,7 +876,6 @@ ggplot() +
 
 
 ```
-
 
 
 

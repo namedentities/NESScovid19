@@ -22,6 +22,122 @@ blockquote {
 </style>
 
 
+```{r}
+#Library Loads
+
+```
+
+
+```{r}
+#Data loads
+lhs_long_clean <- readRDS( "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_cleand.Rds")
+
+```
+
+# Introduction
+
+What are the 
+
+https://ourworldindata.org/covid-sources-comparison
+
+"The trends are very close, but Johns Hopkins’ numbers are higher than the numbers of the WHO and the ECDC. This may be because Johns Hopkins also includes estimates of ‘presumptive positive cases’. Presumptive positive cases are those that have been confirmed by state or local labs, but not by national labs (e.g. the US CDC)."
+
+## The Global Subnational COVID-19 Tracker
+
+We have assembled a public resource for measuring and benchmarking COVID-19 models and forecasts. 
+
+In doing so we observed and documented a large number of gotchas worth documenting for anyone working with these data or looking to become more experienced with real world time series cross section data.
+
+# Lesson 1: Take a Serious Census of the available data
+
+The three outcomes of interest are the reported number of COVID-19 cases by a certain date, the number of reported deaths due to COVID-19 reported by a certain date, and the number of people tested for COVID-19 by a certain date.
+
+Covid-19 measurement is fundamentally event measurement. There few to no representative census and surveys being held. Individuals get sick or die either in medical care or without, which then produces interactions with government institutions at some unusually low geographic level, which then produces either or both journalistic and government reports, which then get passed up to some higher government or organizational aggregator, and so on. The definitions, rules, and resources for this aggregation varies across location making spatial comparisons difficult, across time making temporal comparisons difficult, and across sources making comparison just in general difficult.
+
+[Center for Systems Science and Engineering (CSSE) at Johns Hopkins University](https://github.com/CSSEGISandData/COVID-19)  ([Dong et al. 2020](thelancet.com/journals/laninf/article/PIIS1473-3099(20)30120-1/fulltext))
+
+https://data.humdata.org/dataset/coronavirus-covid-19-cases-and-deaths
+
+WHO finally made their data available in a structured form, but it's this [leaflet map](https://covid19.who.int/)
+
+Much of it done by hand like https://coronavirus.1point3acres.com/en/data
+
+## Multiple Sources
+
+
+
+## Spatial Missingness
+
+```{r}
+#gadm36 = st_read("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSgadm/data_in/gadm36_gpkg/gadm36.gpkg")
+st_layers("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/gadm36_bycountry/gadm36_levels_gpkg/gadm36_levels.gpkg")
+gadm36_levels_0 = st_read("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/gadm36_bycountry/gadm36_levels_gpkg/gadm36_levels.gpkg", layer="level0")  %>%
+                  st_simplify(preserveTopology = FALSE, dTolerance =0.1) #  0.025 this is supposedly broken up by 6 levels and so should have u.s. 
+
+#plot(gadm36_levels_0)
+#dim(gadm36_levels_0_sf$sf)
+#gadm_plot(gadm36_levels_0_sf)
+lhs_long_place_sources <- lhs_long  %>% dplyr::select(gid,   geonameid, wikidata_id, dataset) %>% 
+                           group_by(gid,  geonameid, wikidata_id) %>% count(dataset) %>%
+                           group_by(gid,  geonameid, wikidata_id) %>%
+                           summarise(datasets_n=n()) 
+
+p0 <- gadm36_levels_0 %>% 
+    left_join(lhs_long_place_sources %>% dplyr::select(gid=gid, datasets_n) %>%  left_join( gadm36_levels_0 %>% as.data.frame() %>% dplyr::select(gid=GID_0, NAME_0)  %>% distinct()  )
+              ) %>%
+    #replace_na(list(datasets_n = 0)) %>% 
+    ggplot() + geom_sf(aes(fill = datasets_n)) +
+    scale_fill_gradient(low="blue", high="red") +
+    theme_bw() 
+p0
+
+```
+```{r}
+
+gadm36_levels_1 = st_read("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/gadm36_bycountry/gadm36_levels_gpkg/gadm36_levels.gpkg", layer="level1")  %>%
+  st_simplify(preserveTopology = FALSE, dTolerance =0.1) #  0.025 this is supposedly broken up by 6 levels and so should have u.s. 
+
+p1 <- gadm36_levels_1 %>% 
+  left_join(lhs_long_place_sources %>% dplyr::select(gid=gid, datasets_n) %>%  left_join( gadm36_levels_1 %>% as.data.frame() %>% dplyr::select(gid=GID_1, NAME_1) %>% distinct()  )
+  ) %>%
+  #replace_na(list(datasets_n = 0)) %>% 
+  ggplot() + geom_sf(aes(fill = datasets_n)) +
+  scale_fill_gradient(low="blue", high="red") +
+  theme_bw() 
+p1
+
+```
+
+
+## Temporal Missingness
+
+## Changing 
+
+# Lesson 2: Understanding the Institutional Data Generating Process is required to Understand the Empirical Data Generating Processes
+
+Data is not reality; it's speech about reality by sensors, people, and institutions. Those sensors, people, and institutions have their own complex and time varying process by which they choose why and how to talk about reality. The variation in that institutional data generating process than the variation in the empirical data generating process that we actually care about.
+
+Discontinuities
+Jumps in the data.
+
+Revising past data.
+
+Changing definitions
+
+# Lesson : There is Always Less Information than there is Data
+
+There is some true state of the world, 
+
+#
+
+
+
+
+
+
+
+
+
 Rates of change
 
 Exaggerated amounts of precision. Day to day fluctuations not actually important.
