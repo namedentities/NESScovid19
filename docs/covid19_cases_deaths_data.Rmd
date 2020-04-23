@@ -60,10 +60,9 @@ library(jsonlite)
 Can start back from here
 
 ```{r}
-
-admin0 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin0.Rds")
-admin1 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin1.Rds")
-admin2 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin2.Rds")
+admin0 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin0.Rds")
+admin1 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin1.Rds")
+admin2 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin2.Rds")
 
 rex_clean <- function(x){ x %>% stringi::stri_trans_general("latin-ascii") %>% stringi::stri_replace_all(regex="[^A-Za-z0-9]","") %>% tolower() } #so individually, each string should be devoid of spaces,noncharacters, and nonlatin
 
@@ -99,6 +98,46 @@ If you are interested in knowing country level data, please refer to the followi
 
 Switzerland - https://www.kaggle.com/daenuprobst/covid19-cases-switzerland
 Indonesia - https://www.kaggle.com/ardisragen/indonesia-coronavirus-cases
+
+### United Kingdom
+
+https://github.com/tomwhite/covid-19-uk-data
+```{r}
+
+covid_19_uk_data1 <- read_csv("https://raw.githubusercontent.com/tomwhite/covid-19-uk-data/master/data/covid-19-cases-uk.csv") %>%
+                     mutate(admin0_name_original="United Kingdom") %>% mutate(admin1_name_original=Country)  %>% mutate(admin2_name_original=Area) 
+
+covid_19_uk_data2 <-read_csv("https://raw.githubusercontent.com/tomwhite/covid-19-uk-data/master/data/covid-19-totals-uk.csv") %>% mutate(admin0_name_original="United Kingdom")
+
+covid_19_uk_data3 <-read_csv("https://raw.githubusercontent.com/tomwhite/covid-19-uk-data/master/data/covid-19-totals-england.csv") %>%
+                     mutate(admin0_name_original="United Kingdom") %>% mutate(admin1_name_original="England")
+
+covid_19_uk_data4 <-read_csv("https://raw.githubusercontent.com/tomwhite/covid-19-uk-data/master/data/covid-19-totals-northern-ireland.csv") %>%
+                     mutate(admin0_name_original="United Kingdom") %>% mutate(admin1_name_original="Norther Ireland")
+
+covid_19_uk_data5 <-read_csv("https://raw.githubusercontent.com/tomwhite/covid-19-uk-data/master/data/covid-19-totals-scotland.csv") %>%
+                     mutate(admin0_name_original="United Kingdom") %>% mutate(admin1_name_original="Scotland")
+
+covid_19_uk_data6 <-read_csv("https://raw.githubusercontent.com/tomwhite/covid-19-uk-data/master/data/covid-19-totals-wales.csv") %>%
+                     mutate(admin0_name_original="United Kingdom") %>% mutate(admin1_name_original="Wales")
+
+covid_19_uk_data7 <-read_csv("https://raw.githubusercontent.com/tomwhite/covid-19-uk-data/master/data/covid-19-indicators-uk.csv") %>%
+                     mutate(admin0_name_original="United Kingdom") %>% mutate(admin1_name_original=Country) %>%
+                     pivot_wider( id_cols = NULL, names_from = Indicator, values_from = Value, values_fill = NULL, values_fn = NULL) 
+
+covid_19_uk_data_long <- bind_rows(
+  covid_19_uk_data1,
+  covid_19_uk_data2,
+  covid_19_uk_data3,
+  covid_19_uk_data4,
+  covid_19_uk_data5,
+  covid_19_uk_data6,
+  covid_19_uk_data7
+) %>% dplyr::select(Date, admin0_name_original , admin1_name_original , admin2_name_original,  TotalCases, Tests, ConfirmedCases, Deaths)
+
+
+```
+
 
 ### U.S.
 
@@ -568,6 +607,8 @@ forjoining_openZH <-openZH_long %>%
 
 ```{r}
 
+#Example static wikipedia table - cross section
+
 library(rvest)
 
 q ="https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/South_Africa_medical_cases"
@@ -826,6 +867,8 @@ Some may still be skeptical of Vietnam's relatively low COVID-19 case numbers. T
 Vietnam reporting appears to be rough, no deaths!?!
 https://github.com/vncovid19/vncovid19.github.io
 
+https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_Vietnam
+
 ```{r}
 
 ```
@@ -845,6 +888,8 @@ https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_Turkey
 #### Wikipedia
 
 ```{r}
+
+#Example of time varying that you have to scrape the same table over and over again.
 
 #https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/Turkey_medical_cases_by_province
 

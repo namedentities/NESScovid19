@@ -1,5 +1,5 @@
 ---
-title: "Left Hand Side Prep and Summarization"
+title: "The Machine Learning for Social Science Global Subnational Covid Counts Datset"
 output:
   html_notebook:
     toc: yes
@@ -73,6 +73,20 @@ lhs_long <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_git
 
 lhs_long_clean <- lhs_long %>%
   filter(!is.na(date_asdate)) %>%
+  
+  #First drop anything that's negative. Shouldn't be any negatives.
+  filter(is.na(confirmed) | confirmed>=0) %>%
+  filter(is.na(deaths) | deaths>=0) %>%
+  filter(is.na(tested_people) | tested_people>=0) %>%
+  filter(is.na(tested_samples) | tested_samples>=0) %>%
+  
+  #Then set 0s to NA, we don't trust NAs
+  mutate(confirmed=ifelse(confirmed==0, NA, confirmed)) %>%
+  mutate(deaths=ifelse(deaths==0, NA, deaths)) %>%
+  mutate(tested_people=ifelse(tested_people==0, NA, tested_people)) %>%
+  mutate(tested_samples=ifelse(tested_samples==0, NA, tested_samples)) %>%
+
+  #Then check first differences and drop anything that doesn't weakly increase monotonically
   group_by(dataset,gid ,  geonameid ,wikidata_id) %>% 
     arrange(date_asdate) %>%
     mutate(confirmed_fd=confirmed, deaths_fd=deaths, tested_people_fd=tested_people, tested_samples_fd=tested_samples) %>%
@@ -86,6 +100,8 @@ lhs_long_clean <- lhs_long %>%
           (is.na(tested_people_fd) | tested_people_fd>=0) &  #never allow for a reversal
           (is.na(tested_samples_fd) | tested_samples_fd>=0)  #never allow for a reversal
           ) %>%
+  
+  
   #we're going to go one step further and require either confirmed or tested to be strictly higher
   #In words, during an episode we don't believe reports mean "no new cases" just no new good reporting
   #metabiota is the worst offender here so restricting it to just that
@@ -99,12 +115,37 @@ lhs_long_clean <- lhs_long %>%
     filter(var(confirmed, na.rm=T)>0) %>%
   ungroup()
   
-#dim(lhs_long_clean) #292,580 #299213 #181,563
+#dim(lhs_long_clean) #281,464 #292,580 #299213 #181,563
 
 saveRDS(lhs_long_clean, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_cleand.Rds")
+```
 
+Summary Statistics of Our Data
+
+```{r}
+print("Number of observations")
+dim(lhs_long_clean)
+
+print("Number of locations")
+lhs_long_clean$wikidata_id %>% unique() %>% length() #3,373
+
+print("Number of Days")
+lhs_long_clean$date_asdate %>% unique() %>% length() #113
+
+library(DT) #https://rstudio.github.io/DT/
+lhs_long_clean %>% count(dataset) %>% arrange(-n) %>% DT::datatable(options = list(pageLength = 20, autoWidth = TRUE))
+
+#library(gt)
+#lhs_long_clean %>% count(dataset) %>% arrange(-n) %>% gt() %>% 
+# tab_header(
+#    title = md("Location-Days by Dataset")#,
+#    #subtitle = "Number of Days with Data by Dataset"
+#  ) %>%
+#  fmt_missing( columns=everything(), rows=NULL,missing_text = 0)
 
 ```
+
+
 # Spatial Variation in Data Availability
 
 ## Country Level Data Availability
@@ -133,8 +174,32 @@ p0 <- gadm36_levels_0 %>%
       theme_bw() 
 ```
 
+
+
 ```{r, fig.width=12, fig.height=6,warning=FALSE,message=FALSE,error=FALSE}
 p0 + ggtitle("Covid Count Data Availability at the Country Level")
+```
+
+```{r}
+temp <- gadm36_levels_0 %>%
+   left_join(
+   lhs_long  %>% count(gid, dataset) %>% rename(GID_0=gid) #there are still dupe geonames wikidata to gid matches that need to be fixed geonameid, wikidata_id, 
+) 
+
+temp_wide <- temp %>% as.data.frame() %>% dplyr::select(Country=NAME_0, dataset, n) %>% distinct() %>% pivot_wider( id_cols = Country, names_from = dataset,
+  values_from = n, values_fill = NULL, values_fn = NULL) 
+
+temp_wide %>% DT::datatable(options = list(pageLength = 20, autoWidth = TRUE))
+
+#install.packages('gt')
+#library(gt)
+#temp_wide %>% gt() %>% 
+# tab_header(
+#    title = md("Data Availability by Country"),
+#    subtitle = "Number of Days with Data by Dataset"
+#  ) %>%
+#  fmt_missing( columns=everything(), rows=NULL,missing_text = 0)
+
 ```
 
 ## State/Province Level Data Availability
@@ -158,6 +223,19 @@ p1 <- gadm36_levels_1 %>%
 p1
 ```
 
+```{r}
+temp <- gadm36_levels_1 %>%
+   left_join(
+   lhs_long  %>% count(gid, dataset) %>% rename(GID_1=gid) #there are still dupe geonames wikidata to gid matches that need to be fixed geonameid, wikidata_id, 
+) 
+
+temp_wide <- temp %>% as.data.frame() %>% dplyr::select(Country=NAME_0, Admin1=NAME_1, dataset, n) %>% distinct() %>% pivot_wider( id_cols = Country:Admin1, names_from = dataset,
+  values_from = n, values_fill = NULL, values_fn = NULL) %>% mutate(total = rowSums(.[-c(1,2)], na.rm = T))
+
+temp_wide %>% filter(total>0) %>% DT::datatable(options = list(pageLength = 10, autoWidth = TRUE))
+
+```
+
 ## County District Level Data Availability
 
 ```{r, fig.width=12, fig.height=12,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
@@ -178,6 +256,18 @@ p2
 ```
 
 
+```{r}
+temp <- gadm36_levels_2 %>%
+   left_join(
+   lhs_long  %>% count(gid, dataset) %>% rename(GID_2=gid) #there are still dupe geonames wikidata to gid matches that need to be fixed geonameid, wikidata_id, 
+) 
+
+temp_wide <- temp %>% as.data.frame() %>% dplyr::select(Country=NAME_0, Admin1=NAME_1, Admin2=NAME_2, dataset, n) %>% distinct() %>% pivot_wider( id_cols = Country:Admin2, names_from = dataset,
+  values_from = n, values_fill = NULL, values_fn = NULL) %>% mutate(total = rowSums(.[-c(1,2,3)], na.rm = T))
+
+temp_wide %>% filter(total>0) %>% DT::datatable(options = list(pageLength = 10, autoWidth = TRUE))
+
+```
 
 # Data Availability and Interpolation over Time
 
@@ -986,6 +1076,8 @@ p5b <- test %>%
     
 #p5a / p5b
 ```
+
+I need to fix this, USA has a fraction of a death
 
 ```{r, fig.width=12, fig.height=6 ,warning=FALSE,message=FALSE,error=FALSE}
 (p0a + p1a + p2a ) / (p0b + p1b + p2b )
