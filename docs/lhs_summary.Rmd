@@ -594,9 +594,6 @@ Here we do the actual interpolation. For each individual location-dataset, we fi
 
 ```{r,warning=FALSE,message=FALSE,error=FALSE}
 
-places <- lhs_long_clean$wikidata_id %>% unique() %>% na.omit() ; length(places)
-datasets <- lhs_long_clean$dataset %>% unique() %>% na.omit() ; table(datasets)
-
 pd <- lhs_long_clean %>% dplyr::select(wikidata_id,dataset) %>% distinct()
 library(party)
 temp_list1 <- list()
@@ -620,8 +617,13 @@ for(i in 1:nrow(pd)){
           tree_confirmed <- party::mob(confirmed_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
           temp$confirmed_log_y_hat <- predict( tree_confirmed, newdata=temp , type = c("response") )
           temp$confirmed_log_group_number <-  predict( tree_confirmed, newdata=temp , type = c("node"))
-          temp <- temp %>% group_by(confirmed_log_group_number) %>% arrange(date_asnumeric) %>% mutate(confirmed_log_y_hat_slope=difference(confirmed_log_y_hat)) %>% fill(confirmed_log_y_hat_slope, .direction="up") %>% ungroup() %>%
-                              mutate(confirmed_log_y_hat_percent_change = round((exp(confirmed_log_y_hat_slope)-1)*100,2)) 
+          temp <- temp %>% 
+                  group_by(confirmed_log_group_number) %>%
+                  arrange(date_asnumeric) %>%
+                  mutate(confirmed_log_y_hat_slope=difference(confirmed_log_y_hat)) %>% 
+                  fill(confirmed_log_y_hat_slope, .direction="up") %>% 
+                  ungroup() %>% mutate(confirmed_log_y_hat_percent_change = round((exp(confirmed_log_y_hat_slope)-1)*100,2))  %>%
+                  filter(confirmed_log_y_hat>0) #reject any where the prediction is less than 1 full case
         }, error = function(e) {})
         
         tryCatch({  
@@ -629,15 +631,20 @@ for(i in 1:nrow(pd)){
           temp$deaths_log_y_hat <- predict( tree_deaths, newdata=temp , type = c("response") )
           temp$deaths_log_group_number <-  predict( tree_deaths, newdata=temp , type = c("node"))
           temp <- temp %>% group_by(deaths_log_group_number) %>% arrange(date_asnumeric) %>% mutate(deaths_log_y_hat_slope=difference(deaths_log_y_hat)) %>% fill(deaths_log_y_hat_slope, .direction="up") %>% ungroup() %>%
-                              mutate(deaths_log_y_hat_percent_change = round((exp(deaths_log_y_hat_slope)-1)*100,2)) 
+                              mutate(deaths_log_y_hat_percent_change = round((exp(deaths_log_y_hat_slope)-1)*100,2)) %>%
+                              filter(deaths_log_y_hat>0) #reject any where the prediction is less than 1 full case
         }, error = function(e) {})
         
         tryCatch({  
           tree_tested_people <- party::mob(tested_people_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
           temp$tested_people_log_y_hat <- predict( tree_tested_people, newdata=temp , type = c("response") )
           temp$tested_people_log_group_number <-  predict( tree_tested_people, newdata=temp , type = c("node"))
-          temp <- temp %>% group_by(tested_people_log_group_number) %>% arrange(date_asnumeric) %>% mutate(tested_people_log_y_hat_slope=difference(tested_people_log_y_hat)) %>% fill(tested_people_log_y_hat_slope, .direction="up") %>% ungroup() %>%
-                              mutate(tested_people_log_y_hat_percent_change = round((exp(tested_people_log_y_hat_slope)-1)*100,2)) 
+          temp <- temp %>% group_by(tested_people_log_group_number) %>% 
+                     arrange(date_asnumeric) %>%
+                     mutate(tested_people_log_y_hat_slope=difference(tested_people_log_y_hat)) %>% 
+                     fill(tested_people_log_y_hat_slope, .direction="up") %>% ungroup() %>%
+                     mutate(tested_people_log_y_hat_percent_change = round((exp(tested_people_log_y_hat_slope)-1)*100,2)) %>%
+                     filter(tested_people_log_y_hat>0) #reject any where the prediction is less than 1 full case
         }, error = function(e) {})
         
         temp_list1[[paste(p,d) ]] <- temp
@@ -692,7 +699,7 @@ saveRDS(lhs_long_clean_imputed, "/media/skynet2/905884f0-7546-4273-9061-12a79083
 
 library(patchwork)
 lhs_long_clean_imputed <- readRDS( "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_clean_imputed.Rds")
-dim(lhs_long_clean_imputed) #337043
+dim(lhs_long_clean_imputed) #45,609 #337043
 
 #we want the colors to be consistent by dataset too btw
 
