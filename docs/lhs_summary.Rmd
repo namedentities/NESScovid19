@@ -63,6 +63,8 @@ library(GADMTools)
 library(strucchange) ; #install.packages('strucchange')
 library(tsibble)
 
+library(patchwork)
+
 ```
 ## Data Loading and Cleaning
 
@@ -595,10 +597,12 @@ Here we do the actual interpolation. For each individual location-dataset, we fi
 places <- lhs_long_clean$wikidata_id %>% unique() %>% na.omit() ; length(places)
 datasets <- lhs_long_clean$dataset %>% unique() %>% na.omit() ; table(datasets)
 
-temp_list <- list()
-for(p in places){
-    print(p)
-    for(d in datasets){
+pd <- lhs_long_clean %>% dplyr::select(wikidata_id,dataset) %>% distinct()
+library(party)
+temp_list1 <- list()
+for(i in 1:nrow(pd)){
+      p <- pd$wikidata_id[i]
+      d <- pd$dataset[i]
       try({
         temp <- NULL
         temp <- lhs_long_clean %>%
@@ -613,7 +617,7 @@ for(p in places){
         temp <- temp %>% expand(dataset,gid, geonameid,wikidata_id,  date_asdate=min(date_asdate):max(date_asdate) %>% as.Date() ) %>% full_join(temp) %>% mutate(date_asnumeric= as.numeric(date_asdate) ) 
                 
         tryCatch({  
-          tree_confirmed <- mob(confirmed_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
+          tree_confirmed <- party::mob(confirmed_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
           temp$confirmed_log_y_hat <- predict( tree_confirmed, newdata=temp , type = c("response") )
           temp$confirmed_log_group_number <-  predict( tree_confirmed, newdata=temp , type = c("node"))
           temp <- temp %>% group_by(confirmed_log_group_number) %>% arrange(date_asnumeric) %>% mutate(confirmed_log_y_hat_slope=difference(confirmed_log_y_hat)) %>% fill(confirmed_log_y_hat_slope, .direction="up") %>% ungroup() %>%
@@ -621,7 +625,7 @@ for(p in places){
         }, error = function(e) {})
         
         tryCatch({  
-          tree_deaths <- mob(deaths_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
+          tree_deaths <- party::mob(deaths_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
           temp$deaths_log_y_hat <- predict( tree_deaths, newdata=temp , type = c("response") )
           temp$deaths_log_group_number <-  predict( tree_deaths, newdata=temp , type = c("node"))
           temp <- temp %>% group_by(deaths_log_group_number) %>% arrange(date_asnumeric) %>% mutate(deaths_log_y_hat_slope=difference(deaths_log_y_hat)) %>% fill(deaths_log_y_hat_slope, .direction="up") %>% ungroup() %>%
@@ -629,53 +633,53 @@ for(p in places){
         }, error = function(e) {})
         
         tryCatch({  
-          tree_tested_people <- mob(tested_people_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
+          tree_tested_people <- party::mob(tested_people_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
           temp$tested_people_log_y_hat <- predict( tree_tested_people, newdata=temp , type = c("response") )
           temp$tested_people_log_group_number <-  predict( tree_tested_people, newdata=temp , type = c("node"))
           temp <- temp %>% group_by(tested_people_log_group_number) %>% arrange(date_asnumeric) %>% mutate(tested_people_log_y_hat_slope=difference(tested_people_log_y_hat)) %>% fill(tested_people_log_y_hat_slope, .direction="up") %>% ungroup() %>%
                               mutate(tested_people_log_y_hat_percent_change = round((exp(tested_people_log_y_hat_slope)-1)*100,2)) 
         }, error = function(e) {})
         
-        temp_list[[paste(p,d) ]] <- temp
+        temp_list1[[paste(p,d) ]] <- temp
   
       })
-    }
+      
 }
 
-lhs_long_clean_imputed <- bind_rows(temp_list)
-dim(lhs_long_clean_imputed) #bigger because we're interpolating now
+lhs_long_clean_imputed1 <- bind_rows(temp_list1)
+dim(lhs_long_clean_imputed1) #bigger because we're interpolating now
 
 #rt1 <- rpart(formula = confirmed_log_y_hat_percent_change ~ date_asnumeric, data=test)
 #interpolated = data.frame(date_asnumeric=min(test$date_asnumeric):max(test$date_asnumeric) )
 #interpolated$confirmed_log_y_hat_percent_change_y_hat <-  predict(rt1, newdata=interpolated)
 #interpolated$date_asdate <- as.Date(interpolated$date_asnumeric)
 
-
+library(rpart)
 minsplit=6
 minbucket=3
-temp_list <- list()
+temp_list2 <- list()
 for(p in places){
   print(p)
-  temp <- lhs_long_clean_imputed %>% filter(wikidata_id==p) %>% arrange(date_asnumeric)
+  temp <- lhs_long_clean_imputed1 %>% filter(wikidata_id==p) %>% arrange(date_asnumeric)
           
   tryCatch({  
-    rt1 <- rpart(formula = confirmed_log_y_hat_percent_change ~ date_asnumeric, data=temp, control = rpart.control(minsplit = minsplit, minbucket=minbucket))
+    rt1 <- rpart::rpart(formula = confirmed_log_y_hat_percent_change ~ date_asnumeric, data=temp, control = rpart.control(minsplit = minsplit, minbucket=minbucket))
     temp$confirmed_log_y_hat_percent_change_y_hat <-  predict(rt1, newdata=temp)
   }, error = function(e) {})
   
   tryCatch({  
-    rt2 <- rpart(formula = deaths_log_y_hat_percent_change ~ date_asnumeric, data=temp, control = rpart.control(minsplit = minsplit, minbucket=minbucket))
+    rt2 <- rpart::rpart(formula = deaths_log_y_hat_percent_change ~ date_asnumeric, data=temp, control = rpart.control(minsplit = minsplit, minbucket=minbucket))
     temp$deaths_log_y_hat_percent_change_y_hat <-  predict(rt2, newdata=temp)
   }, error = function(e) {})
 
   tryCatch({  
-    rt3 <- rpart(formula = tested_people_log ~ date_asnumeric, data=temp)
+    rt3 <- rpart::rpart(formula = tested_people_log ~ date_asnumeric, data=temp)
     temp$tested_people_log_y_hat_percent_change_y_hat <-  predict(rt3, newdata=temp, control = rpart.control(minsplit = minsplit, minbucket=minbucket))
   }, error = function(e) {})
   
-  temp_list[[paste(p) ]] <- temp
+  temp_list2[[paste(p) ]] <- temp
 }
-lhs_long_clean_imputed2 <- bind_rows(temp_list)
+lhs_long_clean_imputed2 <- bind_rows(temp_list2)
 
 lhs_long_clean_imputed <- lhs_long_clean_imputed2
 saveRDS(lhs_long_clean_imputed, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_clean_imputed.Rds")
@@ -686,6 +690,7 @@ saveRDS(lhs_long_clean_imputed, "/media/skynet2/905884f0-7546-4273-9061-12a79083
 
 ```{r, fig.width=16, fig.height=12,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
 
+library(patchwork)
 lhs_long_clean_imputed <- readRDS( "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_clean_imputed.Rds")
 dim(lhs_long_clean_imputed) #337043
 
@@ -1079,6 +1084,8 @@ p5b <- test %>%
 
 I need to fix this, USA has a fraction of a death
 
+Note the discontinuity in Chin when they added those 1k deaths to the total
+
 ```{r, fig.width=12, fig.height=6 ,warning=FALSE,message=FALSE,error=FALSE}
 (p0a + p1a + p2a ) / (p0b + p1b + p2b )
 ```
@@ -1187,7 +1194,7 @@ p_t_alligned <- df_slopes %>% mutate(group=paste(wikidata_id)) %>%
 The idea here is that completely unconstrained, COVID-19 growth should follow a logistic curve, flat, upswing, constant growth, downswing, and flat again. The assumption of no unconstrained growth no longer holds because the world is reacting, but there's still a pretty uniformly characteristic upswing across geographic units. We look for this signal of the largest first difference in the daily percent change, call that the takeoff date, and then allign all the time series with that date as 0.
 
 ```{r, fig.width=12, fig.height=12,warning=FALSE,message=FALSE,error=FALSE}
-p_t_alligned_firstconfirmed  /p_t_alligned 
+p_t_alligned_firstconfirmed  / p_t_alligned 
 ```
 
 
