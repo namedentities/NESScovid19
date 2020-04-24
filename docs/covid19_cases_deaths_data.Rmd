@@ -54,7 +54,6 @@ library(sf)
 
 library(jsonlite)
 
-
 ```
 
 Can start back from here
@@ -65,7 +64,6 @@ admin1 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_githu
 admin2 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin2.Rds")
 
 rex_clean <- function(x){ x %>% stringi::stri_trans_general("latin-ascii") %>% stringi::stri_replace_all(regex="[^A-Za-z0-9]","") %>% tolower() } #so individually, each string should be devoid of spaces,noncharacters, and nonlatin
-
 
 rex_admin_function <- function(x) {
   x %>% 
@@ -102,7 +100,12 @@ Indonesia - https://www.kaggle.com/ardisragen/indonesia-coronavirus-cases
 ### United Kingdom
 
 https://github.com/tomwhite/covid-19-uk-data
+
+We don't correctly handle the NHS regions yet
+
 ```{r}
+
+
 
 covid_19_uk_data1 <- read_csv("https://raw.githubusercontent.com/tomwhite/covid-19-uk-data/master/data/covid-19-cases-uk.csv") %>%
                      mutate(admin0_name_original="United Kingdom") %>% mutate(admin1_name_original=Country)  %>% mutate(admin2_name_original=Area) 
@@ -133,8 +136,20 @@ covid_19_uk_data_long <- bind_rows(
   covid_19_uk_data5,
   covid_19_uk_data6,
   covid_19_uk_data7
-) %>% dplyr::select(Date, admin0_name_original , admin1_name_original , admin2_name_original,  TotalCases, Tests, ConfirmedCases, Deaths)
+) %>% dplyr::select(Date, admin0_name_original , admin1_name_original , admin2_name_original,  TotalCases, Tests, ConfirmedCases, Deaths)  %>%
+                    mutate(date_asdate = ymd(Date)) %>% 
+                    mutate(dataset="covid_19_uk") %>%
+                    mutate(confirmed = coalesce(TotalCases %>% as.numeric() ,ConfirmedCases %>% as.numeric() ) ) %>%
+      
+                    mutate(admin0_name_clean=admin0_name_original %>%  replace_na('') %>% rex_clean()) %>%
+                    mutate(admin1_name_clean=admin1_name_original %>%  replace_na('') %>% rex_clean()) %>%
+                    mutate(admin2_name_clean=admin2_name_original %>%  replace_na('') %>% rex_clean()) %>%
+                    rex_admin_function()
 
+forjoining_covid_19_uk <- covid_19_uk_data_long %>%
+                          dplyr::select(dataset,admin0_name_original, admin1_name_original, admin2_name_original, gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=Deaths, people_test=Tests)
+
+dim(forjoining_covid_19_uk)
 
 ```
 
@@ -196,6 +211,9 @@ https://www.stat.berkeley.edu/~binyu/ps/papers2020/covid19_paper.pdf
 https://github.com/Yu-Group/covid19-severity-prediction/tree/master/data
 https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/
 
+USA facts has the buroughs of new york, but it adds the word county to each of them which somehow we don't handle!?! No we do, it's in admin 2
+Ok figured it out, wikidata has an entity for the county Bronx County (Q855974) and for the exact same damn thing but as the borough The Bronx (Q18426) and it has a link between the two "coextensive with (P3403)
+this item has the same boundary as the target item; area associated with (this) entity is identical with the area associated with that entity"
 
 ```{r}
 
@@ -258,6 +276,14 @@ forjoining_covidtracking <- covidtracking_long %>%
                             dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=positive, deaths=death, tested_people)
 
 ```
+
+#### Wikipedia
+
+State level confirmed and deaths
+https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/United_States_medical_cases
+
+As a cross section
+https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/United_States_medical_cases_by_state
 
 
 ### Italy
@@ -326,22 +352,78 @@ https://github.com/amodm/api-covid19-in
 #install.packages('gsheet')
 #library(gsheet)
 
+# "cases_time_series" "statewise"         "tested"  
+covid19india_cases_time_series <- fromJSON("https://api.covid19india.org/data.json")$cases_time_series
+covid19india_statewise <- fromJSON("https://api.covid19india.org/data.json")$statewise
+covid19india_tested <- fromJSON("https://api.covid19india.org/data.json")$tested
+
+tested_numbers_icmr_data <- read_csv("https://api.covid19india.org/csv/latest/tested_numbers_icmr_data.csv")
+
+raw1 <- read_csv("https://api.covid19india.org/csv/latest/statewise_tested_numbers_data.csv") #state level test data
+
+raw2  <- read_csv("https://api.covid19india.org/csv/latest/state_wise_daily.csv") #state level confirmed dead recovered
+
+
+#raw3 <- read_csv("https://api.covid19india.org/csv/latest/raw_data.csv") #patient data
+
 #https://github.com/covid19india/api/blob/master/state_test_data.json
-covid19india_test <- fromJSON("https://raw.githubusercontent.com/covid19india/api/master/state_test_data.json")$states_tested_data
-saveRDS(covid19india_test, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/covid19india_test_latest_" %>% paste0(Sys.Date(),".Rds")   ) #start saving daily snapshots that we can add to the pile
+#covid19india_test <- fromJSON("https://raw.githubusercontent.com/covid19india/api/master/state_test_data.json")$states_tested_data
+#saveRDS(covid19india_test, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/covid19india_test_latest_" %>% paste0(Sys.Date(),".Rds")   ) #start saving daily snapshots that we can add to the pile
+library(janitor)
+raw1_long  <- raw1 %>% clean_names() %>%
+              mutate(date_asdate = dmy(updated_on )) %>%
+              mutate(admin0_name_clean="India" %>% rex_clean()) %>%
+              mutate(admin1_name_clean= state %>% rex_clean()) %>%
+              mutate(admin2_name_clean= "" %>% rex_clean()) %>%
+              mutate(dataset="covid19india") %>%
+              rex_admin_function()
 
-covid19india_test_long <- covid19india_test %>% 
-                          mutate(date_asdate = dmy(updatedon )) %>%
-                          mutate(admin0_name_clean="India" %>% rex_clean()) %>%
-                          mutate(admin1_name_clean= state %>% rex_clean()) %>%
-                          mutate(admin2_name_clean= "" %>% rex_clean()) %>%
-                          mutate(totaltested=as.numeric(totaltested)) %>%
-                          mutate(dataset="covid19india") %>%
-                          rex_admin_function()
 
-forjoining_covid19india <- covid19india_test_long %>% 
-                           dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate , tested_people=totaltested)
+
+statecodes <- data.frame(
+      stringsAsFactors = FALSE,
+          state_abbrev = c("AP","AR","AS","BR",
+                           "CT","GA","GJ","HR","HP","JH","KA","KL","MP",
+                           "MH","MN","ML","MZ","NL","OR","PB","RJ",
+                           "SK","TN","TG","TR","UT","UP","WB","AN","CH",
+                           "DN","DD","DL","JK","LA","LD","PY"),
+  admin1_name_original = c("Andhra Pradesh",
+                           "Arunachal Pradesh","Assam","Bihar","Chhattisgarh",
+                           "Goa","Gujarat","Haryana","Himachal Pradesh",
+                           "Jharkhand","Karnataka","Kerala","Madhya Pradesh",
+                           "Maharashtra","Manipur","Meghalaya","Mizoram",
+                           "Nagaland","Odisha","Punjab","Rajasthan","Sikkim",
+                           "Tamil Nadu","Telangana","Tripura","Uttarakhand",
+                           "Uttar Pradesh","West Bengal",
+                           "Andaman and Nicobar Islands","Chandigarh","Dadra and Nagar Haveli",
+                           "Daman and Diu","Delhi","Jammu and Kashmir","Ladakh",
+                           "Lakshadweep","Puducherry")
+)
+
+raw2_lomg <- raw2 %>% pivot_longer(cols=TT:WB, names_to="state_abbrev") %>% pivot_wider(id_cols=matches("Date|state_abbrev") , names_from=Status, values_from=value) %>% 
+              left_join(statecodes) %>% 
+              clean_names() %>%
+              mutate(date_asdate = dmy(date )) %>%
+              mutate(admin0_name_clean="India" %>% rex_clean()) %>%
+              mutate(admin1_name_clean= admin1_name_original %>% rex_clean()) %>%
+              mutate(admin2_name_clean= "" %>% rex_clean()) %>%
+              mutate(dataset="covid19india") %>%
+              rex_admin_function()
+
+
+forjoining_covid19india1 <- raw1_long %>% 
+                           dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate , tested_people=total_tested)
                           
+forjoining_covid19india2 <- raw2_lomg %>% 
+                           dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate , confirmed=confirmed , deaths=deceased) %>%
+                           group_by(gid, geonameid,wikidata_id) %>% arrange(date_asdate) %>%
+                           mutate(confirmed = confirmed %>% replace_na(0) %>% cumsum()) %>%
+                           mutate(deaths = confirmed %>% replace_na(0) %>% cumsum()) 
+  
+forjoining_covid19india <- forjoining_covid19india1 %>% full_join(forjoining_covid19india2)
+
+dim(forjoining_covid19india) #1553
+
 ```  
 
 #### IMHFW The Ministry of Health and Family Welfare (IMHFW)
@@ -494,7 +576,7 @@ colnames(rawdata_df) <- temp$name
 rawdata_df$date <- ymd("2020-01-08"):(ymd("2020-01-08")+nrow(rawdata_df)-1) %>% as.Date()
 
 library(tidyselect)
-covid19japan_prefecture_long <- pivot_longer(rawdata_df, names_to = "admin1_name_original", cols = Tokyo:HIroshima, values_to = "confirmed") %>% #-ends_with("date")
+covid19japan_prefecture_long <- pivot_longer(rawdata_df, names_to = "admin1_name_original", cols = Tokyo:Tottori, values_to = "confirmed") %>% #-ends_with("date")
                                 mutate(date_asdate = ymd(date)) %>% dplyr::select(-date) %>%
                                 mutate(admin0_name_original="Japan") %>%
                                 mutate(admin2_name_original=admin1_name_original)  %>%
@@ -579,9 +661,9 @@ https://github.com/dsfsi/covid19za
 
 ```{r}
 
-https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_provincial_cumulative_timeline_confirmed.csv
-https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_provincial_cumulative_timeline_deaths.csv
-https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_timeline_testing.csv
+#https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_provincial_cumulative_timeline_confirmed.csv
+#https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_provincial_cumulative_timeline_deaths.csv
+#https://raw.githubusercontent.com/dsfsi/covid19za/master/data/covid19za_timeline_testing.csv
 
 
 openZH <- read_csv("https://raw.githubusercontent.com/openZH/covid_19/master/COVID19_Fallzahlen_CH_total_v2.csv")
@@ -678,7 +760,7 @@ dim(forjoining_wikipedia_subnational_south_africa_long) #
 
 ```{r}
 
-https://raw.githubusercontent.com/carranco-sga/Mexico-COVID-19/master/Mexico_COVID19_CTD.csv
+#https://raw.githubusercontent.com/carranco-sga/Mexico-COVID-19/master/Mexico_COVID19_CTD.csv
 
 ```
 
@@ -688,7 +770,7 @@ https://github.com/snikitin-de/covid19-russia/tree/master/covid_19_time_series
 
 ```{r}
 
-https://raw.githubusercontent.com/snikitin-de/covid19-russia/master/covid_19_time_series/covid19-russia-cases.csv
+#https://raw.githubusercontent.com/snikitin-de/covid19-russia/master/covid_19_time_series/covid19-russia-cases.csv
 
 ```
 
@@ -698,7 +780,7 @@ https://github.com/ShahrozTanveer/covid-19-pakistan
 
 ```{r}
 
-https://raw.githubusercontent.com/ShahrozTanveer/covid-19-pakistan/master/covid-19-pakistan-data.csv
+#https://raw.githubusercontent.com/ShahrozTanveer/covid-19-pakistan/master/covid-19-pakistan-data.csv
 
 ```
 
@@ -708,7 +790,7 @@ https://github.com/Kamparia/nigeria-covid19-data
 
 ```{r}
 
-https://raw.githubusercontent.com/Kamparia/nigeria-covid19-data/master/data/csv/ncdc-covid19-states.csv
+#https://raw.githubusercontent.com/Kamparia/nigeria-covid19-data/master/data/csv/ncdc-covid19-states.csv
 
 ```
 
@@ -739,7 +821,8 @@ for(i in 9:30){
 
 iedcr <- bind_rows(df_list)
 
-iedcr_long <- iedcr %>% filter(!is.na(cases)) %>%
+iedcr_long <- iedcr %>% 
+              filter(!is.na(cases)) %>%
               fill(division) %>% #sometimes they don't provide the division but once at the top of each set
                 mutate(date_asdate = dmy(date)) %>%
                 mutate(dataset="iedcr") %>% 
@@ -748,9 +831,12 @@ iedcr_long <- iedcr %>% filter(!is.na(cases)) %>%
                 mutate(admin1_name_clean=division %>% rex_clean() ) %>%
                 mutate(admin2_name_clean=district %>% rex_clean() ) %>%
                 rex_admin_function() %>%
-                group_by(gid, geonameid,wikidata_id) %>% arrange(date_asdate) %>%
-                mutate(confirmed=cumsum(cases),
-                       deaths=cumsum(deaths)) %>%
+                group_by(gid, geonameid,wikidata_id) %>% 
+                arrange(date_asdate) %>%
+                mutate(
+                      confirmed=cumsum(cases)#,
+                       #deaths=cumsum(deaths)
+                       ) %>%
                 ungroup()
 
 forjoining_iedcr <- iedcr_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate, confirmed=cases)
@@ -762,7 +848,7 @@ forjoining_iedcr <- iedcr_long %>% dplyr::select(dataset,gid, geonameid,wikidata
 ### Ethiopia
 
 ```{r}
-https://github.com/Ethiopia-COVID19/Covid19.ET
+#https://github.com/Ethiopia-COVID19/Covid19.ET
 ```
 
 ### Philippines
@@ -1263,55 +1349,76 @@ forjoining_ecdc <- ecdc_log %>% dplyr::select(dataset,gid, geonameid,wikidata_id
 
 ### Bing
 
+Bing has moved from their api to this github repo
+https://github.com/microsoft/Bing-COVID-19-Data
+
 ```{r}
 
-library(jsonlite)
+#csv is broken so have to read it in as lines first and then seperate it
+temp <- readLines("https://raw.githubusercontent.com/microsoft/Bing-COVID-19-Data/master/data/2020-4-21.csv")
+temp_df <- as.data.frame(temp[2:length(temp)]) #drop the first line
+names(temp_df) <- "V1"
+bing <- temp_df %>% 
+       separate(col=V1,
+                into=c('ID','Updated','Confirmed','ConfirmedChange','Deaths','DeathsChange','Recovered','RecoveredChange','Latitude','Longitude','ISO2','ISO3','Country_Region','AdminRegion1','AdminRegion2'),
+                sep=",",
+                remove = TRUE
+                )
+dim(bing)
+
+#bing <- read_delim(temp,delim=",") #Warning: 54257 parsing failures.
+#problems(bing)
+
+#library(jsonlite)
 #library(rjson)
 #tmp2 <- tempfile()
 #curl_download("https://bing.com/covid/data", tmp2)
-bing1 <- fromJSON("https://web.archive.org/web/20200407032518if_/https://bing.com/covid/data")
-bing2 <-  fromJSON("https://web.archive.org/web/20200414040859if_/https://bing.com/covid/data")
-bing3 <- fromJSON("https://web.archive.org/web/20200331030201if_/https://bing.com/covid/data")
-bing_latest <- fromJSON("https://bing.com/covid/data")
-saveRDS(bing_latest, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/bing_latest_" %>% paste0(Sys.Date(),".Rds")   ) #start saving dayly snapshots that we can add to the pile
-areas <- bind_rows(
-  bing1$areas,
-  bing2$areas,
-  bing3$areas,
-  bing_latest$areas,
-)
+#bing1 <- fromJSON("https://web.archive.org/web/20200407032518if_/https://bing.com/covid/data")
+#bing2 <-  fromJSON("https://web.archive.org/web/20200414040859if_/https://bing.com/covid/data")
+#bing3 <- fromJSON("https://web.archive.org/web/20200331030201if_/https://bing.com/covid/data")
+#bing_latest <- fromJSON("https://bing.com/covid/data")
+#saveRDS(bing_latest, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/bing_latest_" %>% paste0(Sys.Date(),".Rds")   ) #start saving dayly snapshots that we can add to the pile
+#areas <- bind_rows(
+#  bing1$areas,
+#  bing2$areas,
+#  bing3$areas,
+#  bing_latest$areas,
+#)
 
-temp1 <- bing1$areas %>% dplyr::select(-areas)
-temp2 <- bing2$areas %>% dplyr::select(-areas)
-temp3 <- bing3$areas %>% dplyr::select(-areas)
-temp4 <- bing_latest$areas %>% dplyr::select(-areas)
+#temp1 <- bing1$areas %>% dplyr::select(-areas)
+#temp2 <- bing2$areas %>% dplyr::select(-areas)
+#temp3 <- bing3$areas %>% dplyr::select(-areas)
+#temp4 <- bing_latest$areas %>% dplyr::select(-areas)
 
-bing_df0 <- bind_rows(areas) %>% mutate(admin0_name_original=id)
-dim(bing_df0) #835 14
+#bing_df0 <- bind_rows(areas) %>% mutate(admin0_name_original=id)
+#dim(bing_df0) #835 14
 
-bing_df1 <- bind_rows(bing_df0$areas) %>% separate(id, c("admin1_name_original", "admin0_name_original")) 
-dim(bing_df1) #753  13
+#bing_df1 <- bind_rows(bing_df0$areas) %>% separate(id, c("admin1_name_original", "admin0_name_original")) 
+#dim(bing_df1) #753  13
 
-bing_df2 <- bind_rows(bing_df1$areas) %>% separate(id, c("admin2_name_original","admin1_name_original", "admin0_name_original")) 
-dim(bing_df2) #2872   13
+#bing_df2 <- bind_rows(bing_df1$areas) %>% separate(id, c("admin2_name_original","admin1_name_original", "admin0_name_original")) 
+#dim(bing_df2) #2872   13
 
-bing_long <- bind_rows(
-          bing_df0 %>% dplyr::select(-areas),
-          bing_df1 %>% dplyr::select(-areas),
-          bing_df2 %>% dplyr::select(-areas)
-) %>% 
-  mutate(date_asdate = ymd(substring(lastUpdated,1,10))) %>%
-  mutate(date_asdate = date_asdate-1 ) %>% #BING data are one day behind other data, subtract a day off
-  
+#bing_long <- bind_rows(
+#          bing_df0 %>% dplyr::select(-areas),
+#          bing_df1 %>% dplyr::select(-areas),
+#          bing_df2 %>% dplyr::select(-areas)
+#) %>% 
+
+bing_long <- bing %>% clean_names() %>%
+  mutate(date_asdate = mdy(updated)) %>%
   mutate(dataset="bing") %>% 
   
-  mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+  mutate(admin0_name_clean=country_region %>% rex_clean()) %>%
   mutate(admin0_name_clean=str_replace(admin0_name_clean,"chinamainland","china")) %>%
-  mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
-  mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+  mutate(admin1_name_clean=admin_region1 %>% rex_clean()) %>%
+  mutate(admin2_name_clean=admin_region2 %>% rex_clean()) %>%
   rex_admin_function()
 
-forjoining_bing <- bing_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate, confirmed=totalConfirmed, deaths=totalDeaths)
+forjoining_bing <- bing_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate, confirmed=confirmed, deaths=deaths) %>%
+                   mutate(confirmed= confirmed %>% as.numeric() ) %>%
+                   mutate(deaths= deaths %>% as.numeric() ) 
+  
 dim(forjoining_bing)
 
 #Some of these are wrong
@@ -1856,6 +1963,10 @@ dim(forjoining_wikipedia_national_cases) #
 library(tsibble)
 
 lhs_long <- bind_rows(
+  
+  #United Kingdom
+  forjoining_covid_19_uk,
+  
   #U.S.
   forjoining_nytimes,
   forjoining_usafacts,
@@ -1928,9 +2039,9 @@ lhs_long <- bind_rows(
   distinct() %>%
   arrange(dataset,gid ,  geonameid ,wikidata_id, date_asdate)
 
-dim(lhs_long) #310169 #304,376
+dim(lhs_long) #398999 #310169 #304,376
 
-lhs_long$dataset %>% table()
+lhs_long$dataset %>% table() %>% sort()
 
 saveRDS(lhs_long, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long.Rds")
 
