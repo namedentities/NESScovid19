@@ -211,6 +211,9 @@ https://www.stat.berkeley.edu/~binyu/ps/papers2020/covid19_paper.pdf
 https://github.com/Yu-Group/covid19-severity-prediction/tree/master/data
 https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/
 
+USA facts has the buroughs of new york, but it adds the word county to each of them which somehow we don't handle!?! No we do, it's in admin 2
+Ok figured it out, wikidata has an entity for the county Bronx County (Q855974) and for the exact same damn thing but as the borough The Bronx (Q18426) and it has a link between the two "coextensive with (P3403)
+this item has the same boundary as the target item; area associated with (this) entity is identical with the area associated with that entity"
 
 ```{r}
 
@@ -273,6 +276,14 @@ forjoining_covidtracking <- covidtracking_long %>%
                             dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=positive, deaths=death, tested_people)
 
 ```
+
+#### Wikipedia
+
+State level confirmed and deaths
+https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/United_States_medical_cases
+
+As a cross section
+https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/United_States_medical_cases_by_state
 
 
 ### Italy
