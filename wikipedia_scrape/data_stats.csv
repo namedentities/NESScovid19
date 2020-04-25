@@ -1,0 +1,356 @@
+"","place","link","tables_present","test_tables","hospital_and_test","hospital_test_region","test_region"
+"1","India","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_India",4,1,1,0,0
+"2","New York (state)","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_New_York_(state)",3,0,0,0,0
+"3","California","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_California",2,1,1,1,1
+"4","Africa","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Africa",1,0,0,0,0
+"5","Punjab, India","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Punjab,_India",3,0,0,0,0
+"6","Spain","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Spain",3,1,6,1,1
+"7","Oceania","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Oceania",1,0,0,0,0
+"8","North America","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_North_America",1,0,0,0,0
+"9","the United States","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_United_States",2,0,1,0,0
+"10","Egypt","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Egypt",1,0,0,0,0
+"11","Turkey","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Turkey",2,1,1,0,0
+"12","the Bahamas","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Bahamas",0,0,0,0,0
+"13","the United States Virgin Islands","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_United_States_Virgin_Islands",0,0,0,0,0
+"14","Belarus","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Belarus",0,0,0,0,0
+"15","Uttar Pradesh","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Uttar_Pradesh",2,1,1,1,1
+"16","Cuba","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Cuba",0,0,0,0,0
+"17","Northern Cyprus","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Northern_Cyprus",0,0,0,0,0
+"18","Finland","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Finland",1,0,1,0,0
+"19","Texas","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Texas",1,0,0,0,0
+"20","Europe","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Europe",0,0,0,0,0
+"21","Ukraine","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Ukraine",2,1,1,0,0
+"22","Vatican City","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Vatican_City",0,0,0,0,0
+"23","South Carolina","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_South_Carolina",2,2,2,1,1
+"24","the Republic of Artsakh","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Republic_of_Artsakh",0,0,0,0,0
+"25","Cyprus","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Cyprus",0,0,0,0,0
+"26","North Korea","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_North_Korea",0,0,0,0,0
+"27","Italy","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Italy",0,0,0,0,0
+"28","Canada","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Canada",0,0,0,0,0
+"29","Greenland","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Greenland",0,0,0,0,0
+"30","New York City","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_New_York_City",1,0,1,0,0
+"31","Morocco","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Morocco",1,1,1,1,1
+"32","Guatemala","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Guatemala",0,0,0,0,0
+"33","Liberia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Liberia",0,0,0,0,0
+"34","Gujarat","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Gujarat",1,0,0,0,0
+"35","Somalia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Somalia",0,0,0,0,0
+"36","Bhutan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Bhutan",1,1,1,0,0
+"37","Georgia (country)","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Georgia_(country)",0,0,0,0,0
+"38","Portugal","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Portugal",2,0,2,0,0
+"39","Maharashtra","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Maharashtra",2,1,1,0,0
+"40","Nevada","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Nevada",0,0,0,0,0
+"41","Bermuda","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Bermuda",0,0,0,0,0
+"42","Akrotiri and Dhekelia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Akrotiri_and_Dhekelia",0,0,0,0,0
+"43","the Cayman Islands","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Cayman_Islands",0,0,0,0,0
+"44","Ecuador","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Ecuador",1,0,0,0,0
+"45","Namibia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Namibia",0,0,0,0,0
+"46","Guadeloupe","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Guadeloupe",0,0,0,0,0
+"47","West Bengal","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_West_Bengal",1,0,0,0,0
+"48","the Dominican Republic","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Dominican_Republic",1,0,0,0,0
+"49","Antarctica","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Antarctica",0,0,0,0,0
+"50","Haiti","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Haiti",0,0,0,0,0
+"51","Karnataka","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Karnataka",5,1,2,0,0
+"52","Israel","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Israel",2,0,1,0,0
+"53","Eritrea","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Eritrea",0,0,0,0,0
+"54","Tajikistan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Tajikistan",0,0,0,0,0
+"55","Austria","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Austria",1,0,1,0,0
+"56","Malta","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Malta",0,0,0,0,0
+"57","Colombia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Colombia",0,0,0,0,0
+"58","Tunisia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Tunisia",0,0,0,0,0
+"59","the Åland Islands","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_%C3%85land_Islands",0,0,0,0,0
+"60","Cameroon","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Cameroon",0,0,0,0,0
+"61","the Gambia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Gambia",0,0,0,0,0
+"62","the Netherlands","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Netherlands",2,0,1,0,0
+"63","Croatia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Croatia",2,0,1,0,0
+"64","French Saint Martin","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_French_Saint_Martin",0,0,0,0,0
+"65","Norway","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Norway",0,0,0,0,0
+"66","the Luhansk People's Republic","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Luhansk_People%27s_Republic",0,0,0,0,0
+"67","Ethiopia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Ethiopia",0,0,0,0,0
+"68","Panama","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Panama",0,0,0,0,0
+"69","Abkhazia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Abkhazia",0,0,0,0,0
+"70","Western Sahara","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Western_Sahara",0,0,0,0,0
+"71","the British Virgin Islands","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_British_Virgin_Islands",0,0,0,0,0
+"72","Iowa","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Iowa",1,0,0,0,0
+"73","São Tomé and Príncipe","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_S%C3%A3o_Tom%C3%A9_and_Pr%C3%ADncipe",0,0,0,0,0
+"74","Gibraltar","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Gibraltar",0,0,0,0,0
+"75","Qatar","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Qatar",0,0,0,0,0
+"76","Saint Pierre and Miquelon","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Saint_Pierre_and_Miquelon",0,0,0,0,0
+"77","Togo","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Togo",0,0,0,0,0
+"78","Missouri","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Missouri",1,0,0,0,0
+"79","the State of Palestine","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_State_of_Palestine",0,0,0,0,0
+"80","Benin","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Benin",0,0,0,0,0
+"81","Switzerland","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Switzerland",0,0,0,0,0
+"82","Mayotte","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Mayotte",0,0,0,0,0
+"83","the Canary Islands","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Canary_Islands",1,1,1,1,1
+"84","Chad","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Chad",0,0,0,0,0
+"85","Senegal","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Senegal",0,0,0,0,0
+"86","Seychelles","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Seychelles",0,0,0,0,0
+"87","London","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_London",0,0,0,0,0
+"88","Montserrat","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Montserrat",0,0,0,0,0
+"89","Zimbabwe","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Zimbabwe",0,0,0,0,0
+"90","Pennsylvania","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Pennsylvania",1,0,0,0,0
+"91","Tanzania","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Tanzania",0,0,0,0,0
+"92","Martinique","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Martinique",0,0,0,0,0
+"93","Connecticut","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Connecticut",1,0,1,0,0
+"94","Guam","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Guam",0,0,0,0,0
+"95","Madagascar","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Madagascar",0,0,0,0,0
+"96","Antigua and Barbuda","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Antigua_and_Barbuda",0,0,0,0,0
+"97","Maine","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Maine",1,0,1,0,0
+"98","Eswatini","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Eswatini",0,0,0,0,0
+"99","Trinidad and Tobago","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Trinidad_and_Tobago",0,0,0,0,0
+"100","South Sudan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_South_Sudan",0,0,0,0,0
+"101","Mississippi","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Mississippi",1,0,0,0,0
+"102","Angola","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Angola",0,0,0,0,0
+"103","the Republic of the Congo","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Republic_of_the_Congo",0,0,0,0,0
+"104","Guinea","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Guinea",0,0,0,0,0
+"105","Djibouti","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Djibouti",0,0,0,0,0
+"106","the Falkland Islands","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Falkland_Islands",0,0,0,0,0
+"107","Cape Verde","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Cape_Verde",0,0,0,0,0
+"108","New Brunswick","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_New_Brunswick",0,0,0,0,0
+"109","the Democratic Republic of the Congo","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Democratic_Republic_of_the_Congo",0,0,0,0,0
+"110","Ohio","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Ohio",1,0,0,0,0
+"111","Sweden","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Sweden",1,1,1,1,1
+"112","Mozambique","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Mozambique",0,0,0,0,0
+"113","Alaska","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Alaska",1,0,0,0,0
+"114","Lowell, Massachusetts","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Lowell,_Massachusetts",2,1,1,1,1
+"115","Asia","https://en.wikipedia.org//wiki/2019%E2%80%9320_coronavirus_pandemic_in_Asia",0,0,0,0,0
+"116","England","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_England",0,0,0,0,0
+"117","the Northern Mariana Islands","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Northern_Mariana_Islands",0,0,0,0,0
+"118","French Polynesia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_French_Polynesia",0,0,0,0,0
+"119","the Maldives","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Maldives",2,0,1,0,0
+"120","Louisiana","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Louisiana",1,1,1,1,1
+"121","Florida","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Florida",1,0,1,0,0
+"122","Indiana","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Indiana",1,0,0,0,0
+"123","South Africa","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_South_Africa",1,1,1,0,0
+"124","Kuwait","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Kuwait",0,0,0,0,0
+"125","the Central African Republic","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Central_African_Republic",0,0,0,0,0
+"126","Sudan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Sudan",0,0,0,0,0
+"127","Saint Kitts and Nevis","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Saint_Kitts_and_Nevis",0,0,0,0,0
+"128","Papua New Guinea","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Papua_New_Guinea",0,0,0,0,0
+"129","Armenia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Armenia",1,0,0,0,0
+"130","South Dakota","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_South_Dakota",1,0,0,0,0
+"131","the Donetsk People's Republic","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Donetsk_People%27s_Republic",0,0,0,0,0
+"132","Yemen","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Yemen",0,0,0,0,0
+"133","the Community of Madrid","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Community_of_Madrid",0,0,0,0,0
+"134","Monaco","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Monaco",0,0,0,0,0
+"135","Zambia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Zambia",0,0,0,0,0
+"136","Ceuta","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Ceuta",0,0,0,0,0
+"137","Botswana","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Botswana",0,0,0,0,0
+"138","Equatorial Guinea","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Equatorial_Guinea",0,0,0,0,0
+"139","Idaho","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Idaho",1,0,0,0,0
+"140","Somaliland","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Somaliland",0,0,0,0,0
+"141","San Marino","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_San_Marino",0,0,0,0,0
+"142","Réunion","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_R%C3%A9union",0,0,0,0,0
+"143","Brunei","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Brunei",0,0,0,0,0
+"144","Burundi","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Burundi",0,0,0,0,0
+"145","Andorra","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Andorra",0,0,0,0,0
+"146","Iraq","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Iraq",1,0,0,0,0
+"147","Saint Barthélemy","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Saint_Barth%C3%A9lemy",0,0,0,0,0
+"148","Dominica","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Dominica",0,0,0,0,0
+"149","Rwanda","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Rwanda",0,0,0,0,0
+"150","Saint Vincent and the Grenadines","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Saint_Vincent_and_the_Grenadines",0,0,0,0,0
+"151","Turkmenistan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Turkmenistan",0,0,0,0,0
+"152","New Jersey","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_New_Jersey",1,0,0,0,0
+"153","Sevastopol","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Sevastopol",0,0,0,0,0
+"154","Greece","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Greece",1,1,1,0,0
+"155","Easter Island","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Easter_Island",0,0,0,0,0
+"156","East Timor","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_East_Timor",0,0,0,0,0
+"157","West Virginia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_West_Virginia",1,0,0,0,0
+"158","Transnistria","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Transnistria",1,0,0,0,0
+"159","Lebanon","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Lebanon",0,0,0,0,0
+"160","Anguilla","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Anguilla",0,0,0,0,0
+"161","Curaçao","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Cura%C3%A7ao",0,0,0,0,0
+"162","the Turks and Caicos Islands","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Turks_and_Caicos_Islands",0,0,0,0,0
+"163","New Caledonia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_New_Caledonia",0,0,0,0,0
+"164","Tennessee","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Tennessee",1,0,0,0,0
+"165","Saint Lucia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Saint_Lucia",0,0,0,0,0
+"166","Wyoming","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Wyoming",1,0,0,0,0
+"167","Niger","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Niger",0,0,0,0,0
+"168","Kenya","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Kenya",0,0,0,0,0
+"169","Delhi","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Delhi",0,0,0,0,0
+"170","Goa","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Goa",0,0,0,0,0
+"171","Uzbekistan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Uzbekistan",0,0,0,0,0
+"172","Sint Eustatius","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Sint_Eustatius",0,0,0,0,0
+"173","Uganda","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Uganda",0,0,0,0,0
+"174","Ghana","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Ghana",0,0,0,0,0
+"175","the Isle of Man","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Isle_of_Man",0,0,0,0,0
+"176","Kyrgyzstan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Kyrgyzstan",0,0,0,0,0
+"177","Michigan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Michigan",1,0,0,0,0
+"178","New Hampshire","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_New_Hampshire",1,0,0,0,0
+"179","Bahrain","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Bahrain",0,0,0,0,0
+"180","Mongolia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Mongolia",0,0,0,0,0
+"181","Sint Maarten","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Sint_Maarten",0,0,0,0,0
+"182","Mauritania","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Mauritania",0,0,0,0,0
+"183","Hungary","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Hungary",0,0,0,0,0
+"184","Peru","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Peru",1,0,0,0,0
+"185","Washington, D.C.","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Washington,_D.C.",0,0,0,0,0
+"186","Kansas","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Kansas",1,0,0,0,0
+"187","Belize","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Belize",0,0,0,0,0
+"188","Syria","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Syria",0,0,0,0,0
+"189","the Faroe Islands","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Faroe_Islands",0,0,0,0,0
+"190","Saudi Arabia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Saudi_Arabia",0,0,0,0,0
+"191","Liechtenstein","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Liechtenstein",1,1,1,0,0
+"192","Laos","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Laos",1,0,0,0,0
+"193","Hawaii","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Hawaii",1,0,0,0,0
+"194","the Autonomous Republic of Crimea","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Autonomous_Republic_of_Crimea",0,0,0,0,0
+"195","Malawi","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Malawi",0,0,0,0,0
+"196","Mali","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Mali",0,0,0,0,0
+"197","Gabon","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Gabon",0,0,0,0,0
+"198","Guinea-Bissau","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Guinea-Bissau",0,0,0,0,0
+"199","Puerto Rico","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Puerto_Rico",1,0,0,0,0
+"200","North Carolina","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_North_Carolina",1,0,0,0,0
+"201","Paraguay","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Paraguay",0,0,0,0,0
+"202","North Dakota","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_North_Dakota",1,0,0,0,0
+"203","Libya","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Libya",0,0,0,0,0
+"204","Myanmar","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Myanmar",1,1,1,1,1
+"205","El Salvador","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_El_Salvador",0,0,0,0,0
+"206","the United Kingdom","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_United_Kingdom",1,1,1,1,1
+"207","Burkina Faso","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Burkina_Faso",0,0,0,0,0
+"208","Montenegro","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Montenegro",0,0,0,0,0
+"209","Moldova","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Moldova",2,0,1,0,0
+"210","Wisconsin","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Wisconsin",1,0,0,0,0
+"211","Barbados","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Barbados",0,0,0,0,0
+"212","Azerbaijan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Azerbaijan",0,0,0,0,0
+"213","British Columbia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_British_Columbia",0,0,0,0,0
+"214","Northern Ireland","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Northern_Ireland",1,1,1,0,0
+"215","Chile","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Chile",2,0,0,0,0
+"216","Guyana","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Guyana",0,0,0,0,0
+"217","Ivory Coast","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Ivory_Coast",0,0,0,0,0
+"218","Odisha","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Odisha",1,0,0,0,0
+"219","Melilla","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Melilla",3,1,6,0,0
+"220","Aruba","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Aruba",0,0,0,0,0
+"221","Arizona","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Arizona",1,0,0,0,0
+"222","North Rhine-Westphalia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_North_Rhine-Westphalia",0,0,0,0,0
+"223","Nicaragua","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Nicaragua",0,0,0,0,0
+"224","Sichuan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Sichuan",1,0,0,0,0
+"225","Sierra Leone","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Sierra_Leone",0,0,0,0,0
+"226","Estonia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Estonia",0,0,0,0,0
+"227","French Guiana","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_French_Guiana",0,0,0,0,0
+"228","Luxembourg","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Luxembourg",0,0,0,0,0
+"229","Sabah","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Sabah",2,1,1,1,1
+"230","Grenada","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Grenada",0,0,0,0,0
+"231","Arkansas","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Arkansas",1,0,0,0,0
+"232","Philadelphia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Philadelphia",0,0,0,0,0
+"233","Slovenia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Slovenia",0,0,0,0,0
+"234","Montana","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Montana",1,0,0,0,0
+"235","Prince Edward Island","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Prince_Edward_Island",0,0,0,0,0
+"236","Delaware","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Delaware",1,0,0,0,0
+"237","Suriname","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Suriname",0,0,0,0,0
+"238","Bosnia and Herzegovina","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Bosnia_and_Herzegovina",1,0,0,0,0
+"239","Kentucky","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Kentucky",1,0,0,0,0
+"240","Scotland","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Scotland",1,1,1,0,0
+"241","Henan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Henan",0,0,0,0,0
+"242","Jamaica","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Jamaica",0,0,0,0,0
+"243","Kosovo","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Kosovo",0,0,0,0,0
+"244","Nebraska","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Nebraska",2,1,1,0,0
+"245","the Guantanamo Bay Naval Base","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Guantanamo_Bay_Naval_Base",0,0,0,0,0
+"246","Manitoba","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Manitoba",0,0,0,0,0
+"247","Albania","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Albania",0,0,0,0,0
+"248","the Davao Region","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Davao_Region",0,0,0,0,0
+"249","Serbia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Serbia",1,0,0,0,0
+"250","Alabama","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Alabama",1,0,0,0,0
+"251","Algeria","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Algeria",1,1,1,1,1
+"252","Oklahoma","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Oklahoma",1,0,0,0,0
+"253","Columbus, Ohio","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Columbus,_Ohio",0,0,0,0,0
+"254","Jersey","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Jersey",0,0,0,0,0
+"255","Iceland","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Iceland",2,0,0,0,0
+"256","South America","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_South_America",1,0,0,0,0
+"257","Saba","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Saba",0,0,0,0,0
+"258","Wales","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Wales",2,0,1,0,0
+"259","Georgia (U.S. state)","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Georgia_(U.S._state)",4,2,2,1,1
+"260","Brazil","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Brazil",0,0,0,0,0
+"261","New Mexico","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_New_Mexico",1,0,0,0,0
+"262","Rhode Island","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Rhode_Island",0,0,0,0,0
+"263","Fiji","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Fiji",1,0,0,0,0
+"264","Alberta","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Alberta",0,0,0,0,0
+"265","Kerala","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Kerala",0,0,0,0,0
+"266","Shanghai","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Shanghai",2,0,0,0,0
+"267","Ontario","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Ontario",1,0,0,0,0
+"268","Kazakhstan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Kazakhstan",0,0,0,0,0
+"269","Slovakia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Slovakia",2,2,2,1,1
+"270","Nonthaburi Province","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Nonthaburi_Province",0,0,0,0,0
+"271","mainland China","https://en.wikipedia.org//wiki/2019%E2%80%9320_coronavirus_pandemic_in_mainland_China",0,0,0,0,0
+"272","Honduras","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Honduras",0,0,0,0,0
+"273","Assam","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Assam",3,2,2,1,1
+"274","Afghanistan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Afghanistan",2,1,1,1,1
+"275","Washington (state)","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Washington_(state)",1,0,0,0,0
+"276","Hong Kong","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Hong_Kong",2,0,2,0,0
+"277","Vermont","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Vermont",1,0,0,0,0
+"278","the United Arab Emirates","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_United_Arab_Emirates",0,0,0,0,0
+"279","Hubei","https://en.wikipedia.org//wiki/2019%E2%80%9320_coronavirus_pandemic_in_Hubei",0,0,0,0,0
+"280","Oman","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Oman",0,0,0,0,0
+"281","Utah","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Utah",1,0,1,0,0
+"282","Virginia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Virginia",2,0,0,0,0
+"283","Denmark","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Denmark",1,0,0,0,0
+"284","Saskatchewan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Saskatchewan",1,0,1,0,0
+"285","Latvia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Latvia",1,1,1,0,0
+"286","Nigeria","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Nigeria",1,0,0,0,0
+"287","South Asia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_South_Asia",0,0,0,0,0
+"288","Oregon","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Oregon",2,1,1,1,1
+"289","the Czech Republic","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Czech_Republic",4,4,4,3,3
+"290","Macau","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Macau",0,0,0,0,0
+"291","Colorado","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Colorado",1,0,0,0,0
+"292","North Macedonia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_North_Macedonia",0,0,0,0,0
+"293","Illinois","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Illinois",1,0,0,0,0
+"294","Massachusetts","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Massachusetts",2,1,1,1,1
+"295","the European Union","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_European_Union",0,0,0,0,0
+"296","Uruguay","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Uruguay",0,0,0,0,0
+"297","Quebec","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Quebec",1,1,1,0,0
+"298","Mauritius","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Mauritius",1,0,0,0,0
+"299","Minnesota","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Minnesota",1,0,0,0,0
+"300","Sarawak","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Sarawak",3,0,2,0,0
+"301","Bangladesh","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Bangladesh",0,0,0,0,0
+"302","Lithuania","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Lithuania",1,1,1,0,0
+"303","Nova Scotia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Nova_Scotia",1,1,1,0,0
+"304","Taiwan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Taiwan",2,1,1,0,0
+"305","Germany","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Germany",1,1,1,1,1
+"306","Bulgaria","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Bulgaria",2,1,1,0,0
+"307","Bolivia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Bolivia",1,0,0,0,0
+"308","France","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_France",3,0,2,0,0
+"309","Tamil Nadu","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Tamil_Nadu",3,1,2,1,1
+"310","Cambodia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Cambodia",2,1,1,1,1
+"311","Costa Rica","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Costa_Rica",2,1,1,1,1
+"312","Pakistan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Pakistan",2,0,0,0,0
+"313","Asturias","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Asturias",3,3,3,0,0
+"314","Metro Manila","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Metro_Manila",0,0,0,0,0
+"315","Vietnam","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Vietnam",3,0,1,0,0
+"316","Sri Lanka","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Sri_Lanka",1,0,0,0,0
+"317","the Republic of Ireland","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Republic_of_Ireland",4,0,2,0,0
+"318","Malaysia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Malaysia",4,1,2,1,1
+"319","Russia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Russia",1,1,1,0,0
+"320","Jordan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Jordan",0,0,0,0,0
+"321","Portland, Oregon","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Portland,_Oregon",0,0,0,0,0
+"322","Romania","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Romania",2,1,1,1,1
+"323","Belgium","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Belgium",0,0,0,0,0
+"324","Guernsey","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Guernsey",1,1,1,0,0
+"325","China","https://en.wikipedia.org//wiki/2019%E2%80%9320_coronavirus_pandemic_in_China",0,0,0,0,0
+"326","Saint Helena","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Saint_Helena",0,0,0,0,0
+"327","Crimea","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Crimea",0,0,0,0,0
+"328","Venezuela","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Venezuela",2,0,0,0,0
+"329","Maryland","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Maryland",2,0,0,0,0
+"330","Indonesia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Indonesia",0,0,0,0,0
+"331","Japan","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Japan",3,1,1,1,1
+"332","Australia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Australia",0,0,0,0,0
+"333","Mexico","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Mexico",3,0,0,0,0
+"334","Iran","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Iran",1,0,0,0,0
+"335","British Overseas Territories","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_British_Overseas_Territories",1,0,0,0,0
+"336","Nepal","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Nepal",0,0,0,0,0
+"337","Pune","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Pune",2,1,1,0,0
+"338","the Americas","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Americas",8,1,1,1,1
+"339","the Philippines","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_the_Philippines",5,2,3,1,1
+"340","South Korea","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_South_Korea",5,1,3,1,1
+"341","Argentina","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Argentina",1,0,1,0,0
+"342","Thailand","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Thailand",8,3,5,3,3
+"343","Calabarzon","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Calabarzon",0,0,0,0,0
+"344","Singapore","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Singapore",1,0,0,0,0
+"345","Pakistan","https://en.wikipedia.org//wiki/2020_2020_coronavirus_pandemic_in_Pakistan",0,0,0,0,0
+"346","New Zealand","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_New_Zealand",0,0,0,0,0
+"347","Central Luzon","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Central_Luzon",0,0,0,0,0
+"348","Georgia","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Georgia",0,0,0,0,0
+"349","Poland","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Poland",2,2,2,1,1
+"350","New York","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_New_York",0,0,0,0,0
+"351","Saint Martin","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Saint_Martin",0,0,0,0,0
+"352","Korea","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Korea",0,0,0,0,0
+"353","Washington","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Washington",0,0,0,0,0
+"354","Brazil/Statistics","https://en.wikipedia.org//wiki/2020_coronavirus_pandemic_in_Brazil/Statistics",0,0,0,0,0
+"355","the United States","https://en.wikipedia.org/https://en.wikiquote.org/wiki/2020_coronavirus_pandemic_in_the_United_States",0,0,0,0,0
