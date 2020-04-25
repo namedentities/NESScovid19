@@ -139,7 +139,7 @@ covid_19_uk_data_long <- bind_rows(
 ) %>% dplyr::select(Date, admin0_name_original , admin1_name_original , admin2_name_original,  TotalCases, Tests, ConfirmedCases, Deaths)  %>%
                     mutate(date_asdate = ymd(Date)) %>% 
                     mutate(dataset="covid_19_uk") %>%
-                    mutate(confirmed = coalesce(TotalCases %>% as.numeric() ,ConfirmedCases %>% as.numeric() ) ) %>%
+                    mutate(confirmed = dplyr::coalesce(TotalCases %>% as.numeric() ,ConfirmedCases %>% as.numeric() ) ) %>%
       
                     mutate(admin0_name_clean=admin0_name_original %>%  replace_na('') %>% rex_clean()) %>%
                     mutate(admin1_name_clean=admin1_name_original %>%  replace_na('') %>% rex_clean()) %>%
@@ -147,7 +147,7 @@ covid_19_uk_data_long <- bind_rows(
                     rex_admin_function()
 
 forjoining_covid_19_uk <- covid_19_uk_data_long %>%
-                          dplyr::select(dataset,admin0_name_original, admin1_name_original, admin2_name_original, gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=Deaths, people_test=Tests)
+                          dplyr::select(dataset,admin0_name_original, admin1_name_original, admin2_name_original, gid, geonameid, wikidata_id,date_asdate, confirmed=confirmed, deaths=Deaths, tested_people=Tests)
 
 dim(forjoining_covid_19_uk)
 
@@ -480,9 +480,19 @@ dim(forjoining_imhfw) #946
 
 
 ```
+### Chile
+
+http://www.minciencia.gob.cl/COVID19
+https://github.com/MinCiencia/Datos-COVID19
 
 
 ### Brazil
+
+#### 
+
+https://github.com/turicas/covid19-br
+"COVID-19
+Coronavirus newsletters and cases by municipality per day"
 
 #### Brazil Health Ministry
 Brazil - https://www.kaggle.com/unanimad/corona-virus-brazil
@@ -557,6 +567,12 @@ forjoining_ds4c <- ds4c_long %>% dplyr::select(dataset,gid, geonameid, wikidata_
 
 ### Japan
 
+####
+
+https://github.com/kaz-ogiwara/covid19
+"from the press release data of the Ministry of Health, Labor and Welfare."
+
+####
 https://github.com/reustle/covid19japan
 https://github.com/reustle/covid19japan-data/
 
@@ -573,7 +589,7 @@ temp$confirmedByCity <- NULL
 
 rawdata_df <- as.data.frame(temp$dailyConfirmedCount)
 colnames(rawdata_df) <- temp$name
-rawdata_df$date <- ymd("2020-01-08"):(ymd("2020-01-08")+nrow(rawdata_df)-1) %>% as.Date()
+rawdata_df$date <- ymd("2020-01-08"):(ymd("2020-01-08")+nrow(rawdata_df)-1) %>% as_date()
 
 library(tidyselect)
 covid19japan_prefecture_long <- pivot_longer(rawdata_df, names_to = "admin1_name_original", cols = Tokyo:Tottori, values_to = "confirmed") %>% #-ends_with("date")
@@ -657,6 +673,9 @@ forjoining_openZH <-openZH_long %>%
 
 ### South Africa
 
+####
+
+
 https://github.com/dsfsi/covid19za
 
 ```{r}
@@ -735,7 +754,7 @@ wikipedia_subnational_south_africa_long <- pivot_longer(wikipedia_subnational_so
                                            mutate(confirmed=confirmed %>% as.character() %>% as.numeric()) %>%
                                            filter(provinces!="Date") %>%
                                            left_join(df) %>% filter(!is.na(provinces_fullname)) %>%
-                                           mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
+                                           mutate_if(is.character, list(~na_if(., ""))) %>% #dplyr::coalesce may not handle '' correctly
                                            mutate(dataset="wikipedia") %>%
                                            mutate(date_asdate = date %>% paste0("-2020") %>%  mdy() ) %>% 
             
@@ -957,6 +976,127 @@ https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_Vietnam
 
 ```{r}
 
+# Vietnam scraping
+# First case table was seen on 11th March . We have the data till 24th April for the same.
+
+library(rvest)
+library(stringr)
+library(dplyr)
+
+month_start=1
+month_end=4
+dates_to_grab <- apply(expand.grid(str_pad(month_start:month_end, 2, pad = "0") , str_pad(1:31, 2, pad = "0") ), 1, paste, collapse="")
+
+histor_links_list <- list()
+for(q in dates_to_grab){
+  # Scraping from main wikipedia page , since the actual table does not have a V.T.E format. 
+  url <- paste0("https://en.wikipedia.org/w/index.php?title=2020_coronavirus_pandemic_in_Vietnam&action=history&offset=2020",q,"000000&limit=1&action=history")
+  print(url)
+  wikipedia_history_page <- read_html(url)
+  links <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('href'))
+  titles <- wikipedia_history_page %>% html_nodes("a") %>% html_attr(c('title'))
+  text <- wikipedia_history_page %>% html_nodes("a") %>% html_text()
+  wikipedia_history_page_links <- data.frame(link=paste0("https://en.wikipedia.org/",links) ,
+                                             title=titles,
+                                             text=text) %>%
+    filter(str_detect(link,"oldid") & text!="cur" & text!="prev")
+  histor_links_list[[q]] <- wikipedia_history_page_links
+}
+
+history_links_df <- bind_rows(histor_links_list) %>% arrange(link) %>% filter(!duplicated(link))
+
+
+# Adding function to filter out only wikitables from the tables that are fetched. Wikitables are data tables.
+filter_wikitables <- function(list_of_nodes)
+{
+  temp_list = list()
+  
+  for (i in 1:length(list_of_nodes)){
+    s = html_attr(list_of_nodes[i],name='class')
+    if(is.na(s)){
+      s = ''
+    }
+    
+    if(str_detect(s,'wikitable') == TRUE)
+    {
+      temp_list = append(temp_list,list_of_nodes[i])
+    }
+  }
+  
+  return(temp_list)
+}
+
+
+tables_list <- list()
+for(i in 1:nrow(history_links_df) ){
+  q <- history_links_df$link[i]
+  edit_date <- history_links_df$text[i]
+  print(q)
+
+  temp_nodes <- read_html(q)  %>% html_nodes("table") 
+
+  filtered = filter_wikitables(temp_nodes)
+  temp_tables = list()
+  for(i in 1:length(filtered)) 
+  {
+    # Added try catch for better control on rvest scraper.
+    tryCatch({
+      t <- html_table(filtered[[i]],fill = TRUE, header=T)
+      temp_tables[[i]] <- t
+    },error=function(cond) {
+      print("Error in one of the tables. Skipping that")
+    })
+  }
+  
+  try({
+    for(h in temp_tables){
+      if(
+        (names(h) %>% tolower() %>% str_detect(pattern=c("city / province")) %>% any(na.rm = TRUE)) && dim(h)[[2]] < 5 
+        # Makes sure we have filter out tables with higher dimensions
+      ){
+        tables_list[[q]] <- h
+        tables_list[[q]]$edit_date <- edit_date
+        print("Table Found")
+        break
+      }
+    }
+  })
+}
+length(tables_list)
+lapply(tables_list, names) 
+
+library(janitor)
+
+vietnam_subnation_cases <- bind_rows(lapply(tables_list, clean_names))
+dim(vietnam_subnation_cases)
+
+
+vietnam_subnation_cases_long <- vietnam_subnation_cases %>% 
+                                mutate_if(is.factor, as.character) %>% #factors also break coalesce maybe?
+                                mutate_if(is.character, list(~na_if(., ""))) %>% #dplyr::coalesce may not handle '' correctly
+
+                                mutate(dataset="wikipedia") %>%
+                                
+                                mutate(date = dplyr::coalesce(edit_date ) ) %>%
+
+                                mutate(admin0_name_original = "Vietnam"  ) %>%
+                                mutate(admin1_name_original = city_province ) %>%
+  
+                                mutate(date_asdate = edit_date %>% str_replace(".*?, ","") %>% dmy()) %>% 
+  
+                                mutate(admin0_name_clean = admin0_name_original %>% rex_clean()) %>%
+                                mutate(admin1_name_clean = admin1_name_original %>% rex_clean()) %>%
+                                mutate(admin2_name_clean = '' %>% rex_clean()) %>%
+                                rex_admin_function()
+
+forjoining_wikipedia_vietnam_subnation_cases <- vietnam_subnation_cases_long %>%   
+                                      dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=number_of_cases) %>% 
+                                      mutate(confirmed = str_replace_all(confirmed,",|>| ","") %>% as.numeric()) %>%
+                                      distinct()
+
+dim(forjoining_wikipedia_national_test) #
+
+
 ```
 
 ### Congo
@@ -1040,17 +1180,17 @@ wikipedia_subnational_turkey <- bind_rows(lapply(tables_list, clean_names))
 dim(wikipedia_subnational_turkey)
 
 wikipedia_subnational_turkey_long <- wikipedia_subnational_turkey %>%
-                                      mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
+                                      mutate_if(is.character, list(~na_if(., ""))) %>% #dplyr::coalesce may not handle '' correctly
                                       mutate(dataset="wikipedia") %>%
                                       rowwise() %>% 
 
-                                      mutate(confirmed = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_2) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") %>% as.numeric() ) %>%
-                                      mutate(tested_people = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_3) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") %>% as.numeric() ) %>%
+                                      mutate(confirmed = dplyr::coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_2) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") %>% as.numeric() ) %>%
+                                      mutate(tested_people = dplyr::coalesce(show_all_vte_covid_19_cases_in_turkey_by_province_3) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") %>% as.numeric() ) %>%
     
                                       mutate(place0 = "Turkey" ) %>%
-                                      mutate(place1 = coalesce(show_all_vte_covid_19_cases_in_turkey_by_province) ) %>%
+                                      mutate(place1 = dplyr::coalesce(show_all_vte_covid_19_cases_in_turkey_by_province) ) %>%
       
-                                      mutate(date = coalesce(edit_date) ) %>%
+                                      mutate(date = dplyr::coalesce(edit_date) ) %>%
                                       mutate(date_asdate = date %>% str_replace(".*, ","") %>% dmy() ) %>% 
       
                                       mutate(admin0_name_clean =  place0 %>% rex_clean()) %>%
@@ -1120,7 +1260,7 @@ wikipedia_subnational_iran_long <- pivot_longer(wikipedia_subnational_iran, name
                                    mutate(confirmed=confirmed %>% as.character() %>% as.numeric()) %>%
                                    filter(provinces!="Date") %>%
                                    left_join(df) %>%
-                                    mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
+                                    mutate_if(is.character, list(~na_if(., ""))) %>% #dplyr::coalesce may not handle '' correctly
                                     mutate(dataset="wikipedia") %>%
                                     mutate(date_asdate = date %>% ymd() ) %>% 
     
@@ -1215,15 +1355,15 @@ wikipedia_subnational_thailand <- bind_rows(lapply(tables_list, clean_names))
 dim(wikipedia_subnational_thailand)
 
 wikipedia_subnational_thailand_long <- wikipedia_subnational_thailand %>%
-                                      mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
+                                      mutate_if(is.character, list(~na_if(., ""))) %>% #dplyr::coalesce may not handle '' correctly
                                       mutate(dataset="wikipedia") %>%
 
-                                      mutate(confirmed = coalesce(cases,total) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") %>% as.numeric() ) %>%
+                                      mutate(confirmed = dplyr::coalesce(cases,total) %>% str_replace_all("\\[.*?\\]|\\(.*?\\)|,","") %>% as.numeric() ) %>%
 
                                       mutate(place0 = "Thailand" ) %>%
-                                      mutate(place1 = coalesce(province) ) %>%
+                                      mutate(place1 = dplyr::coalesce(province) ) %>%
       
-                                      mutate(date = coalesce(edit_date) ) %>%
+                                      mutate(date = dplyr::coalesce(edit_date) ) %>%
                                       mutate(date_asdate = edit_date %>% str_replace(".*, ","") %>% dmy() ) %>% 
       
                                       mutate(admin0_name_clean =  place0 %>% rex_clean()) %>%
@@ -1355,7 +1495,7 @@ https://github.com/microsoft/Bing-COVID-19-Data
 ```{r}
 
 #csv is broken so have to read it in as lines first and then seperate it
-temp <- readLines("https://raw.githubusercontent.com/microsoft/Bing-COVID-19-Data/master/data/2020-4-21.csv")
+temp <- readLines("https://raw.githubusercontent.com/microsoft/Bing-COVID-19-Data/master/data/2020-4-23.csv") #i opened an issue ticket asking them to put latest but for now we'll have to change this every day
 temp_df <- as.data.frame(temp[2:length(temp)]) #drop the first line
 names(temp_df) <- "V1"
 bing <- temp_df %>% 
@@ -1710,6 +1850,7 @@ for(q in history_links_df$link %>% unique() ){
           names(h) %>% tolower() %>% str_detect( pattern=c("country|test|positive")) %>% any() #had to take out date because it triggers on "update"
           ){
           tables_list[[q]] <- h
+          tables_list[[q]]$url <- q
           print("Table Found")
           break
         }
@@ -1724,13 +1865,14 @@ library(janitor) #install.packages("janitor")
 wikipedia_national_test <- bind_rows(lapply(tables_list, FUN=function(x) x %>% clean_names %>% mutate_if(is.numeric, as.character) ))
 
 wikipedia_national_test_long <- wikipedia_national_test %>% 
-                                mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
-                                rowwise() %>% 
+                                mutate_if(is.factor, as.character) %>% #factors also break coalesce maybe?
+                                mutate_if(is.character, list(~na_if(., ""))) %>% #dplyr::coalesce may not handle '' correctly
+                                #rowwise() %>% 
                                 mutate(dataset="wikipedia") %>%
-                                mutate(tested_people = coalesce(total_tests,totaltests_a, totaltests, vte_volume_of_testing_2, vte_volume_of_testing, vte_covid_19_testing_volume_2) ) %>%
+                                mutate(tested_people = dplyr::coalesce(tests, total_tests,totaltests_a, totaltests, vte_volume_of_testing_2, vte_volume_of_testing, vte_covid_19_testing_volume_2) ) %>%
   
-                                mutate(date = coalesce(as_of,as_of_2, vte_covid_19_testing_volume_3, ) ) %>%
-                                mutate(place = coalesce(country_or_region,country, vte_covid_19_testing_volume, country_or_territory, vte_volume_of_testing) ) %>% 
+                                mutate(date = dplyr::coalesce(date,as_of,as_of_2, vte_covid_19_testing_volume_3, ) ) %>%
+                                mutate(place = dplyr::coalesce(country_or_region,country, vte_covid_19_testing_volume, country_or_territory, vte_volume_of_testing) ) %>% 
                                 mutate(place = str_replace_all(place,"Mainland|mainland","") %>% trimws()  ) %>%
                                 separate(place, c("admin0_name_original", "admin1_name_original"),sep=":|  |  |, ")  %>% #seperated by either a colon or a weird double space
                                 mutate(admin0_name_original = str_replace_all(admin0_name_original,"\\[.*?\\]|\\(.*?\\)","")  ) %>%
@@ -1738,7 +1880,7 @@ wikipedia_national_test_long <- wikipedia_national_test %>%
   
                                 mutate(date_asdate1 = dmy(paste0(date,", 2020"))) %>% 
                                 mutate(date_asdate2 = mdy(paste0(date,", 2020"))) %>% 
-                                mutate(date_asdate = coalesce(date_asdate1,date_asdate2)  ) %>% 
+                                mutate(date_asdate = dplyr::coalesce(date_asdate1,date_asdate2)  ) %>% 
   
                                 mutate(admin0_name_clean = admin0_name_original %>% rex_clean()) %>%
                                 mutate(admin1_name_clean = admin1_name_original %>% rex_clean()) %>%
@@ -1824,17 +1966,17 @@ wikipedia_subnational_tests <- bind_rows(lapply(tables_list, clean_names))
 dim(wikipedia_subnational_tests)
 
 wikipedia_subnational_tests_long <- wikipedia_subnational_tests %>%
-                                  mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
+                                  mutate_if(is.character, list(~na_if(., ""))) %>% #dplyr::coalesce may not handle '' correctly
                                   rowwise() %>% 
                                   mutate(dataset="wikipedia") %>%
   
-                                  mutate(confirmed = coalesce(positive) %>% as.character() %>% as.numeric() ) %>%
-                                  mutate(tested_people = coalesce(tests) %>% as.character() %>% as.numeric()  ) %>%
+                                  mutate(confirmed = dplyr::coalesce(positive) %>% as.character() %>% as.numeric() ) %>%
+                                  mutate(tested_people = dplyr::coalesce(tests) %>% as.character() %>% as.numeric()  ) %>%
 
-                                  mutate(place0 = coalesce(country_a) ) %>%
-                                  mutate(place1 = coalesce(subdivision) ) %>%
+                                  mutate(place0 = dplyr::coalesce(country_a) ) %>%
+                                  mutate(place1 = dplyr::coalesce(subdivision) ) %>%
   
-                                  mutate(date = coalesce(date) ) %>%
+                                  mutate(date = dplyr::coalesce(date) ) %>%
                                   mutate(date_asdate = date %>% paste0("., 2020") %>% dmy() ) %>% 
   
                                   mutate(admin0_name_clean = place0 %>% rex_clean()) %>%
@@ -1924,20 +2066,20 @@ dim(wikipedia_national_cases)
 
 
 wikipedia_national_cases_long <- wikipedia_national_cases %>%
-                                  mutate_if(is.character, list(~na_if(., ""))) %>% #coalesce may not handle '' correctly
-                                  rowwise() %>% 
+                                  mutate_if(is.character, list(~na_if(., ""))) %>% #dplyr::coalesce may not handle '' correctly
+                                  #rowwise() %>% 
                                   mutate(dataset="wikipedia") %>%
   
-                                  mutate(confirmed = coalesce(confirmedcases,confirmed,cases,cases_b,vte2019_20_coronavirus_outbreak_by_country_and_territory_2) ) %>%
-                                  mutate(deaths = coalesce(deaths_c,deaths,deaths_b,vte2019_20_coronavirus_outbreak_by_country_and_territory_3) ) %>%
+                                  mutate(confirmed = dplyr::coalesce(confirmedcases,confirmed,cases,cases_b,vte2019_20_coronavirus_outbreak_by_country_and_territory_2) ) %>%
+                                  mutate(deaths = dplyr::coalesce(deaths_c,deaths,deaths_b,vte2019_20_coronavirus_outbreak_by_country_and_territory_3) ) %>%
 
                                   mutate(confirmed = confirmed %>% str_replace("[^0-9]","") %>% as.numeric() ) %>%
                                   mutate(deaths = deaths %>% str_replace("[^0-9]","") %>% as.numeric()) %>%
   
-                                  mutate(place = coalesce(country_region,country_or_territory_a,locations_a,locations_a_2,country_or_region,countries_and_territories_a,country_or_territory,
+                                  mutate(place = dplyr::coalesce(country_region,country_or_territory_a,locations_a,locations_a_2,country_or_region,countries_and_territories_a,country_or_territory,
                                                                          country_or_territory,countries_and_territories_a_2) ) %>%
   
-                                  mutate(date = coalesce(edit_date) ) %>%
+                                  mutate(date = dplyr::coalesce(edit_date) ) %>%
                                   mutate(date_asdate = date %>% str_replace("^.*?,","") %>% dmy()) %>%
   
                                   mutate(admin0_name_original = place %>% str_replace("\\[.*?\\]|\\(.*?\\)","") ) %>%
@@ -1981,6 +2123,9 @@ lhs_long <- bind_rows(
 
   #South Korea
   forjoining_ds4c,
+  
+  #Vietnam
+  forjoining_wikipedia_national_test,
   
   #Brazil
   forjoining_bhm,
@@ -2039,7 +2184,7 @@ lhs_long <- bind_rows(
   distinct() %>%
   arrange(dataset,gid ,  geonameid ,wikidata_id, date_asdate)
 
-dim(lhs_long) #398999 #310169 #304,376
+dim(lhs_long) #416,897 #409957 #398999 #310169 #304,376
 
 lhs_long$dataset %>% table() %>% sort()
 

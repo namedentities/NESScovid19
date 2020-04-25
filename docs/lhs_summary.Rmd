@@ -70,44 +70,54 @@ library(patchwork)
 
 ```{r, fig.width=10, fig.height=8,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
 
+library(tsibble)
+
 lhs_long <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long.Rds")
 #dim(lhs_long) #187,305
 
 lhs_long_clean <- lhs_long %>%
-  filter(!is.na(date_asdate)) %>%
+                  mutate(dataset_gid_geonameid_wikidata_id= paste(dataset,gid,geonameid, wikidata_id, sep="_")  ) %>%
+                  mutate(gid_geonameid_wikidata_id= paste(gid,geonameid, wikidata_id, sep="_")  ) %>%
   
-  #First drop anything that's negative. Shouldn't be any negatives.
-  filter(is.na(confirmed) | confirmed>=0) %>%
-  filter(is.na(deaths) | deaths>=0) %>%
-  filter(is.na(tested_people) | tested_people>=0) %>%
-  filter(is.na(tested_samples) | tested_samples>=0) %>%
+                  filter(!is.na(date_asdate)) %>%
+                  
+                  #First drop anything that's negative. Shouldn't be any negatives.
+                  filter(is.na(confirmed) | confirmed>=0) %>%
+                  filter(is.na(deaths) | deaths>=0) %>%
+                  filter(is.na(tested_people) | tested_people>=0) %>%
+                  filter(is.na(tested_samples) | tested_samples>=0) %>%
+                  
+                  #Then set 0s to NA, we don't trust NAs
+                  mutate(confirmed=ifelse(confirmed==0, NA, confirmed)) %>%
+                  mutate(deaths=ifelse(deaths==0, NA, deaths)) %>%
+                  mutate(tested_people=ifelse(tested_people==0, NA, tested_people)) %>%
+                  mutate(tested_samples=ifelse(tested_samples==0, NA, tested_samples)) %>%
+                
+                  #Then check first differences and drop anything that doesn't weakly increase monotonically
+                  group_by(dataset, gid_geonameid_wikidata_id) %>% 
+                    arrange(date_asdate) %>%
+                    mutate(confirmed_cummax=confirmed %>% replace_na(0) %>% 
+                             cummax(), deaths_cummax=deaths%>% replace_na(0) %>% cummax(), tested_people_cummax=tested_people%>% replace_na(0) %>% cummax(), 
+                             tested_samples_cummax=tested_samples%>% replace_na(0) %>% cummax()) %>%
+                  ungroup() %>%  
   
-  #Then set 0s to NA, we don't trust NAs
-  mutate(confirmed=ifelse(confirmed==0, NA, confirmed)) %>%
-  mutate(deaths=ifelse(deaths==0, NA, deaths)) %>%
-  mutate(tested_people=ifelse(tested_people==0, NA, tested_people)) %>%
-  mutate(tested_samples=ifelse(tested_samples==0, NA, tested_samples)) %>%
-
-  #Then check first differences and drop anything that doesn't weakly increase monotonically
-  group_by(dataset,gid ,  geonameid ,wikidata_id) %>% 
-    arrange(date_asdate) %>%
-    mutate(confirmed_fd=confirmed, deaths_fd=deaths, tested_people_fd=tested_people, tested_samples_fd=tested_samples) %>%
-    tidyr::fill( ends_with("_fd")) %>%
-    mutate_at(vars(ends_with("_fd")), difference) %>%
-  ungroup() %>%
-  #About 4k of these observations show a decrease from one time step to the next which suggests either an original error or a joining error
-  #We're going to straight drop those observations as a cleaning step
-  filter( (is.na(confirmed_fd) | confirmed_fd>=0) &  #never allow for a reversal
-          (is.na(deaths_fd) | deaths_fd>=0) &        #never allow for a reversal
-          (is.na(tested_people_fd) | tested_people_fd>=0) &  #never allow for a reversal
-          (is.na(tested_samples_fd) | tested_samples_fd>=0)  #never allow for a reversal
-          ) %>%
-  
-  
+                  #About 4k of these observations show a decrease from one time step to the next which suggests either an original error or a joining error
+                  #We're going to straight drop those observations as a cleaning step
+                  #this isn't enough because if you have consecutive mistakes it'll show a positive fd even if it's not good enough
+                  filter( (is.na(confirmed) | confirmed>=confirmed_cummax) &  #never allow for a reversal
+                          (is.na(deaths) | deaths>=deaths_cummax) &        #never allow for a reversal
+                          (is.na(tested_people) | tested_people>=tested_people_cummax) &  #never allow for a reversal
+                          (is.na(tested_samples) | tested_samples>=tested_samples_cummax)  #never allow for a reversal
+                          ) %>%
   #we're going to go one step further and require either confirmed or tested to be strictly higher
   #In words, during an episode we don't believe reports mean "no new cases" just no new good reporting
   #metabiota is the worst offender here so restricting it to just that
-  filter( !(dataset=="metabiota" & (is.na(confirmed_fd) | confirmed_fd<=0 ))    ) %>% #metabiota is really problematic 90% of what we're doing is trying to account for it
+  filter( !(
+            dataset=="metabiota" & #is metabiota
+            (!is.na(confirmed) &   #with a non missing confirmed
+              confirmed<=confirmed_cummax ) #that is equal to or less than the cumulative max until then.
+            ) #reject these
+          ) %>% #metabiota is really problematic 90% of what we're doing is trying to account for it
   
   #Also reject any where deaths are greater than confirmed
   filter(is.na(confirmed) | is.na(deaths) | confirmed>=deaths) %>%
@@ -116,10 +126,13 @@ lhs_long_clean <- lhs_long %>%
   group_by(gid ,  geonameid ,wikidata_id) %>% #chose not to do by dataset because testing datasets might not have confirmed
     filter(var(confirmed, na.rm=T)>0) %>%
   ungroup()
+
   
 #dim(lhs_long_clean) #281,464 #292,580 #299213 #181,563
 
-saveRDS(lhs_long_clean, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_cleand.Rds")
+saveRDS(lhs_long_clean,
+        "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_cleand.Rds")
+
 ```
 
 Summary Statistics of Our Data
@@ -310,110 +323,183 @@ To each individual dataset-location series, we fit a piecewise linear trend. Eac
 
 ```{r,warning=FALSE,message=FALSE,error=FALSE}
 
-pd <- lhs_long_clean %>% dplyr::select(wikidata_id,dataset) %>% distinct()
+dataset_places <- lhs_long_clean %>% dplyr::select(dataset_gid_geonameid_wikidata_id) %>% distinct() %>% pull(dataset_gid_geonameid_wikidata_id)
 library(party)
 temp_list1 <- list()
-for(i in 1:nrow(pd)){
-      p <- pd$wikidata_id[i]
-      d <- pd$dataset[i]
+for(q in dataset_places  ){
       try({
         temp <- NULL
         temp <- lhs_long_clean %>%
-                filter(dataset %in% d) %>% 
-                filter(wikidata_id %in% p) %>% 
-                arrange(date_asdate) %>% 
-                mutate(confirmed_log=log(confirmed+1)) %>%
-                mutate(deaths_log=log(deaths+1)) %>%
-                mutate(tested_people_log=log(tested_people+1)) 
+                filter(dataset_gid_geonameid_wikidata_id %in% q) %>%
+                arrange(date_asdate) %>%
+
+                mutate(confirmed_log=log(confirmed)) %>%
+                mutate(deaths_log=log(deaths)) %>%
+                mutate(tested_people_log=log(tested_people)) %>%
+                mutate(tested_samples_log=log(tested_samples)) 
+          
         if(nrow(temp)==0){next()}
         
-        temp <- temp %>% expand(dataset,gid, geonameid,wikidata_id,  date_asdate=min(date_asdate):max(date_asdate) %>% as.Date() ) %>% full_join(temp) %>% mutate(date_asnumeric= as.numeric(date_asdate) ) 
-                
+        temp <- temp %>% expand(dataset, gid_geonameid_wikidata_id, gid, geonameid,wikidata_id, date_asdate=min(date_asdate):max(date_asdate) %>% as_date() ) %>% 
+                 full_join(temp) %>% 
+                 mutate(date_asnumeric= as.numeric(date_asdate) ) %>% 
+                 arrange(date_asnumeric) %>%
+                 mutate(confirmed_nonmissing_count     = (!is.na(confirmed)) %>% cumsum() ) %>%
+                 mutate(deaths_nonmissing_count     = (!is.na(deaths)) %>% cumsum() ) %>%
+                 mutate(tested_people_nonmissing_count     = (!is.na(tested_people)) %>% cumsum() ) %>%
+                 mutate(tested_samples_nonmissing_count     = (!is.na(tested_samples)) %>% cumsum() ) %>%
+        
+                 arrange(-date_asnumeric) %>%
+                 mutate(confirmed_nonmissing_count_reversed     = (!is.na(confirmed)) %>% cumsum() ) %>%
+                 mutate(deaths_nonmissing_count_reversed     = (!is.na(deaths)) %>% cumsum() ) %>%
+                 mutate(tested_people_nonmissing_count_reversed     = (!is.na(tested_people)) %>% cumsum() ) %>%
+                 mutate(tested_samples_nonmissing_count_reversed     = (!is.na(tested_samples)) %>% cumsum() ) %>% 
+                 arrange(date_asdate) 
+
         tryCatch({  
-          tree_confirmed <- party::mob(confirmed_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
-          temp$confirmed_log_y_hat <- predict( tree_confirmed, newdata=temp , type = c("response") )
-          temp$confirmed_log_group_number <-  predict( tree_confirmed, newdata=temp , type = c("node"))
-          temp <- temp %>% 
-                  group_by(confirmed_log_group_number) %>%
-                  arrange(date_asnumeric) %>%
-                  mutate(confirmed_log_y_hat_slope=difference(confirmed_log_y_hat)) %>% 
-                  fill(confirmed_log_y_hat_slope, .direction="up") %>% 
-                  ungroup() %>% mutate(confirmed_log_y_hat_percent_change = round((exp(confirmed_log_y_hat_slope)-1)*100,2))  %>%
-                  filter(confirmed_log_y_hat>0) #reject any where the prediction is less than 1 full case
+          if(sum(!is.na(temp$confirmed_log))>=3){ #need at least 3 points
+            tree_confirmed <- party::mob(confirmed_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)  
+            temp$confirmed_log_y_hat <- predict( tree_confirmed, newdata=temp , type = c("response") )
+            temp$confirmed_log_group_number <-  predict( tree_confirmed, newdata=temp , type = c("node"))
+            temp <- temp %>% 
+                    mutate(confirmed_log_y_hat       =ifelse(confirmed_nonmissing_count>0 & confirmed_nonmissing_count_reversed>0,confirmed_log_y_hat,NA)) %>% #only interpolate within the observed data, never before or after
+                    mutate(confirmed_log_group_number=ifelse(confirmed_nonmissing_count>0 & confirmed_nonmissing_count_reversed>0,confirmed_log_group_number,NA)) %>% #only interpolate within the observed data, never before or after
+
+                    group_by(confirmed_log_group_number) %>%
+                    arrange(date_asnumeric) %>%
+                    mutate(confirmed_log_y_hat_slope=tsibble::difference(confirmed_log_y_hat)) %>% 
+                    fill(confirmed_log_y_hat_slope, .direction="up") %>% 
+                    ungroup() %>%
+                    mutate(confirmed_log_y_hat_percent_change = round((exp(confirmed_log_y_hat_slope)-1)*100,2))  %>%
+                    mutate(confirmed_log_y_hat=ifelse(confirmed_log_y_hat<0,NA, confirmed_log_y_hat))
+          }
         }, error = function(e) {})
         
         tryCatch({  
-          tree_deaths <- party::mob(deaths_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
-          temp$deaths_log_y_hat <- predict( tree_deaths, newdata=temp , type = c("response") )
-          temp$deaths_log_group_number <-  predict( tree_deaths, newdata=temp , type = c("node"))
-          temp <- temp %>% group_by(deaths_log_group_number) %>% arrange(date_asnumeric) %>% mutate(deaths_log_y_hat_slope=difference(deaths_log_y_hat)) %>% fill(deaths_log_y_hat_slope, .direction="up") %>% ungroup() %>%
-                              mutate(deaths_log_y_hat_percent_change = round((exp(deaths_log_y_hat_slope)-1)*100,2)) %>%
-                              filter(deaths_log_y_hat>0) #reject any where the prediction is less than 1 full case
+          if(sum(!is.na(temp$deaths_log))>=3){ #need at least 3 points
+            tree_deaths <- party::mob(deaths_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)    
+            temp$deaths_log_y_hat <- predict( tree_deaths, newdata=temp , type = c("response") )
+            temp$deaths_log_group_number <-  predict( tree_deaths, newdata=temp , type = c("node"))
+            temp <- temp %>% 
+                    mutate(deaths_log_y_hat=ifelse(deaths_nonmissing_count>0 & deaths_nonmissing_count_reversed>0,deaths_log_y_hat,NA)) %>% #only interpolate within the observed data, never before
+                    mutate(deaths_log_group_number=ifelse(deaths_nonmissing_count>0 & deaths_nonmissing_count_reversed>0,deaths_log_group_number,NA)) %>% #only interpolate within the observed data, never before
+
+                    group_by(deaths_log_group_number) %>% 
+                    arrange(date_asnumeric) %>% 
+                    mutate(deaths_log_y_hat_slope=tsibble::difference(deaths_log_y_hat)) %>%
+                    fill(deaths_log_y_hat_slope, .direction="up") %>%
+                    ungroup() %>%
+                    mutate(deaths_log_y_hat_percent_change = round((exp(deaths_log_y_hat_slope)-1)*100,2)) %>%
+                    mutate(deaths_log_y_hat=ifelse(deaths_log_y_hat<0,NA, deaths_log_y_hat)) #reject any where the prediction is less than 1 full case
+          }
         }, error = function(e) {})
         
         tryCatch({  
-          tree_tested_people <- party::mob(tested_people_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
-          temp$tested_people_log_y_hat <- predict( tree_tested_people, newdata=temp , type = c("response") )
-          temp$tested_people_log_group_number <-  predict( tree_tested_people, newdata=temp , type = c("node"))
-          temp <- temp %>% group_by(tested_people_log_group_number) %>% 
-                     arrange(date_asnumeric) %>%
-                     mutate(tested_people_log_y_hat_slope=difference(tested_people_log_y_hat)) %>% 
-                     fill(tested_people_log_y_hat_slope, .direction="up") %>% ungroup() %>%
-                     mutate(tested_people_log_y_hat_percent_change = round((exp(tested_people_log_y_hat_slope)-1)*100,2)) %>%
-                     filter(tested_people_log_y_hat>0) #reject any where the prediction is less than 1 full case
+          if(sum(!is.na(temp$tested_people_log))>=3){ #need at least 3 points
+            tree_tested_people <- party::mob(tested_people_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temp,  model = linearModel)  # + I(date_asnumeric^2)   
+            temp$tested_people_log_y_hat <- predict( tree_tested_people, newdata=temp , type = c("response") )
+            temp$tested_people_log_group_number <-  predict( tree_tested_people, newdata=temp , type = c("node"))
+            temp <- temp %>% 
+                       mutate(tested_people_log_y_hat=ifelse(tested_people_nonmissing_count>0 & tested_people_nonmissing_count_reversed>0,tested_people_log_y_hat,NA)) %>% #only interpolate within the observed data, never before
+                       mutate(tested_people_log_group_number=ifelse(tested_people_nonmissing_count>0 & tested_people_nonmissing_count_reversed>0,tested_people_log_group_number,NA)) %>% #only interpolate within the observed data, never before
+              
+                       group_by(tested_people_log_group_number) %>% 
+                       arrange(date_asnumeric) %>%
+                       mutate(tested_people_log_y_hat_slope=tsibble::difference(tested_people_log_y_hat)) %>% 
+                       fill(tested_people_log_y_hat_slope, .direction="up") %>% ungroup() %>%
+                       mutate(tested_people_log_y_hat_percent_change = round((exp(tested_people_log_y_hat_slope)-1)*100,2)) %>%
+                       mutate(tested_people_log_y_hat=ifelse(tested_people_log_y_hat<0,NA, tested_people_log_y_hat)) #reject any where the prediction is less than 1 full case
+          }
         }, error = function(e) {})
         
-        temp_list1[[paste(p,d) ]] <- temp
+        temp_list1[[q ]] <- temp
   
       })
-      
 }
-
 lhs_long_clean_imputed1 <- bind_rows(temp_list1)
-dim(lhs_long_clean_imputed1) #bigger because we're interpolating now
+dim(lhs_long_clean_imputed1) #500,786 #bigger because we're interpolating now
 
 #rt1 <- rpart(formula = confirmed_log_y_hat_percent_change ~ date_asnumeric, data=test)
 #interpolated = data.frame(date_asnumeric=min(test$date_asnumeric):max(test$date_asnumeric) )
 #interpolated$confirmed_log_y_hat_percent_change_y_hat <-  predict(rt1, newdata=interpolated)
 #interpolated$date_asdate <- as.Date(interpolated$date_asnumeric)
 
+places <- lhs_long_clean %>% dplyr::select(gid_geonameid_wikidata_id) %>% distinct() %>% pull(gid_geonameid_wikidata_id)
+
 library(rpart)
 minsplit=6
 minbucket=3
 temp_list2 <- list()
-for(p in places){
-  print(p)
-  temp <- lhs_long_clean_imputed1 %>% filter(wikidata_id==p) %>% arrange(date_asnumeric)
+for(q in places ){
+  print(q)
+  temp <- lhs_long_clean_imputed1 %>% 
+                 filter(gid_geonameid_wikidata_id %in% q) %>% 
+                 arrange(date_asnumeric) 
+    
           
   tryCatch({  
-    rt1 <- rpart::rpart(formula = confirmed_log_y_hat_percent_change ~ date_asnumeric, data=temp, control = rpart.control(minsplit = minsplit, minbucket=minbucket))
-    temp$confirmed_log_y_hat_percent_change_y_hat <-  predict(rt1, newdata=temp)
+    rt1 <- rpart::rpart(formula = confirmed_log_y_hat_percent_change ~ date_asnumeric,
+                        data=temp %>% filter(!is.na(confirmed_log)), #to keep from fitting to interpolate slopes that are out of domain and usually wrong, require confirmed to not be missing or na
+                        control = rpart.control(minsplit = minsplit, minbucket=minbucket))
+    temp$confirmed_log_y_hat_percent_change_y_hat <-  predict(rt1, newdata=temp) #this prediction helpfully tries to impute backwards even before there are any day in any series
+    #We need to nuke it if no data exist
+    temp <- temp %>%
+            group_by(date_asdate) %>%
+            mutate( confirmed_nonmissing_count_datasets=sum(confirmed_nonmissing_count>0,na.rm=T) ) %>%
+            mutate( confirmed_nonmissing_count_datasets_reversed=sum(confirmed_nonmissing_count_reversed>0,na.rm=T) ) %>%
+            mutate(confirmed_log_y_hat_percent_change_y_hat=ifelse(confirmed_nonmissing_count_datasets>0 & confirmed_nonmissing_count_datasets_reversed>0,confirmed_log_y_hat_percent_change_y_hat,NA))  %>%
+      ungroup()
+    
   }, error = function(e) {})
   
   tryCatch({  
-    rt2 <- rpart::rpart(formula = deaths_log_y_hat_percent_change ~ date_asnumeric, data=temp, control = rpart.control(minsplit = minsplit, minbucket=minbucket))
+    rt2 <- rpart::rpart(formula = deaths_log_y_hat_percent_change ~ date_asnumeric,
+                        data=temp %>% filter(!is.na(deaths_log)),
+                        control = rpart.control(minsplit = minsplit, minbucket=minbucket))
     temp$deaths_log_y_hat_percent_change_y_hat <-  predict(rt2, newdata=temp)
+    temp <- temp %>%
+        group_by(date_asdate) %>%
+        mutate( deaths_nonmissing_count_datasets=sum(deaths_nonmissing_count>0,na.rm=T) ) %>%
+        mutate( deaths_nonmissing_count_datasets_reversed=sum(deaths_nonmissing_count_reversed>0,na.rm=T) ) %>%
+        mutate(deaths_log_y_hat_percent_change_y_hat=ifelse(deaths_nonmissing_count_datasets>0 & deaths_nonmissing_count_datasets_reversed>0,deaths_log_y_hat_percent_change_y_hat,NA)) %>%
+      ungroup()
+        
   }, error = function(e) {})
 
   tryCatch({  
-    rt3 <- rpart::rpart(formula = tested_people_log ~ date_asnumeric, data=temp)
+    rt3 <- rpart::rpart(formula = tested_people_log_y_hat_percent_change ~ date_asnumeric,
+                    data=temp %>% filter(!is.na(tested_people_log)),
+                    control = rpart.control(minsplit = minsplit, minbucket=minbucket))
     temp$tested_people_log_y_hat_percent_change_y_hat <-  predict(rt3, newdata=temp, control = rpart.control(minsplit = minsplit, minbucket=minbucket))
+    temp <- temp %>%
+        group_by(date_asdate) %>%
+        mutate( tested_people_nonmissing_count_datasets=sum(tested_people_nonmissing_count>0,na.rm=T) ) %>%
+        mutate( tested_people_nonmissing_count_datasets_reversed=sum(tested_people_nonmissing_count_reversed>0,na.rm=T) ) %>%
+      
+        mutate(tested_people_log_y_hat_percent_change_y_hat=ifelse(tested_people_nonmissing_count_datasets>0 & tested_people_nonmissing_count_datasets_reversed>0,tested_people_log_y_hat_percent_change_y_hat,NA))  %>%
+      ungroup()
   }, error = function(e) {})
   
-  temp_list2[[paste(p) ]] <- temp
+  temp_list2[[q ]] <- temp
 }
 lhs_long_clean_imputed2 <- bind_rows(temp_list2)
 
 lhs_long_clean_imputed <- lhs_long_clean_imputed2
+dim(lhs_long_clean_imputed) #419910 #413475 #408,369 #we lose anywithout q codes here
 saveRDS(lhs_long_clean_imputed, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_clean_imputed.Rds")
 
 ```
+
+### Examples
+
+#### China
 
 ```{r, fig.width=16, fig.height=12,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
 #China
 #"Q148"
 
-test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,confirmed_log_y_hat_percent_change)) %>% filter(wikidata_id=="Q148") %>% 
+test <- lhs_long_clean_imputed %>% 
+        mutate(group=paste(dataset,wikidata_id,confirmed_log_y_hat_percent_change)) %>% filter(wikidata_id=="Q148") %>% 
         mutate(group=paste(dataset, wikidata_id,confirmed_log_group_number)) %>%
         arrange(date_asdate) #%>%
         #mutate( confirmed_log_y_hat_percent_change = breakpoints(formula=confirmed_log_y_hat_percent_change ~ 1, data=. ) %>% fitted.values() )
@@ -427,10 +513,6 @@ p_interpolation0 <- test %>%
                        ggtitle("China Q148 Confirmed") + facet_wrap(~dataset   )
 
 ```
-
-### Examples
-
-#### China
 
 Data on China shows variation across datasets for when they start measuring. Only two observe the very beginning of the outbreak. All of the datasets show a discontinuity where reporting standards must have changed. Our method attempts to bridge that gap in 3 of the series but not two others.
 
@@ -595,6 +677,8 @@ p_interpolation4e <- test %>%
                        ggtitle("Staten Island  Richmond County Q11997784") + facet_wrap(~dataset   ) + guides( color = FALSE)
 
 ```
+
+Note that CSSE is conflating all of New York City with Manhattan/New York County, Bing is too I think
 
 ```{r, fig.width=8, fig.height=6,warning=FALSE,message=FALSE,error=FALSE}
 p_interpolation4a + p_interpolation4b + p_interpolation4c + p_interpolation4d + p_interpolation4e
@@ -929,6 +1013,7 @@ p5b <- test %>%
 ```
 
 ```{r, fig.width=12, fig.height=6 ,warning=FALSE,message=FALSE,error=FALSE}
+#Not counting slopes that were interpolated out of domain fixed california's plot
 ( p0a + p1a ) / ( p0b + p1b )
 ```
 
@@ -1130,6 +1215,8 @@ I need to fix this, USA has a fraction of a death
 
 Note the discontinuity in Chin when they added those 1k deaths to the total
 
+India deaths is broken, we shouldn't be interpolating a rate before we think the number is greater than 0
+
 ```{r, fig.width=12, fig.height=6 ,warning=FALSE,message=FALSE,error=FALSE}
 (p0a + p1a + p2a ) / (p0b + p1b + p2b )
 ```
@@ -1137,6 +1224,209 @@ Note the discontinuity in Chin when they added those 1k deaths to the total
 ```{r, fig.width=12, fig.height=6 ,warning=FALSE,message=FALSE,error=FALSE}
 (p3a + p4a + p5a) / (p3b + p4b + p5b)
 ```
+
+
+
+## Plot Testing Curves for Select Locations
+
+Show how interpolation works on tested
+
+US is an example where we interpolated past our available data. Shouldn't do that either!
+```{r, fig.width=16, fig.height=12,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
+
+test <- lhs_long_clean_imputed %>%
+        mutate(group=paste(dataset,wikidata_id,tested_people_log_group_number)) %>%
+        filter(wikidata_id=="Q30") %>% 
+        arrange(date_asdate)  %>%
+        mutate(date_asnumeric = date_asdate %>% as.numeric() )
+
+p0a <- test %>%
+        ggplot() + 
+           geom_point( aes(x=date_asdate, y=tested_people_log, color=dataset), alpha=.3) +
+           geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+           #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+           theme_bw() +
+           ggtitle("USA Q30 Tested")  #+ facet_wrap(~dataset) 
+
+p0b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=tested_people_log_y_hat_percent_change, color=dataset), alpha=.3 ) +
+         geom_line(aes(x=date_asdate , y=tested_people_log_y_hat_percent_change_y_hat ), alpha=1, color="black"  ) +
+         #geom_smooth( aes(x=date_asdate , y=tested_people_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+         ggtitle("USA Q30 tested_people") + ylab("Daily Percent Change tested_people") # + facet_wrap(~dataset)
+
+#p0a / p0b
+
+
+#####
+#China Q148
+
+test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,tested_people_log_group_number)) %>% filter(wikidata_id=="Q148") %>% 
+        mutate(group=paste(dataset, wikidata_id,tested_people_log_group_number)) %>%
+        arrange(date_asdate) #%>%
+
+p1a <- test %>% 
+ggplot() + 
+   geom_point( aes(x=date_asdate, y=tested_people_log, color=dataset), alpha=.3) +
+   geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("China Q148 tested_people")
+
+p1b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=tested_people_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line(aes(x=date_asdate , y=tested_people_log_y_hat_percent_change_y_hat ), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=tested_people_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+   ggtitle("China Q148 tested_people")+ ylab("Daily Percent Change tested_people")
+   
+
+#p1a / p1b
+
+#India
+#"Q668"
+
+test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,tested_people_log_y_hat_percent_change)) %>% filter(wikidata_id=="Q668") %>% 
+        mutate(group=paste(dataset, wikidata_id,tested_people_log_group_number)) %>%
+        arrange(date_asdate) #%>%
+        #mutate( tested_people_log_y_hat_percent_change = breakpoints(formula=tested_people_log_y_hat_percent_change ~ 1, data=. ) %>% fitted.values() )
+
+
+p2a <- test %>%
+ggplot() + 
+   geom_point( aes(x=date_asdate, y=tested_people_log, color=dataset), alpha=.3) +
+   geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("India Q668 tested_people")
+
+p2b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=tested_people_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line(aes(x=date_asdate , y=tested_people_log_y_hat_percent_change_y_hat ), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=tested_people_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+   ggtitle("India Q668 tested_people")+ ylab("Daily Percent Change tested_people")
+ 
+  
+#p2a / p2b
+
+#Bexar
+#"Q16861"
+
+test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,tested_people_log_y_hat_percent_change)) %>% filter(wikidata_id=="Q16861") %>% 
+        mutate(group=paste(dataset, wikidata_id,tested_people_log_group_number)) %>%
+        arrange(date_asdate) #%>%
+        #mutate( tested_people_log_y_hat_percent_change = breakpoints(formula=tested_people_log_y_hat_percent_change ~ 1, data=. ) %>% fitted.values() )
+
+
+p3a <- test %>%
+      ggplot() + 
+         geom_point( aes(x=date_asdate, y=tested_people_log, color=dataset), alpha=.3) +
+         geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+         ggtitle("Bexar County Q16861 tested_people")
+
+p3b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=tested_people_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line(aes(x=date_asdate , y=tested_people_log_y_hat_percent_change_y_hat ), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=tested_people_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+   ggtitle("Bexar County Q16861 tested_people") + ylim(0,100)+ ylab("Daily Percent Change tested_people")
+   
+#p3a / p3b
+
+
+
+#Italy
+#"Q38"
+
+test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,tested_people_log_y_hat_percent_change)) %>% filter(wikidata_id=="Q38") %>% 
+        mutate(group=paste(dataset, wikidata_id,tested_people_log_group_number)) %>%
+        arrange(date_asdate) #%>%
+        #mutate( tested_people_log_y_hat_percent_change = breakpoints(formula=tested_people_log_y_hat_percent_change ~ 1, data=. ) %>% fitted.values() )
+
+
+p4a <- test %>%
+ggplot() + 
+   geom_point( aes(x=date_asdate, y=tested_people_log, color=dataset), alpha=.3) +
+   geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("Italy Q38 tested_people")
+
+p4b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=tested_people_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line(aes(x=date_asdate , y=tested_people_log_y_hat_percent_change_y_hat ), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=tested_people_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+   ggtitle("Italy Q38 tested_people")+ ylab("Daily Percent Change tested_people")
+   
+    
+#p4a / p4b
+
+
+
+#South Korea
+#"Q884"
+
+test <- lhs_long_clean_imputed %>% mutate(group=paste(dataset,wikidata_id,tested_people_log_y_hat_percent_change)) %>% filter(wikidata_id=="Q884") %>% 
+        mutate(group=paste(dataset, wikidata_id,tested_people_log_group_number)) %>%
+        arrange(date_asdate) #%>%
+        #mutate( tested_people_log_y_hat_percent_change = breakpoints(formula=tested_people_log_y_hat_percent_change ~ 1, data=. ) %>% fitted.values() )
+
+
+p5a <- test %>%
+ggplot() + 
+   geom_point( aes(x=date_asdate, y=tested_people_log, color=dataset), alpha=.3) +
+   geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+   #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+   theme_bw() +
+   ggtitle("South Korea Q884  tested_people")
+
+p5b <- test %>%
+       ggplot() + 
+         geom_point( aes(x=date_asdate , y=tested_people_log_y_hat_percent_change, color=dataset), alpha=.3) +
+         geom_line(aes(x=date_asdate , y=tested_people_log_y_hat_percent_change_y_hat ), alpha=1, color="black") +
+         #geom_smooth( aes(x=date_asdate , y=tested_people_log_y_hat_percent_change), alpha=.3, span=.05) + #, span=.05
+         #geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+         #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+         theme_bw() +
+   ggtitle("South Korea Q884 tested_people") + ylab("Daily Percent Change tested_people")
+   
+    
+#p5a / p5b
+```
+
+I need to fix this, USA has a fraction of a death
+
+Note the discontinuity in Chin when they added those 1k deaths to the total
+
+India deaths is broken, we shouldn't be interpolating a rate before we think the number is greater than 0
+
+```{r, fig.width=12, fig.height=6 ,warning=FALSE,message=FALSE,error=FALSE}
+(p0a + p1a + p2a ) / (p0b + p1b + p2b )
+```
+
+```{r, fig.width=12, fig.height=6 ,warning=FALSE,message=FALSE,error=FALSE}
+(p3a + p4a + p5a) / (p3b + p4b + p5b)
+```
+
 
 # Aligning Curves by Takeoff
 
@@ -1158,7 +1448,7 @@ df_slopes <- lhs_long_clean_imputed %>%
              arrange(date_asdate) %>% 
              filter(!duplicated(date_asdate)) %>% 
              mutate(t = row_number()) %>%
-             mutate(confirmed_log_y_hat_percent_change_y_hat_fd=difference(confirmed_log_y_hat_percent_change_y_hat)) %>%
+             mutate(confirmed_log_y_hat_percent_change_y_hat_fd=tsibble::difference(confirmed_log_y_hat_percent_change_y_hat)) %>%
   
              #So there are ones that start low and build up
              mutate(t_alligned_maxfd =  confirmed_log_y_hat_percent_change_y_hat_fd==max(confirmed_log_y_hat_percent_change_y_hat_fd,na.rm=T) ) %>% 
@@ -1259,7 +1549,7 @@ lhs_long_median %>% ggplot(aes(x=date_asdate, y=deaths, color=wikidata_id)) + ge
 library(tsibble)
 lhs_long_median %>% arrange(wikidata_id,date_asdate) %>%
   group_by(wikidata_id) %>%
-  mutate(deaths_fd=difference(deaths)) %>% 
+  mutate(deaths_fd=tsibble::difference(deaths)) %>% 
   ungroup() %>%
   filter(deaths_fd>0) %>%
   ggplot(aes(x=date_asdate, y=deaths_fd, color=wikidata_id)) + 
@@ -1741,7 +2031,7 @@ for( d in temp$dataset %>% unique() ){
   fmBH <- mob(confirmed_log ~ 1 + date_asnumeric    | date_asnumeric , control = mob_control(minsplit = 3, alpha=.2), data = temptemp,  model = linearModel)  # + I(date_asnumeric^2)     + I(t^3)  # + I(t^2) + I(t^3) + I(t^4) + I(t^2) 
   temptemp$y_hat <- predict( fmBH, newdata=temptemp , type = c("response") )
   temptemp$group_number <-  predict( fmBH, newdata=temptemp , type = c("node"))
-  temptemp <- temptemp %>% group_by(group_number) %>% arrange(date_asnumeric) %>% mutate(slope=difference(y_hat)) %>% fill(slope, .direction="up") %>% ungroup() %>%
+  temptemp <- temptemp %>% group_by(group_number) %>% arrange(date_asnumeric) %>% mutate(slope=tsibble::difference(y_hat)) %>% fill(slope, .direction="up") %>% ungroup() %>%
                       mutate(percent_change = round((exp(slope)-1)*100,2)) 
 
   temp_list[[d]] <- temptemp

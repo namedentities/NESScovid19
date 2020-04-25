@@ -48,6 +48,57 @@ We have assembled a public resource for measuring and benchmarking COVID-19 mode
 
 In doing so we observed and documented a large number of gotchas worth documenting for anyone working with these data or looking to become more experienced with real world time series cross section data.
 
+# 1: Availability of COVID counts Varies Drastically
+
+By Country
+
+By Subnational region
+
+Availability of subnational data as a function of national counts
+
+Availability of testing info
+
+
+# 2: COVID Counts disagree systematically
+
+Correlation
+
+Correlation gets worse earlier in time
+
+
+# 3: Day to day variation is noisy and institutional
+
+Day of week effects
+
+Structural breaks and changes in reporting
+
+
+[Hubei province incorporates a diagnostic change on Feb 13 and on April 16 China issued a revised death count](https://coronavirus.jhu.edu/data/hubei-timeline)
+
+# Pre and post takeoff period
+
+Alignment
+
+
+# 4: The effects of testing
+
+# 5: The effects of governance
+
+# 6: CFR and How Ratios are Just Two Chances to Be Wrong Instead of One
+
+# 7: What we actually want to know
+
+Interesting variation, not chasing autocorrelation
+
+# 8: Actually testing
+
+# 9: Tentative Predictions
+
+# 10: What we still need to know
+
+
+
+
 # Lesson 1: Take a Serious Census of the available data
 
 The three outcomes of interest are the reported number of COVID-19 cases by a certain date, the number of reported deaths due to COVID-19 reported by a certain date, and the number of people tested for COVID-19 by a certain date.

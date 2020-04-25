@@ -1025,9 +1025,9 @@ test <- admin2 %>% count(geonameid0,wikidata_id0,gid0,ISO31661,geonameid1,wikida
 
 admin2 <- admin2 %>% filter(!is.na(gid0)) #for right now we're going to reject all those q code alternate names that don't have a country or state match
 
-saveRDS(admin0,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin0.Rds")
-saveRDS(admin1,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin1.Rds")
-saveRDS(admin2,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin2.Rds")
+saveRDS(admin0,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin0.Rds")
+saveRDS(admin1,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin1.Rds")
+saveRDS(admin2,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin2.Rds")
 
 
 ```
