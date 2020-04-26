@@ -75,7 +75,13 @@ library(tsibble)
 lhs_long <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long.Rds")
 #dim(lhs_long) #187,305
 
-lhs_long_clean <- lhs_long %>%
+lhs_long_clean <- lhs_long %>% 
+                  dplyr::select(dataset, gid,geonameid, wikidata_id ,date_asdate, confirmed, deaths, tested_people, tested_samples) %>%
+                  group_by(dataset, gid,geonameid, wikidata_id ,date_asdate) %>% #if the same source has multiple values on the same thing on the same day, or different values across unmerged obs, then take the max
+                  summarise_all(max, na.rm=T) %>% 
+                  ungroup() %>%
+                  mutate_if(is.numeric, list(~na_if(., -Inf))) %>%
+                  mutate_if(is.numeric, list(~na_if(., Inf))) %>%
                   mutate(dataset_gid_geonameid_wikidata_id= paste(dataset,gid,geonameid, wikidata_id, sep="_")  ) %>%
                   mutate(gid_geonameid_wikidata_id= paste(gid,geonameid, wikidata_id, sep="_")  ) %>%
   
@@ -185,7 +191,7 @@ p0 <- gadm36_levels_0 %>%
                 ) %>%
       #replace_na(list(datasets_n = 0)) %>% 
       ggplot() + geom_sf(aes(fill = datasets_n)) +
-      scale_fill_gradient(low="blue", high="red") +
+      scale_fill_gradient(low="red", high="green") +
       theme_bw() 
 ```
 
@@ -282,6 +288,53 @@ temp_wide <- temp %>% as.data.frame() %>% dplyr::select(Country=NAME_0, Admin1=N
 
 temp_wide %>% filter(total>0) %>% DT::datatable(options = list(pageLength = 10, autoWidth = TRUE))
 
+```
+
+## Country Data Availability of Testing
+
+```{r}
+
+lhs_long_place_sources_testing <- lhs_long  %>%
+                                  dplyr::select(gid,  geonameid, wikidata_id, date_asdate, confirmed, tested_people, tested_samples) %>%
+                                  group_by(gid,  geonameid, wikidata_id, date_asdate) %>% 
+                                  mutate_if(is.numeric, max, na.rm=T) %>%
+                                  filter(!duplicated(date_asdate)) %>%
+                                  ungroup() %>%
+                                  mutate_if(is.numeric, list(~na_if(., -Inf))) %>%
+                                  mutate_if(is.numeric, list(~na_if(., Inf))) %>%
+                                  mutate(percent_of_days_without_testing=!is.na(date_asdate) & (is.na(tested_people) & is.na(tested_samples)  )) %>%
+                                  
+                                  group_by(gid,  geonameid, wikidata_id) %>% 
+                                  summarise(
+                                            percent_of_days_without_testing=sum(percent_of_days_without_testing, na.rm=T)/n()
+                                            ) %>%
+                                  mutate(percent_of_days_with_testing= 1-percent_of_days_without_testing) 
+
+
+p0_testing <- gadm36_levels_0 %>% 
+      left_join(lhs_long_place_sources_testing %>% dplyr::select(gid=gid, percent_of_days_with_testing) %>%  left_join( gadm36_levels_0 %>% as.data.frame() %>% dplyr::select(gid=GID_0, NAME_0)  %>% distinct()  )
+                ) %>%
+      #replace_na(list(datasets_n = 0)) %>% 
+      ggplot() + geom_sf(aes(fill = percent_of_days_with_testing)) +
+      scale_fill_gradient(low="red", high="green") +
+      theme_bw() + ggtitle("Percent of Days with Testing counts")
+```
+
+```{r, fig.width=12, fig.height=6,warning=FALSE,message=FALSE,error=FALSE}
+p0_testing
+```
+```{r,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
+p1_testing <- gadm36_levels_1 %>% 
+  left_join(lhs_long_place_sources_testing %>% dplyr::select(gid=gid, percent_of_days_with_testing) %>%  left_join( gadm36_levels_1 %>% as.data.frame() %>% dplyr::select(gid=GID_1, NAME_1) %>% distinct()  )
+  ) %>%
+  #replace_na(list(datasets_n = 0)) %>% 
+  ggplot() + geom_sf(aes(fill = percent_of_days_with_testing)) +
+  scale_fill_gradient(low="red", high="green") +
+  theme_bw()  + ggtitle("Percent of Days with Testing counts")
+```
+
+```{r, fig.width=12, fig.height=6,warning=FALSE,message=FALSE,error=FALSE}
+p1_testing
 ```
 
 # Data Availability and Interpolation over Time
@@ -1413,11 +1466,8 @@ p5b <- test %>%
 #p5a / p5b
 ```
 
-I need to fix this, USA has a fraction of a death
 
-Note the discontinuity in Chin when they added those 1k deaths to the total
-
-India deaths is broken, we shouldn't be interpolating a rate before we think the number is greater than 0
+Note that China counts of testing are almost never given at the national level. We have some broken down by specific provinces but tables usually don't have a "China" row.
 
 ```{r, fig.width=12, fig.height=6 ,warning=FALSE,message=FALSE,error=FALSE}
 (p0a + p1a + p2a ) / (p0b + p1b + p2b )
@@ -1433,18 +1483,20 @@ India deaths is broken, we shouldn't be interpolating a rate before we think the
 ```{r, echo=FALSE,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
 
 df_slopes <- lhs_long_clean_imputed %>% 
-             group_by(gid, geonameid, wikidata_id, date_asdate) %>% 
+             group_by(gid_geonameid_wikidata_id, gid, geonameid, wikidata_id, date_asdate) %>% 
              mutate(
                     confirmed=median(confirmed, na.rm=T),
                     deaths=median(deaths, na.rm=T),
                     tested_people=median(tested_people, na.rm=T),
+                    tested_samples=median(tested_samples, na.rm=T),
                     
                     confirmed_log_y_hat=median(confirmed_log_y_hat, na.rm=T),
                     deaths_log_y_hat=median(deaths_log_y_hat, na.rm=T),
                     tested_people_log_y_hat=median(tested_people_log_y_hat, na.rm=T),
+                    #tested_samples_log_y_hat=median(tested_samples_log_y_hat, na.rm=T), #haven't written the interp for this yet
                     ) %>%
              ungroup() %>%
-             group_by(gid, geonameid, wikidata_id) %>% 
+             group_by(gid_geonameid_wikidata_id) %>% 
              arrange(date_asdate) %>% 
              filter(!duplicated(date_asdate)) %>% 
              mutate(t = row_number()) %>%
@@ -1535,28 +1587,93 @@ p_t_alligned_firstconfirmed  / p_t_alligned
 What this gives us is a nice normalized dataset where the task is to predict the shape of that distribution. We could try to predict time until the takeoff, the intensity of the growth at the takeoff point, the time until it returns to zero, the area under the curve, or every nook and change.
 
 
-```{r, eval=F}
-lhs_long_median %>% ggplot(aes(x=date_asdate, y=confirmed, color=wikidata_id)) + geom_line() + theme(legend.position = "none")
+How does testing vary over this?
+
+
+```{r, fig.width=12, fig.height=12, echo=FALSE,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
+
+p_t_alligned_tested_people <- df_slopes %>% mutate(group=paste(wikidata_id)) %>% 
+                             ggplot() + 
+                             geom_line( aes(x=t_alligned , y=tested_people_log_y_hat_percent_change_y_hat, group=group, color=wikidata_id), alpha=1) +
+                             theme_bw() +
+                             ggtitle("Percent Day on Day Increase in Testing by Alligned T") + ylim(0,100) +
+                             gghighlight(wikidata_id %in% c('Q30','Q1439','Q668','Q884','Q16861','Q159','Q38'), unhighlighted_params=list(alpha=.5)) +
+                             geom_smooth( aes(x=t_alligned , y=confirmed_log_y_hat_percent_change_y_hat), span = 0.05) + xlim(-50,100) 
+
 ```
 
-```{r, eval=F}
-lhs_long_median %>% ggplot(aes(x=date_asdate, y=deaths, color=wikidata_id)) + geom_line() + theme(legend.position = "none")
+```{r, fig.width=12, fig.height=12,warning=FALSE,message=FALSE,error=FALSE}
+p_t_alligned_tested_people
+```
 
-lhs_long_median %>% ggplot(aes(x=date_asdate, y=deaths, color=wikidata_id)) + geom_line() + theme(legend.position = "none") + scale_y_log10()
+
+Plot some specific countries
+
+
+```{r}
+
+df_slopes %>% filter(!is.na(tested_people)) %>% count(wikidata_id) #292 places with testing information
+
+df_slopes %>% filter(wikidata_id=="Q30") %>% ggplot() + geom_line(aes(x=date_asdate, y=confirmed)) + geom_line(aes(x=date_asdate, y=tested_people))
+
+df_slopes %>% filter(wikidata_id=="Q30") %>% ggplot() + geom_line(aes(x=date_asdate, y=confirmed_log_y_hat)) + geom_line(aes(x=date_asdate, y=tested_people_log_y_hat))
+
+df_slopes %>% filter(wikidata_id=="Q30") %>% ggplot() + geom_line(aes(x=date_asdate, y=confirmed/tested_people)) 
+
+
+df_slopes %>% mutate(confirmed_over_tested_people=confirmed/tested_people) %>% pull(confirmed_over_tested_people) %>% summary()
+df_slopes %>% mutate(confirmed_over_tested_people=confirmed/tested_people) %>% pull(confirmed_over_tested_people) %>% quantile(probs = seq(0, 1, 0.1), na.rm=T) #90th percential is ,23
+
+df_slopes %>% ggplot() + geom_line(aes(x=t_alligned, y=confirmed/tested_people, color=wikidata_id), alpha=.2) + 
+                             gghighlight(wikidata_id %in% c('Q30','Q1439','Q668','Q884','Q16861','Q159','Q38'), unhighlighted_params=list(alpha=.5)) +
+                             geom_smooth( aes(x=t_alligned , y=confirmed/tested_people), span = 0.05) + 
+                             xlim(-5,100) + ylim(0,.25) + theme_bw() #there are some outliars north of 10
+
+
+options(gghighlight_max_labels = 60)
+detach(gghighlight)
+library(gghighlight)
+library(data.table)
+geonames <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/allCountries.txt", sep="\t") %>% mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character)
+dim(geonames) #12,006,426
+
+geonames_small <- geonames %>% dplyr::select(geonameid=V1, name_text=V2) %>% inner_join( lhs_long_clean_imputed %>% dplyr::select(geonameid) %>% distinct() )
+dim(geonames_small)
+
+
+df_slopes %>% left_join(geonames_small  ) %>% mutate(name_text %>% as.factor()) %>% filter(gid %>% str_detect("USA\\.[0-9]{1,2}_1$")) %>%
+           ggplot() + geom_line(aes(x=t_alligned, y=confirmed_log_y_hat, color=name_text), alpha=.2) + 
+                             gghighlight(max_highlight = 100L,
+                                         gid %>% str_detect("USA"), unhighlighted_params=list(alpha=.1),
+                                         use_direct_label=T) +
+                             geom_smooth( aes(x=t_alligned , y=confirmed_log_y_hat, span = 0.05)) + 
+                             xlim(-5,100) + #ylim(0,.25) + 
+                             theme_bw() #there are some outliars north of 10
+
+df_slopes %>% left_join(geonames_small  ) %>% mutate(name_text %>% as.factor()) %>% filter(gid %>% str_detect("USA\\.[0-9]{1,2}_1$")) %>%
+           ggplot() + geom_line(aes(x=t_alligned, y=tested_people_log_y_hat, color=name_text), alpha=.2) + 
+                             gghighlight(max_highlight = 100L,
+                                         gid %>% str_detect("USA"), unhighlighted_params=list(alpha=.1),
+                                         use_direct_label=T) +
+                             geom_smooth( aes(x=t_alligned , y=tested_people_log_y_hat, span = 0.05)) + 
+                             xlim(-5,150) + #ylim(0,.25) + 
+                             theme_bw() #there are some outliars north of 10
+
+df_slopes %>% left_join(geonames_small  ) %>% mutate(name_text %>% as.factor()) %>%
+           ggplot() + geom_line(aes(x=t_alligned, y=exp(confirmed_log_y_hat)/exp(tested_people_log_y_hat), color=name_text), alpha=.2) + 
+                             gghighlight(max_highlight = 100L,
+                                         gid %>% str_detect("USA"), unhighlighted_params=list(alpha=.1),
+                                         use_direct_label=T) +
+                             geom_smooth( aes(x=t_alligned , y=exp(confirmed_log_y_hat)/exp(tested_people_log_y_hat), span = 0.05)) + 
+                             xlim(-5,100) + ylim(0,.25) + theme_bw() #there are some outliars north of 10
+
+#we might need to switch this to fd. Because it's the percent of the new tests coming back positive not the old ones.
+
+#Remind ourselves interpretations when we lhs
+https://data.library.virginia.edu/interpreting-log-transformations-in-a-linear-model/
 
 ```
-```{r, eval=F}
-library(tsibble)
-lhs_long_median %>% arrange(wikidata_id,date_asdate) %>%
-  group_by(wikidata_id) %>%
-  mutate(deaths_fd=tsibble::difference(deaths)) %>% 
-  ungroup() %>%
-  filter(deaths_fd>0) %>%
-  ggplot(aes(x=date_asdate, y=deaths_fd, color=wikidata_id)) + 
-  geom_line() +
-  #stat_smooth(method="loess", se = F) +
-  theme(legend.position = "none") # + scale_y_log10()
-```
+
 
 
 

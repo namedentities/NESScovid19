@@ -153,8 +153,30 @@ dim(forjoining_covid_19_uk)
 
 ```
 
+## North America
+
+### Canada
+
+https://experience.arcgis.com/experience/2f1a13ca0b29422f9b34660f0b705043/
+
+```{r}
+
+```
 
 ### U.S.
+
+
+#### FluView
+
+Influenz and mortality
+
+https://gis.cdc.gov/grasp/fluview/mortality.html
+
+```{r}
+
+fluview <- read_csv("https://gis.cdc.gov/grasp/fluview/Flu7References/Data/USStates.csv")
+
+```
 
 #### California Hosptilizations
 
@@ -494,6 +516,34 @@ https://github.com/turicas/covid19-br
 "COVID-19
 Coronavirus newsletters and cases by municipality per day"
 
+
+#### covid19br
+
+https://covid19br.wcota.me/#cidadesTempo
+https://raw.githubusercontent.com/wcota/covid19br/master/cases-brazil-cities-time.csv
+
+```{r}
+
+
+covid19br <- read_csv("https://raw.githubusercontent.com/wcota/covid19br/master/cases-brazil-cities-time.csv")
+
+covid19br_long <- covid19br %>%
+                  mutate(date_asdate = ymd(date)) %>% 
+                  mutate(dataset="covid19br") %>%
+                  mutate(admin0_name_original="Brazil") %>%
+                  mutate(admin1_name_original= city %>% str_replace("\\/.*$","")) %>%
+                  mutate(admin2_name_original= '') %>%
+                  mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                  mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                  mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                  rex_admin_function()
+
+forjoining_covid19br_long <- covid19br_long %>%
+                             dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=totalCases, deaths=deaths)
+
+
+```
+
 #### Brazil Health Ministry
 Brazil - https://www.kaggle.com/unanimad/corona-virus-brazil
 
@@ -534,6 +584,12 @@ forjoining_bhm <- bhm_long %>% dplyr::select(dataset,gid, geonameid, wikidata_id
 
 ```
 
+### China
+
+Qualitative
+https://time.com/5813628/china-coronavirus-statistics-wuhan/
+The Chinese time series holds off reporting on numbers until a major event like replacing party leadership in Hbei and Wuhan, or removing the Shandong provicial justice chief.
+https://www.economist.com/graphic-detail/2020/04/07/chinas-data-reveal-a-puzzling-link-between-covid-19-cases-and-political-events
 
 ### South Korea
 
@@ -1094,7 +1150,7 @@ forjoining_wikipedia_vietnam_subnation_cases <- vietnam_subnation_cases_long %>%
                                       mutate(confirmed = str_replace_all(confirmed,",|>| ","") %>% as.numeric()) %>%
                                       distinct()
 
-dim(forjoining_wikipedia_national_test) #
+dim(forjoining_wikipedia_vietnam_subnation_cases) #
 
 
 ```
@@ -1445,6 +1501,10 @@ forjoining_openZH <-openZH_long %>%
 
 ```
 
+## Africa
+
+### 
+
 ### Uganda
 
 https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_Uganda
@@ -1454,6 +1514,159 @@ https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_Uganda
 
 
 ## Multinational
+
+### trackcorona.live
+
+https://www.trackcorona.live/api
+
+### finddx
+
+```{r}
+
+#had to do this manually but I'm pretty confident we can figure out how to pull from the javascript link directly
+#temp <- readLines("https://finddx.shinyapps.io/FIND_Cov_19_Tracker/")
+#"<base href=\"_w_9f0ff3c4/\">" this is the w in that url
+#finddx_tests <- read_csv("https://finddx.shinyapps.io/FIND_Cov_19_Tracker/_w_ae49f9f4/session/fa13bb507e577e305c9e76fd956f24c1/download/downloadData?w=ae49f9f4")
+#write_csv(finddx_tests,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/finddx_tests.csv") #save a copy locally just to be safe
+
+finddx_tests <- read_csv("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/finddx_tests.csv")
+
+#China literally has no variance it just keeps repeating the same number over and over again
+finddx_tests_long <- finddx_tests %>% 
+                      mutate_if(is.factor, as.character) %>% #factors also break coalesce maybe?
+                      mutate_if(is.character, list(~na_if(., ""))) %>% #dplyr::coalesce may not handle '' correctly
+                      mutate(dataset="finddx") %>%
+                      mutate(date_asdate = date %>% ymd() ) %>%
+
+  
+                      #separate(place, c("admin0_name_original", "admin1_name_original"),sep=":|  |  |, ")  %>% #seperated by either a colon or a weird double space
+                      mutate(admin0_name_original = country   ) %>%
+                      mutate(admin1_name_original = ''  ) %>%
+                      mutate(admin2_name_original = ''  ) %>%
+  
+                      mutate(admin0_name_clean = admin0_name_original %>% rex_clean() %>% str_replace("mainland","")  ) %>%
+                      mutate(admin1_name_clean = admin1_name_original %>% rex_clean()) %>%
+                      mutate(admin2_name_clean = admin2_name_original %>% rex_clean()) %>%
+                      rex_admin_function()
+
+forjoining_finddx_tests_long <- finddx_tests_long %>%   
+                                      dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, tested_people=tests_cumulative) %>% 
+                                      distinct()
+
+```
+
+### worldometers.info
+
+https://www.worldometers.info/coronavirus/#countries
+
+Politely ask internet archive for its best snapshot each day
+https://archive.readme.io/docs/website-snapshots
+
+https://archive.org/wayback/available?url=https%3A%2F%2Fwww.worldometers.info%2Fcoronavirus%2F%23countries&timestamp=20200101
+
+```{r}
+
+wayback_base_url <- "https://archive.org/wayback/available?url=https%3A%2F%2Fwww.worldometers.info%2Fcoronavirus%2F%23countries&timestamp=" #add timestamp to the end 20200101
+
+library(rvest)
+
+month_start=1
+month_end=4
+dates_to_grab <- apply(expand.grid(str_pad(month_start:month_end, 2, pad = "0") , str_pad(1:31, 2, pad = "0") ), 1, paste, collapse="") %>% sort()
+dates_to_grab_year <- paste0("2020",dates_to_grab) %>% as.numeric()
+wayback_history_page_oldest <- read_json(paste0(wayback_base_url, "20200101")) #search an old date to see what the most recent one is
+oldest_date <- wayback_history_page_oldest$archived_snapshots$closest$timestamp %>% substring(1,8) %>% as.numeric()
+
+dates_to_grab_year <- dates_to_grab_year[dates_to_grab_year>=oldest_date] #cuts it down to 96
+  
+histor_links_list <- list()
+for(q in dates_to_grab_year){
+  try({
+    url <- paste0(wayback_base_url, q)
+    print(url)
+    wayback_history_page <- read_json(url)
+    histor_links_list[[q]] <- wayback_history_page %>% as.data.frame() %>% jsonlite::flatten()
+  })
+}
+
+history_links_df <- bind_rows(histor_links_list)
+nrow(history_links_df)
+
+#Ah it's a fixed table that just gets included so scraping the whole page doesn't show any variation
+
+tables_list <- list()
+for(q in history_links_df$archived_snapshots.closest.url %>% unique() %>% as.character() %>% sort() ){
+  print(q)
+  thepage = readLines(q)
+  #temp_html <- read_html(q)
+  #temp_tables <- temp_html  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=F) 
+
+  library(htmltab) ; #install.packages('htmltab')
+  temp_tables <- read_html(q)  %>% html_nodes("table") %>%  html_table(fill = TRUE, header=T) 
+  try({
+    for(h in temp_tables){
+        #table_temp <- htmltab(doc = thepage, which = i, complementary=F, headerSep="_") #,header=1 htmltab doesn't just fail it crashes R which is sad because I liked it better
+        if( 
+          names(h) %>% tolower() %>% str_detect( pattern=c("country|cases")) %>% any() #had to take out date because it triggers on "update"
+          ){
+          tables_list[[q]] <- h
+          tables_list[[q]]$url <- q
+          print("Table Found")
+          break
+        }
+    }
+  })
+}
+length(tables_list)
+#lapply(tables_list, names) #
+
+library(janitor) #install.packages("janitor")
+
+worldometers <- bind_rows(lapply(tables_list, FUN=function(x) x %>% clean_names %>% mutate_if(is.numeric, as.character) ))
+
+worldometers_long <- worldometers %>% 
+                    mutate_if(is.factor, as.character) %>% #factors also break coalesce maybe?
+                    mutate_if(is.character, list(~na_if(., ""))) %>% #dplyr::coalesce may not handle '' correctly
+                    mutate(dataset="worldometers") %>%
+                    mutate(date_asdate = url %>% str_replace("http://web.archive.org/web/","") %>% str_replace("/https://www.worldometers.info/coronavirus/","")  %>% substring(1,8) %>% ymd() ) %>%
+  
+                    mutate(place = dplyr::coalesce( country , country_other , country_territory) ) %>% 
+                    mutate(place = str_replace_all(place,"Mainland|mainland","") %>% trimws()  ) %>%  
+
+                    mutate(confirmed = dplyr::coalesce(cases,feb_10_11_cases,feb_11_cases,feb_4_cases,feb_5_cases,feb_6_cases,feb_6_feb_7_cases,feb_8_cases,total_cases) ) %>%
+                    mutate(deaths = dplyr::coalesce(deaths, feb_10_11_deaths,feb_11_deaths,feb_4_deaths,feb_5_deaths,feb_6_deaths,feb_6_feb_7_deaths,feb_8_deaths,todays_deaths,total_deaths) ) %>%
+                    mutate(tested_people = dplyr::coalesce(total_tests) ) %>%
+
+                    #separate(place, c("admin0_name_original", "admin1_name_original"),sep=":|  |  |, ")  %>% #seperated by either a colon or a weird double space
+                    mutate(admin0_name_original = place  ) %>%
+                    mutate(admin1_name_original = ''  ) %>%
+                    mutate(admin2_name_original = ''  ) %>%
+
+                    mutate(admin0_name_clean = admin0_name_original %>% rex_clean()) %>%
+                    mutate(admin1_name_clean = admin1_name_original %>% rex_clean()) %>%
+                    mutate(admin2_name_clean = '' %>% rex_clean()) %>%
+                    rex_admin_function()
+
+forjoining_worldometers_long <- worldometers_long %>%   
+                                      dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed, deaths , tested_people) %>% 
+                                      mutate(tested_people = str_replace_all(tested_people,",|>| ","") %>% as.numeric()) %>%
+                                      mutate(confirmed = str_replace_all(confirmed,",|>| ","") %>% as.numeric())  %>% #intentionally let +x fail
+                                      mutate(deaths = str_replace_all(deaths,",|>| ","") %>% as.numeric()) %>% #intentionally let +x fail
+                                      distinct()
+
+dim(forjoining_worldometers_long) #
+
+
+
+```
+
+### bnonews
+https://bnonews.com/index.php/2020/04/the-latest-coronavirus-cases/
+
+```{r}
+
+```
+
 
 ### ECDC
 https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
@@ -1495,7 +1708,7 @@ https://github.com/microsoft/Bing-COVID-19-Data
 ```{r}
 
 #csv is broken so have to read it in as lines first and then seperate it
-temp <- readLines("https://raw.githubusercontent.com/microsoft/Bing-COVID-19-Data/master/data/2020-4-23.csv") #i opened an issue ticket asking them to put latest but for now we'll have to change this every day
+temp <- readLines("https://raw.githubusercontent.com/microsoft/Bing-COVID-19-Data/master/data/2020-4-25.csv") #i opened an issue ticket asking them to put latest but for now we'll have to change this every day
 temp_df <- as.data.frame(temp[2:length(temp)]) #drop the first line
 names(temp_df) <- "V1"
 bing <- temp_df %>% 
@@ -2125,10 +2338,11 @@ lhs_long <- bind_rows(
   forjoining_ds4c,
   
   #Vietnam
-  forjoining_wikipedia_national_test,
+  forjoining_wikipedia_vietnam_subnation_cases,
   
   #Brazil
   forjoining_bhm,
+  forjoining_covid19br_long,
   
   #Japan,
   forjoining_covid19japan,
@@ -2162,7 +2376,11 @@ lhs_long <- bind_rows(
   #Myanmar
   forjoining_myanmar_testing_wikipedia,
   
+
+  
   #Multinational
+  forjoining_finddx_tests_long,
+  forjoining_worldometers_long,
   forjoining_ecdc,
   forjoining_CSSE,
   forjoining_who_owid,
@@ -2193,3 +2411,50 @@ saveRDS(lhs_long, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_githu
 ```
 
 
+
+```{r}
+
+library(benford.analysis) #install.packages('benford.analysis')
+
+cp <- benford(lhs_long$confirmed, 1, sign="both") #generates benford object
+cp #prints
+plot(cp) #plots
+
+cp <- benford(lhs_long$deaths, 1, sign="both") #generates benford object
+cp #prints
+plot(cp) #plots
+
+cp <- benford(lhs_long$tested_people, 2, sign="both") #generates benford object
+cp #prints
+plot(cp) #plots
+
+cp <- lhs_long %>% pull(tested_people) %>% benford(2, sign="both") #generates benford object
+cp #prints
+plot(cp) #plots
+
+cp <- lhs_long %>% filter(gid=="USA") %>% pull(tested_people) %>% benford(2, sign="both") #generates benford object
+cp #prints
+plot(cp) #plots
+
+cp <- lhs_long %>% filter(gid %>% str_detect("CHN")) %>% pull(tested_people) %>% benford(2, sign="both") #generates benford object
+cp #prints
+plot(cp) #plots
+
+
+data(corporate.payment) #gets data
+cp <- benford(corporate.payment$Amount, 2, sign="both") #generates benford object
+cp #prints
+plot(cp) #plots
+head(suspectsTable(cp),10) #prints the digits by decreasing order of discrepancies
+#gets observations of the 2 most suspicious groups
+suspects <- getSuspects(cp, corporate.payment, how.many=2)
+duplicatesTable(cp) #prints the duplicates by decreasing order
+#gets the observations of the 2 values with most duplicates
+duplicates <- getDuplicates(cp, corporate.payment,how.many=2)
+MAD(cp) #gets the Mean Absolute Deviation
+chisq(cp) #gets the Chi-squared test
+#gets observations starting with 50 or 99
+digits_50_and_99 <- getDigits(cp, corporate.payment, digits=c(50, 99))
+
+
+```
