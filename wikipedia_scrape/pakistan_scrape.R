@@ -27,9 +27,22 @@ df[1,which(names(df) == "Recovered")] <- paste("Total Recovered",df[1,which(name
 df = df[!df[, 1] == df[, 2],] # Cleaning rows with column names
 colnames(df) <- df[1,]
 df = df[2:dim(df)[1],]
-df = pivot_longer(df,c("Punjab","Sindh","Khyber Pakhtunkhwa","Balochistan","Gilgit-Baltistan","Azad Kashmir","Islamabad"),names_to= 'Province',values_to= "No. of confirmed cases")
+
+provinces <- c("Punjab","Sindh","Khyber Pakhtunkhwa","Balochistan","Gilgit-Baltistan","Azad Kashmir","Islamabad")
+
+for(col in provinces){
+for(i in 2:length(df[,col]) - 1){
+  df[i,col] = gsub('\\[.\\]','',df[i,col])
+  x1 = df[i,col]
+  x2 = df[i+1,col]
+  if(x2 == ""){
+    df[i+1,col] = x1
+  }
+}
+}
+
+df = pivot_longer(df,provinces,names_to= 'Province',values_to= "No. of confirmed cases")
 df$Date = as.Date(paste(df$Date,"2020"), format = "%B %d %Y")
 df=df[!is.na(df$Date), ]
-
 
 write.csv(df,"~/Desktop/mssl/NESScovid19/wikipedia_scrape/pakistan_scrape.csv")
