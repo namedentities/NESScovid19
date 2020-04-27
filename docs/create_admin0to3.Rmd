@@ -35,6 +35,51 @@ data(state_codes)
 library(tidyverse)
 library(sf)
 
+library(tidycensus)
+
+```
+
+```{r}
+#This requires java 8, which was installed but not set as default. Rather than downgrade, there's a trick here to pick the automatic one
+#sudo update-alternatives --config java
+#https://askubuntu.com/questions/994515/how-to-downgrade-java-jre-the-ubuntu-way
+
+#devtools::install_github("rstudio/sparklyr")
+
+library(sparklyr)
+#spark_install()
+
+#options(sparklyr.java9 = TRUE)
+restartspark <- function(mem="180G"){
+  library(tidyverse)
+  library(sparklyr)
+  library(dplyr)
+  library(replyr)
+  library(tictoc)
+  library(arrow)
+  try({spark_disconnect(sc)})
+  
+  #https://spark.rstudio.com/deployment/
+  #https://stackoverflow.com/questions/41645679/spark-driver-memory-and-executor-memory
+  conf <- spark_config()
+  #conf$spark.executor <- 1 #one executor per computer
+  #conf$spark.executor.cores <- 24 #number of cores per executor
+  #conf$"sparklyr.shell.executor-memory"="100G" #supposedly is ignored when running local
+  conf$spark.memory.fraction <- 0.6
+  conf$spark.executor.heartbeatInterval <-"6000000s"# "10000000s"
+  conf$spark.network.timeout <- "6000001s"
+  conf$spark.local.dir <- "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/spark_temp/"
+  conf$spark.worker.cleanup.enabled <- "true"
+  #conf$spark.worker.cleanup.interval <- 60 #one minute
+  
+  #config$sparklyr.cores.local= 46
+  #config$"sparklyr.shell.executor-cores"=4
+  #config$"sparklyr.shell.driver-cores"=4
+  
+  conf$"sparklyr.shell.driver-memory"= mem
+  conf$'spark.driver.maxResultSize' <- 0 #0 is ulimmited
+  sc <<- spark_connect(master = "local", config = conf) #, version = "2.1.0" for graphframes
+}
 ```
 
 # Unit of Analysis
@@ -588,6 +633,7 @@ geonames_admin2 <- geonames_hierarchy_paths %>% dplyr::select(geonameid0=X3, geo
 
 ```
 
+
 ## Combine countries, geonames, and admin into one admin0
 
 ```{r}
@@ -704,6 +750,7 @@ admin1 <- admin0 %>% dplyr::select(-admin0_name_clean,-feature_code0) %>% distin
           safe_full_join(geonames_admin1 %>% distinct() %>% filter(!is.na(name1))  , conflict = coalesce, by="geonameid0"  )  %>% distinct() %>% mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
 
           safe_full_join(gadm1 %>% distinct()  %>% filter(!is.na(name1)) , conflict = coalesce ) %>% distinct() %>% mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
+
   
           safe_full_join(wikidata_to_ISO31662_dt %>% dplyr::select(wikidata_id1=wikidata_id, ISO31662, name1=name, ISO31661)  %>% distinct() %>% filter(!is.na(name1)) , conflict = coalesce  ) %>% distinct() %>%
           mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
@@ -716,6 +763,8 @@ admin1 <- admin0 %>% dplyr::select(-admin0_name_clean,-feature_code0) %>% distin
           #add geomanames
           safe_full_join(wikidata_togeonames_dt %>% dplyr::select(geonameid1=geonames, wikidata_id1=wikidata_id), by="wikidata_id1", conflict = coalesce ) %>% distinct() %>% filter(!is.na(name1)) %>%  #from wikidata codes
 
+          safe_full_join(wikidata1_dt %>% distinct() %>% dplyr::select(wikidata_id1=wikidata_id, name1=name1), conflict = coalesce) %>% #throw in extra wikidata names last
+    
           mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
 
           #geonameid1
@@ -832,6 +881,7 @@ dim(admin1) #47,313
 sapply(admin1, function(x) sum(is.na(x))) #we have wikidata id for all but 1674
 
 admin2 <- admin1 %>% dplyr::select(-admin1_name_clean, -feature_code1) %>%
+  
           safe_full_join(geonames_admin2 , conflict = coalesce) %>%
           safe_full_join(gadm2 , conflict = coalesce) %>% distinct() %>%
 
@@ -846,7 +896,9 @@ admin2 <- admin1 %>% dplyr::select(-admin1_name_clean, -feature_code1) %>%
 
           #grab geoname back
           safe_left_join(wikidata_togeonames_dt %>% dplyr::select(geonameid2=geonames, wikidata_id2=wikidata_id), by="wikidata_id2", conflict = coalesce ) %>% distinct()  %>% 
-  
+
+          safe_full_join(wikidata2_dt %>% distinct() %>% dplyr::select(wikidata_id2=wikidata_id2, name2=name2), conflict = coalesce) %>% #throw in extra wikidata names last
+
           mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character) %>%
 
           filter(!is.na(name2) & name2!='') %>% distinct() %>%
@@ -963,16 +1015,19 @@ admin2 <- admin1 %>% dplyr::select(-admin1_name_clean, -feature_code1) %>%
           arrange(gid0,gid1,name2,wikidata_id2)   %>% group_by(gid0,gid1,name2) %>% mutate(temp=wikidata_id2) %>% fill(temp)  %>% mutate(wikidata_id2=ifelse(!is.na(gid0) & !is.na(gid1), temp, wikidata_id2)) %>% dplyr::select(-temp) %>% ungroup() %>%
   
           rename(admin2_name_clean=name2)  %>% distinct() 
-dim(admin2) #4,455,361 #325515 #282,060
+dim(admin2) #303,189 #325515 #282,060
+
 
 sapply(admin2, function(x) sum(is.na(x))) #That gets the missing down even more.
 #       geonameid0      wikidata_id0              gid0          ISO31661        geonameid1      wikidata_id1              gid1          ISO31662        geonameid2 admin2_name_clean     feature_code2      wikidata_id2              gid2 
-#            18327             19020             17006             20146             31979             35957             19536             38840             83402                 0            100648             90528             39762 
-test <- admin2 %>% count(gid0,gid1,admin2_name_clean)
+#            22,525             23218             21204             24344             36178             40156             23,737             43040             86885                 0            104643             90311             43987 
+test <- admin2 %>% count(geonameid0,wikidata_id0,gid0,ISO31661,geonameid1,wikidata_id1,gid1,admin2_name_clean)
 
-saveRDS(admin0,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin0.Rds")
-saveRDS(admin1,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin1.Rds")
-saveRDS(admin2,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/admin2.Rds")
+admin2 <- admin2 %>% filter(!is.na(gid0)) #for right now we're going to reject all those q code alternate names that don't have a country or state match
+
+saveRDS(admin0,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin0.Rds")
+saveRDS(admin1,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin1.Rds")
+saveRDS(admin2,"/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin2.Rds")
 
 
 ```
