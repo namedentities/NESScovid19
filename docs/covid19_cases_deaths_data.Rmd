@@ -307,6 +307,42 @@ https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data
 As a cross section
 https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/United_States_medical_cases_by_state
 
+## Europe
+
+### Germany
+
+https://npgeo-corona-npgeo-de.hub.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0/data?orderBy=Meldedatum&orderByAsc=false&selectedAttribute=Datenstand
+
+```{r}
+
+rki_covid19 <- read_csv("https://opendata.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0.csv")
+names(rki_covid19) <- c("IdBundesland "," Federal state "," District "," Age group "," Gender "," Number of cases "," Number of deaths "," ObjectId "," Registration date "," IdLandkreis "," Data status "," New case "," New deaths ","Ref date", "New recoveries", "Number of recoveries") %>% trimws() %>% tolower() 
+rki_covid19 <- rki_covid19 %>% clean_names()
+
+rki_covid19_long <- rki_covid19 %>% 
+                    group_by(federal_state,district, registration_date) %>% 
+                    summarise(number_of_cases=sum(number_of_cases, na.rm=T), number_of_deaths=sum(number_of_deaths, na.rm=T)) %>%
+                    ungroup() %>%
+                    group_by(federal_state,district) %>%
+                    arrange(registration_date) %>%
+                    mutate(number_of_cases=cumsum(number_of_cases), number_of_deaths=cumsum(number_of_deaths)) %>%
+                    ungroup() %>%
+                    mutate(date_asdate = ymd(registration_date)) %>% 
+                    mutate(dataset="robert_koch") %>%
+                    mutate(admin0_name_original="Germany") %>%
+                    mutate(admin1_name_original=federal_state)  %>%
+                    mutate(admin2_name_original=district  )  %>%
+
+                    mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                    mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                    mutate(admin2_name_clean=admin2_name_original %>% str_replace("^[A-Za-z]{1,2} ","") %>% rex_clean()) %>%
+                    rex_admin_function()
+
+forjoining_rki_covid19<- rki_covid19_long %>%
+                            dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed=number_of_cases, deaths=number_of_deaths)
+
+
+```
 
 ### Italy
 
@@ -2319,39 +2355,54 @@ library(tsibble)
 
 lhs_long <- bind_rows(
   
-  #United Kingdom
-  forjoining_covid_19_uk,
+  #North America
   
-  #U.S.
-  forjoining_nytimes,
-  forjoining_usafacts,
-  forjoining_covidtracking,
+    #U.S.
+    forjoining_nytimes,
+    forjoining_usafacts,
+    forjoining_covidtracking,
   
-  #italy
-  forjoining_dpc, 
+  #South America
   
-  #India
-  forjoining_covid19india,
-  forjoining_imhfw,
+    #Brazil
+    forjoining_bhm,
+    forjoining_covid19br_long,
+    
+  ## Europe
+  
+    #United Kingdom
+    forjoining_covid_19_uk,
+    
+    #Germany
+    forjoining_rki_covid19,
+    
+    #italy
+    forjoining_dpc, 
+  
+    #Switzerland
+    forjoining_openZH,
+  
+  ## South Asia
+    #India
+    forjoining_covid19india,
+    forjoining_imhfw,
 
-  #South Korea
-  forjoining_ds4c,
+  ## Asia
+    
+    #South Korea
+    forjoining_ds4c,
+    
+    #Vietnam
+    forjoining_wikipedia_vietnam_subnation_cases,
   
-  #Vietnam
-  forjoining_wikipedia_vietnam_subnation_cases,
+    #Japan,
+    forjoining_covid19japan,
   
-  #Brazil
-  forjoining_bhm,
-  forjoining_covid19br_long,
-  
-  #Japan,
-  forjoining_covid19japan,
-  
-  #Switzerland
-  forjoining_openZH,
 
-  #Tunesia
-  forjoining_TnCovid,
+  # Africa
+  
+    #Tunesia
+    forjoining_TnCovid,
   
   #Bangladesh
   forjoining_iedcr,
@@ -2375,7 +2426,6 @@ lhs_long <- bind_rows(
   
   #Myanmar
   forjoining_myanmar_testing_wikipedia,
-  
 
   
   #Multinational

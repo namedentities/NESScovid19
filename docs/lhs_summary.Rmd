@@ -236,7 +236,7 @@ p1 <- gadm36_levels_1 %>%
   ) %>%
   #replace_na(list(datasets_n = 0)) %>% 
   ggplot() + geom_sf(aes(fill = datasets_n)) +
-  scale_fill_gradient(low="blue", high="red") +
+  scale_fill_gradient(low="red", high="green") +
   theme_bw() 
 ```
 
@@ -737,6 +737,87 @@ Note that CSSE is conflating all of New York City with Manhattan/New York County
 p_interpolation4a + p_interpolation4b + p_interpolation4c + p_interpolation4d + p_interpolation4e
 ```
 
+
+
+## Plots by Countries
+
+```{r}
+library(data.table)
+geonames <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/allCountries.txt", sep="\t") %>% mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character)
+dim(geonames) #12,006,426
+
+geonames_small <- geonames %>% dplyr::select(geonameid=V1, name_text=V2) %>% inner_join( lhs_long_clean_imputed %>% dplyr::select(geonameid) %>% distinct() )
+dim(geonames_small)
+
+```
+
+### Confirmed
+```{r, fig.width=16, fig.height=12,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
+p_confirmed_by_country <- lhs_long_clean_imputed %>%
+                          filter(!gid %>% str_detect("_") ) %>%
+                          left_join(geonames_small  ) %>% mutate(name_text %>% as.factor()) %>%
+                          mutate(group=paste(gid_geonameid_wikidata_id,confirmed_log_group_number)) %>%
+                          ggplot() + 
+                             #geom_point( aes(x=date_asdate, y=confirmed_log, color=dataset), alpha=.3) +
+                             geom_line( aes(x=date_asdate, y=confirmed_log_y_hat, color=dataset, group=group)) + #
+                             #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+                             theme_bw() +
+                             ggtitle("Confirmed (log) by Country") + facet_wrap(~name_text   ) + guides( color = FALSE) +
+                            theme(
+                              strip.background = element_blank()
+                            ,  strip.text.x = element_blank()
+                            )
+```
+
+```{r}
+p_confirmed_by_country
+```
+
+### Deaths
+
+```{r, fig.width=16, fig.height=12,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
+p_deaths_by_country <- lhs_long_clean_imputed %>%
+                          filter(!gid %>% str_detect("_") ) %>%
+                          left_join(geonames_small  ) %>% mutate(name_text %>% as.factor()) %>%
+                          mutate(group=paste(gid_geonameid_wikidata_id,confirmed_log_group_number)) %>%
+                          ggplot() + 
+                             #geom_point( aes(x=date_asdate, y=deaths_log_y_hat, color=dataset), alpha=.3) +
+                             geom_line( aes(x=date_asdate, y=deaths_log_y_hat, color=dataset, group=group)) + #
+                             #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+                             theme_bw() +
+                             ggtitle("Deaths (log) by Country") + facet_wrap(~name_text   ) + guides( color = FALSE) +
+                            theme(
+                              strip.background = element_blank()
+                            ,  strip.text.x = element_blank()
+                            )
+```
+
+```{r, fig.width=16, fig.height=12}
+p_deaths_by_country
+```
+
+### Tests
+
+```{r, fig.width=16, fig.height=12,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
+p_tested_people_by_country <- lhs_long_clean_imputed %>%
+                          filter(!gid %>% str_detect("_") ) %>%
+                          left_join(geonames_small  ) %>% mutate(name_text %>% as.factor()) %>%
+                          mutate(group=paste(gid_geonameid_wikidata_id,confirmed_log_group_number)) %>%
+                          ggplot() + 
+                             #geom_point( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset), alpha=.3) +
+                             geom_line( aes(x=date_asdate, y=tested_people_log_y_hat, color=dataset, group=group)) + #
+                             #geom_line(data=temp_df2, aes(x=date_asdate, y=y_hat_mean), color="black", linetype = "dashed") +
+                             theme_bw() +
+                             ggtitle("Tests (log) by Country") + facet_wrap(~name_text   ) + guides( color = FALSE) +
+                            theme(
+                              strip.background = element_blank()
+                            ,  strip.text.x = element_blank()
+                            )
+```
+
+```{r, fig.width=16, fig.height=12}
+p_tested_people_by_country
+```
 
 
 ## Interpolation of Rate of Change
@@ -1482,9 +1563,16 @@ Note that China counts of testing are almost never given at the national level. 
 
 ```{r, echo=FALSE,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
 
+library(data.table)
+geonames <- fread("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/allCountries.txt", sep="\t") %>% mutate_if(is.numeric,as.character) %>% mutate_if(is.factor,as.character)
+dim(geonames) #12,006,426
+
+geonames_small <- geonames %>% dplyr::select(geonameid=V1, name_text=V2) %>% inner_join( lhs_long_clean_imputed %>% dplyr::select(geonameid) %>% distinct() )
+dim(geonames_small)
+
 df_slopes <- lhs_long_clean_imputed %>% 
              group_by(gid_geonameid_wikidata_id, gid, geonameid, wikidata_id, date_asdate) %>% 
-             mutate(
+             summarise(
                     confirmed=median(confirmed, na.rm=T),
                     deaths=median(deaths, na.rm=T),
                     tested_people=median(tested_people, na.rm=T),
@@ -1493,12 +1581,21 @@ df_slopes <- lhs_long_clean_imputed %>%
                     confirmed_log_y_hat=median(confirmed_log_y_hat, na.rm=T),
                     deaths_log_y_hat=median(deaths_log_y_hat, na.rm=T),
                     tested_people_log_y_hat=median(tested_people_log_y_hat, na.rm=T),
+
+                    confirmed_log_y_hat_percent_change=median(confirmed_log_y_hat_percent_change, na.rm=T),
+                    deaths_log_y_hat_percent_change=median(deaths_log_y_hat_percent_change, na.rm=T),
+                    tested_people_log_y_hat_percent_change=median(tested_people_log_y_hat_percent_change, na.rm=T),
+
+                    confirmed_log_y_hat_percent_change_y_hat=median(confirmed_log_y_hat_percent_change_y_hat, na.rm=T),
+                    deaths_log_y_hat_percent_change_y_hat=median(deaths_log_y_hat_percent_change_y_hat, na.rm=T),
+                    tested_people_log_y_hat_percent_change_y_hat=median(tested_people_log_y_hat_percent_change_y_hat, na.rm=T),
+                                        
                     #tested_samples_log_y_hat=median(tested_samples_log_y_hat, na.rm=T), #haven't written the interp for this yet
                     ) %>%
-             ungroup() %>%
+             #ungroup() %>%
+             left_join(geonames_small) %>%
              group_by(gid_geonameid_wikidata_id) %>% 
              arrange(date_asdate) %>% 
-             filter(!duplicated(date_asdate)) %>% 
              mutate(t = row_number()) %>%
              mutate(confirmed_log_y_hat_percent_change_y_hat_fd=tsibble::difference(confirmed_log_y_hat_percent_change_y_hat)) %>%
   
@@ -1507,7 +1604,7 @@ df_slopes <- lhs_long_clean_imputed %>%
              #but there are other ones that go from zero to high and those aren't getting caught by the top above
              mutate(t_alligned_max_at_0 =  confirmed_log_y_hat_percent_change_y_hat==max(confirmed_log_y_hat_percent_change_y_hat,na.rm=T) & t==1 ) %>% 
 
-             mutate(t_alligned = ifelse(t_alligned_max_at_0 | (t_alligned_maxfd & max(t_alligned_max_at_0)==F) , t, NA) ) %>% 
+             mutate(t_alligned = ifelse(t_alligned_max_at_0 | (t_alligned_maxfd & max(t_alligned_max_at_0, na.rm=T)==F) , t, NA) ) %>% 
              mutate(t_alligned = max(t_alligned, na.rm=T) ) %>%
              mutate(t_alligned = t-max(t_alligned, na.rm=T) ) %>%
 
@@ -1582,6 +1679,188 @@ The idea here is that completely unconstrained, COVID-19 growth should follow a 
 ```{r, fig.width=12, fig.height=12,warning=FALSE,message=FALSE,error=FALSE}
 p_t_alligned_firstconfirmed  / p_t_alligned 
 ```
+
+
+
+
+## Plots by Countries
+
+We have to add geocodes to the map placements
+
+```{r}
+admin0 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin0.Rds")
+admin1 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin1.Rds")
+admin2 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin2.Rds")
+
+rex_clean <- function(x){ x %>% stringi::stri_trans_general("latin-ascii") %>% stringi::stri_replace_all(regex="[^A-Za-z0-9]","") %>% tolower() } #so individually, each string should be devoid of spaces,noncharacters, and nonlatin
+
+rex_admin_function <- function(x) {
+  x %>% 
+  left_join(admin0 ) %>%
+  left_join(admin1 )  %>%
+  left_join(admin2 ) %>%
+  mutate(gid=ifelse(!is.na(admin2_name_clean) & admin2_name_clean!='',gid2,ifelse(!is.na(admin1_name_clean) & admin1_name_clean!='', gid1, gid0))) %>%
+  mutate(wikidata_id=ifelse(!is.na(admin2_name_clean) & admin2_name_clean!='',wikidata_id2,ifelse(!is.na(admin1_name_clean) & admin1_name_clean!='', wikidata_id1, wikidata_id0))) %>%
+  mutate(geonameid=ifelse(!is.na(admin2_name_clean) & admin2_name_clean!='',geonameid2,ifelse(!is.na(admin1_name_clean) & admin1_name_clean!='', geonameid1, geonameid0))) %>%
+  mutate(admin_level=ifelse(!is.na(admin2_name_clean) & admin2_name_clean!='',2,ifelse(!is.na(admin1_name_clean) & admin1_name_clean!='', 1, 0)))
+}
+
+```
+
+```{r, fig.width=16, fig.height=12,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
+install.packages("geofacet")
+# or from github:
+# devtools::install_github("hafen/geofacet")
+library(geofacet)
+head(us_state_grid2)
+
+```
+
+### Confirmed, Deaths, Tests
+
+By country 
+
+```{r, fig.width=16, fig.height=12,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
+
+gadm36 = st_read("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESSgadm/data_in/gadm36_gpkg/gadm36.gpkg")
+gadm36_df <- gadm36 %>% as.data.frame()
+countries <- gadm36_df %>% dplyr::select(gid=GID_0, name=NAME_0 ) %>% distinct()
+
+
+
+temp1 <- df_slopes %>%
+          filter(!gid %>% str_detect("_") ) %>%
+          left_join(countries %>% dplyr::select(gid, name_text=name) ) %>% 
+          #left_join(geonames_small  ) %>% 
+  
+          mutate(name_text=name_text %>% as.factor()) %>%
+          left_join(world_countries_grid1, by=c('gid'='code_alpha3')) %>%
+          filter(!is.na(name))
+temp2 <- temp1 %>% arrange(date_asdate) %>% filter(!duplicated(gid_geonameid_wikidata_id)) %>% mutate(name_text=name %>% as.factor())
+
+head(world_countries_grid1)
+world_countries_grid1_rex <- world_countries_grid1 %>% filter(name %in% temp2$name)
+dim(world_countries_grid1_rex)
+grid_preview(world_countries_grid1_rex)
+
+p_confirmed_deaths_test_by_country <- temp1 %>% 
+                                      ggplot() + 
+                                         geom_line( aes(x=date_asdate, y=confirmed_log_y_hat), color="red") + # #t aligned is broken for the U.S. and some countries, all infinites
+                                         geom_line( aes(x=date_asdate, y=deaths_log_y_hat), color="black") + #
+                                         geom_line( aes(x=date_asdate, y=tested_people_log_y_hat), color="blue") + #
+                                         theme_bw() +
+                                         ggtitle("Global Covid-19: Log Tested (blue) Confirmed (red), Death (black)") +
+                                        guides( color = FALSE) +
+                                        facet_wrap(~name_text   ) +
+                                        theme(
+                                          strip.background = element_blank()
+                                        ,  strip.text.x = element_blank()
+                                        ) +
+                                        geom_text(data=temp2,x=18282+20,y=14,aes(label=name_text), size=2.5) +
+                                        ylab("Counts (log)") +
+                                        xlab("Days before/Since Takeoff in Confirmed Numbers") +
+                                        facet_geo(~name, grid =world_countries_grid1_rex) 
+```
+
+```{r, fig.width=16, fig.height=12}
+p_confirmed_deaths_test_by_country
+```
+
+U.S. by State
+
+```{r, fig.width=16, fig.height=12,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
+
+temp1 <- df_slopes %>%
+          filter(gid %>% str_detect("USA\\.[0-9]{1,2}_1$") ) %>%
+          left_join(geonames_small  ) %>% mutate(name_text= name_text %>% as.factor()) %>%
+          left_join(us_state_grid2, by=c('name_text'='name')) %>% 
+          filter(!is.na(name_text))
+temp2 <- temp1 %>% arrange(date_asdate) %>% filter(!duplicated(gid_geonameid_wikidata_id)) %>% mutate(name_text=name_text %>% as.factor())
+
+#t_alligned
+p_confirmed_deaths_test_by_state_us <- temp1 %>% 
+                                        #filter(gid=="USA") %>% #just a test
+                                        ggplot() + 
+                                           geom_line( aes(x=date_asdate, y=confirmed_log_y_hat), color="red") + # #t aligned is broken for the U.S. and some countries, all infinites
+                                           geom_line( aes(x=date_asdate, y=deaths_log_y_hat), color="black") + #
+                                           geom_line( aes(x=date_asdate, y=tested_people_log_y_hat), color="blue") + #
+                                           theme_bw() +
+                                           ggtitle("Covid-19 By U.S. State: Log Tested (blue) Confirmed (red), Death (black)") +
+                                          theme(
+                                            strip.background = element_blank()
+                                          ,  strip.text.x = element_blank()
+                                          ) +
+                                          geom_text(data=temp2,x=18282+20,y=12,aes(label=name_text), size=4) +
+                                          ylab("Counts (log)") + xlab("Date") + #"Days before/Since Takeoff in Confirmed Numbers"
+                                          guides( color = FALSE) +
+                                          facet_geo(~code) 
+
+ 
+```
+
+```{r, fig.width=16, fig.height=12}
+p_confirmed_deaths_test_by_state_us
+```
+
+India by State
+
+```{r, fig.width=16, fig.height=12,warning=FALSE,message=FALSE,error=FALSE, results='hide'}
+
+head(india_grid2)
+
+india_grid2_rex <- india_grid2 %>%
+                    mutate(admin0_name_original="India") %>%
+                    mutate(admin1_name_original=name) %>%
+                    mutate(admin2_name_original='')  %>%
+    
+                    mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                    mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                    mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                    rex_admin_function()
+
+temp1 <- df_slopes %>%
+          filter(gid %>% str_detect("IND\\.[0-9]{1,2}_1$") ) %>%
+          left_join(geonames_small  ) %>% mutate(name_text= name_text %>% as.factor()) %>%
+          left_join(india_grid2, by=c('name_text'='name')) %>% 
+          filter(!is.na(name_text))
+temp2 <- temp1 %>% arrange(date_asdate) %>% filter(!duplicated(gid_geonameid_wikidata_id)) %>% mutate(name_text=name_text %>% as.factor())
+
+#t_alligned
+p_confirmed_deaths_test_by_state_india <- temp1 %>% 
+                                        #filter(gid=="USA") %>% #just a test
+                                        ggplot() + 
+                                           geom_line( aes(x=date_asdate, y=confirmed_log_y_hat), color="red") + # #t aligned is broken for the U.S. and some countries, all infinites
+                                           geom_line( aes(x=date_asdate, y=deaths_log_y_hat), color="black") + #
+                                           geom_line( aes(x=date_asdate, y=tested_people_log_y_hat), color="blue") + #
+                                           theme_bw() +
+                                           ggtitle("Covid-19 By U.S. State: Log Tested (blue) Confirmed (red), Death (black)") +
+                                          theme(
+                                            strip.background = element_blank()
+                                          ,  strip.text.x = element_blank()
+                                          ) +
+                                          geom_text(data=temp2,x=18282+20,y=12,aes(label=name_text), size=4) +
+                                          ylab("Counts (log)") + xlab("Date") + #"Days before/Since Takeoff in Confirmed Numbers"
+                                          guides( color = FALSE) +
+                                          facet_geo(~code) 
+
+ 
+```
+
+```{r, fig.width=16, fig.height=12}
+p_confirmed_deaths_test_by_state_us
+```
+
+
+
+
+
+
+Tomorrow morning I think my job is to first difference all of these. How many tests, how many confirmed, how many dead each day. Find the lags and leads with the highest correlation between those three, possibly varying by country.
+
+
+
+
+
 
 
 What this gives us is a nice normalized dataset where the task is to predict the shape of that distribution. We could try to predict time until the takeoff, the intensity of the growth at the takeoff point, the time until it returns to zero, the area under the curve, or every nook and change.
@@ -1670,7 +1949,7 @@ df_slopes %>% left_join(geonames_small  ) %>% mutate(name_text %>% as.factor()) 
 #we might need to switch this to fd. Because it's the percent of the new tests coming back positive not the old ones.
 
 #Remind ourselves interpretations when we lhs
-https://data.library.virginia.edu/interpreting-log-transformations-in-a-linear-model/
+#https://data.library.virginia.edu/interpreting-log-transformations-in-a-linear-model/
 
 ```
 
