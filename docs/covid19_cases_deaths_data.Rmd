@@ -53,7 +53,7 @@ library(tidyverse)
 library(sf)
 
 library(jsonlite)
-
+library(janitor)
 ```
 
 Can start back from here
@@ -678,8 +678,15 @@ covid19japan_prefecture <- covid19japan$prefectures #it has counts folded up ins
 
 temp <- covid19japan_prefecture
 temp$confirmedByCity <- NULL
+dailyConfirmedCount <- temp$dailyConfirmedCount
+temp_matrix <- matrix(nrow=sapply(dailyConfirmedCount, length) %>% max(), ncol=length(dailyConfirmedCount)  )
+dim(temp_matrix)
+for(i in 1:ncol(temp_matrix)){
+  q=dailyConfirmedCount[i] %>% unlist()
+  temp_matrix[1:length(q),i] <- q
+}
 
-rawdata_df <- as.data.frame(temp$dailyConfirmedCount)
+rawdata_df <- as.data.frame(temp_matrix) #this got broken by some being longer now for no reason
 colnames(rawdata_df) <- temp$name
 rawdata_df$date <- ymd("2020-01-08"):(ymd("2020-01-08")+nrow(rawdata_df)-1) %>% as_date()
 
@@ -1615,9 +1622,128 @@ https://en.wikipedia.org/wiki/2020_coronavirus_pandemic_in_Uganda
 
 ## Multinational
 
+### yahoo
+
+```{r}
+#https://raw.githubusercontent.com/yahoo/covid-19-data/master/data/by-region-2020-01-01.tsv
+
+#https://raw.githubusercontent.com/yahoo/covid-19-data/master/data/by-region-2020-01-01.tsv
+month_start=1
+month_end=4
+dates_to_grab <- apply(expand.grid(str_pad(month_start:month_end, 2, pad = "0") , str_pad(1:31, 2, pad = "0") ), 1, paste, collapse="-") %>% sort()
+dates_to_grab_year <- paste0("2020-",dates_to_grab) 
+
+
+df_list <- list()
+for(q in dates_to_grab_year){
+  print(q)
+  url = paste0("https://raw.githubusercontent.com/yahoo/covid-19-data/master/data/by-region-",q,".tsv")
+  try({
+    df_list[[url]] <- read_tsv(url)
+  })
+}
+
+#ok so they give us second level but not country, amazing...
+yahoo_df <- bind_rows(df_list)  %>%
+              mutate(date_asdate = ymd(referenceDate)) %>% 
+              mutate(dataset="yahoo") %>%
+              separate(label, into=c('place_a','place_b','place_c'), sep = ",", remove=F) 
+
+yahoo_long_1 <- yahoo_df %>%
+                filter(place_b %>% is.na()) %>%
+                mutate(admin0_name_clean=place_a %>% rex_clean()) %>% 
+                mutate(admin1_name_clean='' %>% rex_clean()) %>% 
+                mutate(admin2_name_clean='' %>% rex_clean()) %>%
+                rex_admin_function() %>%
+                filter(!is.na(geonameid))
+
+yahoo_long_2 <- yahoo_df %>%
+                filter(place_b %>% is.na()) %>%
+                filter(!label %in% (yahoo_long_1$label %>% unique()) ) %>%
+                mutate(admin1_name_clean=place_a %>% rex_clean()) %>% 
+                left_join(admin1) %>% #we now have to clumsly do this by hand
+                mutate(geonameid=geonameid1, wikidata_id=wikidata_id1, gid=gid1) %>%
+                filter(!is.na(geonameid)) 
+
+#don't do this one, it's mostly cities and leads to bad results
+#yahoo_long_3 <- yahoo_long %>%
+#                filter(place_b %>% is.na()) %>%
+#                filter(!label %in% (c(yahoo_long_1$label,yahoo_long_2$label) %>% unique()) ) %>%
+##                mutate(admin2_name_clean=place_a %>% rex_clean()) %>% 
+#                left_join(admin2)  %>% #we now have to clumsly do this by hand
+#                mutate(geonameid=geonameid2, wikidata_id=wikidata_id2, gid=gid2) %>%
+#                filter(!is.na(geonameid)) 
+  
+yahoo_long_4 <- yahoo_df %>%
+                filter(place_c %>% is.na() & !place_b %>% is.na() ) %>%
+                filter(!label %in% (c(yahoo_long_1$label,yahoo_long_2$label) %>% unique()) ) %>%
+                mutate(admin1_name_clean=place_b %>% rex_clean()) %>% 
+                mutate(admin2_name_clean=place_a %>% rex_clean()) %>% 
+  
+                left_join(admin1) %>% #we now have to clumsly do this by hand
+                left_join(admin2) %>% #we now have to clumsly do this by hand
+  
+                mutate(geonameid=geonameid2, wikidata_id=wikidata_id2, gid=gid2) %>%
+                filter(!is.na(geonameid)) 
+
+yahoo_long <- bind_rows(
+  yahoo_long_1,
+  yahoo_long_2,
+  yahoo_long_3,
+  yahoo_long_4
+) %>% mutate(date_asdate = ymd(referenceDate)) 
+  
+
+forjoining_yahoo <- yahoo_long %>% 
+                    dplyr::select(dataset,gid, geonameid, wikidata_id, date_asdate, confirmed=totalConfirmedCases, deaths=totalDeaths, tested_people=totalTestedCases, tested_samples=numTests)
+dim(forjoining_yahoo) #117645
+
+```
+
+### coronadatascraper.com
+
+Sources
+https://docs.google.com/spreadsheets/d/1T2cSvWvUvurnOuNFj2AMPGLpuR2yVs3-jdd_urfWU4c/edit#gid=0
+
+```{r}
+#devtools::install_github("r-lib/usethis") #had to install the github latest version
+library(usethis); #install.packages('usethis')
+if (FALSE) {
+  use_zip(url="https://coronadatascraper.com/timeseries-tidy.csv.zip", destdir="/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp", cleanup=FALSE)
+  
+}
+library(data.table)
+coronadatascraper <- fread("//media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/timeseries-tidy.csv/timeseries-tidy.csv") %>% as_tibble() #readcsv chokes on this for some reason
+
+table(coronadatascraper_long$aggregate)
+
+#there are some interesting merge problems here
+#"Antwerp, Flanders, Belgium" links to two qcodes because flanders shows up twice in wikidata
+#I don't think it matters because we subest to unique gid, geonames, qcode anyway  but should clean up one day
+coronadatascraper_long <- coronadatascraper %>%
+                          mutate(dataset="coronadatascraper") %>%
+                          pivot_wider( id_cols = NULL, names_from = type, values_from = value, values_fill = NULL, values_fn = NULL) %>%
+                          mutate(date_asdate = ymd(date)) %>% 
+                          #filter(name=="Antwerp, Flanders, Belgium") %>%
+                          mutate(admin0_name_original=country) %>%
+                          mutate(admin1_name_original=state)  %>%
+                          mutate(admin2_name_original=county)  %>%
+                          mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                          mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                          mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                          rex_admin_function()
+                          
+dim(coronadatascraper_long) 
+
+forjoining_coronadatascraper <- coronadatascraper_long %>% 
+                                 dplyr::select(dataset,gid, geonameid, wikidata_id, date_asdate, confirmed=cases, deaths=deaths, tested_people=tested)
+
+```
+
 ### trackcorona.live
 
 https://www.trackcorona.live/api
+
 
 ### finddx
 
@@ -1678,24 +1804,46 @@ wayback_history_page_oldest <- read_json(paste0(wayback_base_url, "20200101")) #
 oldest_date <- wayback_history_page_oldest$archived_snapshots$closest$timestamp %>% substring(1,8) %>% as.numeric()
 
 dates_to_grab_year <- dates_to_grab_year[dates_to_grab_year>=oldest_date] #cuts it down to 96
-  
-histor_links_list <- list()
-for(q in dates_to_grab_year){
-  try({
-    url <- paste0(wayback_base_url, q)
-    print(url)
-    wayback_history_page <- read_json(url)
-    histor_links_list[[q]] <- wayback_history_page %>% as.data.frame() %>% jsonlite::flatten()
-  })
-}
+
+
+
+#https://web.archive.org/web/*/https://www.worldometers.info/coronavirus/
+#url <- "https://web.archive.org/web/*/https://www.worldometers.info/coronavirus/"
+#text <- readLines(url)
+#unlist(str_extract_all(string=text, pattern="web/([0-9]*)/https"))
+#text= '<a href="/web/20200402/https://www.worldometers.info/coronavirus/">2</a>'
+#temp_matches <- str_match_all(string=text, pattern="^.*web/([0-9]*)/https.*$")
+#internetarchive_history_page <- read_html(url)
+#links <- internetarchive_history_page %>% html_nodes("a") %>% html_attr(c('href'))
+#titles <- internetarchive_history_page %>% html_nodes("a") %>% html_attr(c('title')) 
+#text <- internetarchive_history_page %>% html_nodes("a") %>% html_text() 
+#internetarchive_history_page_links <- data.frame(link=links ,  #paste0("https://en.wikipedia.org/",links)
+#                                                       title=titles,
+#                                                       text=text) %>%
+#                                filter(str_detect(link,"oldid") & text!="cur" & text!="prev")
+#This json idea stoped working for some reason
+#histor_links_list <- list()
+#for(q in dates_to_grab_year){
+#  try({
+#    url <- paste0(wayback_base_url, q)
+#    print(url)
+#    wayback_history_page <- read_json(url) #the json isn't returning snapshots past #ya for whatever reason the api isn't returning dates past 20200402 right now, not sure why
+#    histor_links_list[[q]] <- wayback_history_page %>% as.data.frame() %>% jsonlite::flatten()
+#  })
+#}
 
 history_links_df <- bind_rows(histor_links_list)
 nrow(history_links_df)
+#https://github.com/internetarchive/wayback/tree/master/wayback-cdx-server#basic-usage
+temp <- readLines("http://web.archive.org/web/timemap/link/https://www.worldometers.info/coronavirus/") #we got it, we can grab them all now
+history_links_df <- temp %>% as_tibble() %>% separate(col=value, into=c('link','rel','datetime'), sep = ";") %>% mutate(link=str_replace_all(link,"\\<|\\>",""))
 
 #Ah it's a fixed table that just gets included so scraping the whole page doesn't show any variation
+#We really don't need every single snapshot, should fix
+history_links_df_one_a_day <- history_links_df %>% filter(link %>% str_detect("web/[0-9]+")) %>% mutate(date=substring(link,28,28+7) %>% as.numeric()) %>% filter(!duplicated(date))
 
 tables_list <- list()
-for(q in history_links_df$archived_snapshots.closest.url %>% unique() %>% as.character() %>% sort() ){
+for(q in history_links_df_one_a_day  %>% pull(link) %>% unique() %>% as.character() %>% sort() ){
   print(q)
   thepage = readLines(q)
   #temp_html <- read_html(q)
@@ -1725,27 +1873,27 @@ library(janitor) #install.packages("janitor")
 worldometers <- bind_rows(lapply(tables_list, FUN=function(x) x %>% clean_names %>% mutate_if(is.numeric, as.character) ))
 
 worldometers_long <- worldometers %>% 
-                    mutate_if(is.factor, as.character) %>% #factors also break coalesce maybe?
-                    mutate_if(is.character, list(~na_if(., ""))) %>% #dplyr::coalesce may not handle '' correctly
-                    mutate(dataset="worldometers") %>%
-                    mutate(date_asdate = url %>% str_replace("http://web.archive.org/web/","") %>% str_replace("/https://www.worldometers.info/coronavirus/","")  %>% substring(1,8) %>% ymd() ) %>%
+                      mutate_if(is.factor, as.character) %>% #factors also break coalesce maybe?
+                      mutate_if(is.character, list(~na_if(., ""))) %>% #dplyr::coalesce may not handle '' correctly
+                      mutate(dataset="worldometers") %>%
+                      mutate(date_asdate = url %>% str_replace("http://web.archive.org/web/","") %>% str_replace("/https://www.worldometers.info/coronavirus/","")  %>% substring(1,8) %>% ymd() ) %>%
+    
+                      mutate(place = dplyr::coalesce( country , country_other , country_territory) ) %>% 
+                      mutate(place = str_replace_all(place,"Mainland|mainland","") %>% trimws()  ) %>%  
   
-                    mutate(place = dplyr::coalesce( country , country_other , country_territory) ) %>% 
-                    mutate(place = str_replace_all(place,"Mainland|mainland","") %>% trimws()  ) %>%  
-
-                    mutate(confirmed = dplyr::coalesce(cases,feb_10_11_cases,feb_11_cases,feb_4_cases,feb_5_cases,feb_6_cases,feb_6_feb_7_cases,feb_8_cases,total_cases) ) %>%
-                    mutate(deaths = dplyr::coalesce(deaths, feb_10_11_deaths,feb_11_deaths,feb_4_deaths,feb_5_deaths,feb_6_deaths,feb_6_feb_7_deaths,feb_8_deaths,todays_deaths,total_deaths) ) %>%
-                    mutate(tested_people = dplyr::coalesce(total_tests) ) %>%
-
-                    #separate(place, c("admin0_name_original", "admin1_name_original"),sep=":|  |  |, ")  %>% #seperated by either a colon or a weird double space
-                    mutate(admin0_name_original = place  ) %>%
-                    mutate(admin1_name_original = ''  ) %>%
-                    mutate(admin2_name_original = ''  ) %>%
-
-                    mutate(admin0_name_clean = admin0_name_original %>% rex_clean()) %>%
-                    mutate(admin1_name_clean = admin1_name_original %>% rex_clean()) %>%
-                    mutate(admin2_name_clean = '' %>% rex_clean()) %>%
-                    rex_admin_function()
+                      mutate(confirmed = dplyr::coalesce(cases,feb_10_11_cases,feb_11_cases,feb_4_cases,feb_6_cases,feb_6_feb_7_cases,total_cases) ) %>% #feb_5_cases #feb_8_cases
+                      mutate(deaths = dplyr::coalesce(deaths, feb_10_11_deaths,feb_11_deaths,feb_4_deaths,feb_6_deaths,feb_6_feb_7_deaths,todays_deaths,total_deaths) ) %>% #feb_5_deaths #feb_8_deaths
+                      mutate(tested_people = dplyr::coalesce(total_tests) ) %>%
+  
+                      #separate(place, c("admin0_name_original", "admin1_name_original"),sep=":|  |  |, ")  %>% #seperated by either a colon or a weird double space
+                      mutate(admin0_name_original = place  ) %>%
+                      mutate(admin1_name_original = ''  ) %>%
+                      mutate(admin2_name_original = ''  ) %>%
+  
+                      mutate(admin0_name_clean = admin0_name_original %>% rex_clean()) %>%
+                      mutate(admin1_name_clean = admin1_name_original %>% rex_clean()) %>%
+                      mutate(admin2_name_clean = '' %>% rex_clean()) %>%
+                      rex_admin_function()
 
 forjoining_worldometers_long <- worldometers_long %>%   
                                       dplyr::select(dataset,gid, geonameid, wikidata_id,date_asdate, confirmed, deaths , tested_people) %>% 
@@ -1808,7 +1956,7 @@ https://github.com/microsoft/Bing-COVID-19-Data
 ```{r}
 
 #csv is broken so have to read it in as lines first and then seperate it
-temp <- readLines("https://raw.githubusercontent.com/microsoft/Bing-COVID-19-Data/master/data/2020-4-25.csv") #i opened an issue ticket asking them to put latest but for now we'll have to change this every day
+temp <- readLines("https://raw.githubusercontent.com/microsoft/Bing-COVID-19-Data/master/data/2020-4-26.csv") #i opened an issue ticket asking them to put latest but for now we'll have to change this every day
 temp_df <- as.data.frame(temp[2:length(temp)]) #drop the first line
 names(temp_df) <- "V1"
 bing <- temp_df %>% 
@@ -2496,6 +2644,8 @@ lhs_long <- bind_rows(
 
   
   #Multinational
+  forjoining_yahoo,
+  forjoining_coronadatascraper,
   forjoining_finddx_tests_long,
   forjoining_worldometers_long,
   forjoining_ecdc,
@@ -2519,7 +2669,7 @@ lhs_long <- bind_rows(
   distinct() %>%
   arrange(dataset,gid ,  geonameid ,wikidata_id, date_asdate)
 
-dim(lhs_long) #416,897 #409957 #398999 #310169 #304,376
+dim(lhs_long) #650,353 #416,897 #409957 #398999 #310169 #304,376
 
 lhs_long$dataset %>% table() %>% sort()
 

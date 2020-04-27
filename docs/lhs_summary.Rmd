@@ -1688,6 +1688,8 @@ p_t_alligned_firstconfirmed  / p_t_alligned
 We have to add geocodes to the map placements
 
 ```{r}
+
+
 admin0 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin0.Rds")
 admin1 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin1.Rds")
 admin2 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin2.Rds")
