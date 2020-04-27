@@ -59,9 +59,11 @@ library(jsonlite)
 Can start back from here
 
 ```{r}
-admin0 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin0.Rds")
-admin1 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin1.Rds")
-admin2 <- readRDS("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_in/admin2.Rds")
+
+
+admin0 <- readRDS(paste0(here::here(),"/data_in/admin0.Rds"))
+admin1 <- readRDS(paste0(here::here(),"/data_in/admin1.Rds"))
+admin2 <- readRDS(paste0(here::here(),"/data_in/admin2.Rds"))
 
 rex_clean <- function(x){ x %>% stringi::stri_trans_general("latin-ascii") %>% stringi::stri_replace_all(regex="[^A-Za-z0-9]","") %>% tolower() } #so individually, each string should be devoid of spaces,noncharacters, and nonlatin
 
@@ -746,12 +748,59 @@ dim(forjoining_wikipedia_subnational_south_africa_long) #
 ### Mexico
   
   https://github.com/carranco-sga/Mexico-COVID-19
+Descriptions: https://github.com/carranco-sga/Mexico-COVID-19/blob/master/CTD/README.md
+EDO = represents the total number of cases in the state 
+EDO_D: represents the number of confirmed cases that have died in the state.
+EDO_S: represents the total number of suspect cases in the state.
+none: 
 
 ```{r}
 
 #https://raw.githubusercontent.com/carranco-sga/Mexico-COVID-19/master/Mexico_COVID19_CTD.csv
 
+
+openMX <- read_csv("https://raw.githubusercontent.com/carranco-sga/Mexico-COVID-19/master/Mexico_COVID19_CTD.csv")
+
+openMX_long <- openMX %>% 
+  dplyr::select(-ends_with("_I"), -ends_with("_R"), -ends_with("_L")) %>% 
+  dplyr::select(Fecha:ZAC_D) %>%
+  pivot_longer(AGU_S:ZAC_D) 
+
+openMX_long <- full_join(
+  openMX_long %>% filter(endsWith(name,"_D")) %>% 
+    mutate(state = name, deaths = value) %>%
+    dplyr::select(-name, -value) %>% 
+    mutate(state = str_remove(state,"_D")),
+  openMX_long %>% filter(endsWith(name,"_S")) %>% 
+    mutate(state = name, suspected = value) %>%
+    dplyr::select(-name, -value) %>%
+    mutate(state = str_remove(state,"_S"))) %>% 
+  full_join(
+    openMX_long %>% filter(!endsWith(name,"_D") & !endsWith(name,"_S")) %>%
+      mutate(state = name, confirmed = value) %>%
+      dplyr::select(-name, -value))
+
+openMX_long <- openMX_long %>% mutate(date_asdate = ymd(Fecha)) %>% 
+                 mutate(admin0_name_original="Mexico") %>%
+                 mutate(admin1_name_original=state)  %>%
+                 mutate(admin2_name_original='')  %>%
+                 mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+                 mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+                 mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+                 rex_admin_function()
+# Connection FOR MEXICO IS NOT GREAT
+# also need to change the one 2 letter one - Campeche?
+# https://en.wikipedia.org/wiki/Template:Mexico_State-Abbreviation_Codes
+
+forjoining_openMX <- openMX_long %>% 
+                     mutate(dataset="openMX") %>%
+                     dplyr::select(dataset, gid, geonameid, wikidata_id, date_asdate, confirmed, deaths)
+
+
 ```
+
+
+
 
 ### Russia
 
@@ -759,7 +808,62 @@ https://github.com/snikitin-de/covid19-russia/tree/master/covid_19_time_series
 
 ```{r}
 
-#https://raw.githubusercontent.com/snikitin-de/covid19-russia/master/covid_19_time_series/covid19-russia-cases.csv
+#https://github.com/snikitin-de/COVID-19
+openRUtests <- read_csv("https://raw.githubusercontent.com/snikitin-de/COVID-19/master/covid-19-russia/covid19-tests-and-other.csv")
+openRUcases <- read_csv("https://raw.githubusercontent.com/snikitin-de/COVID-19/master/covid-19-russia/covid19-russia-cases.csv")
+
+data.table::data.table(
+  Altai.region = c("Altai Republic","Amurskaya Oblast",
+                   "Arkhangelsk region","Astrakhan region","Belgorod region",
+                   "Bryansk region","Chechen Republic","Chelyabinsk region",
+                   "Chukotka Autonomous Okrug","Chuvash Republic",
+                   "Diamond Princess","Irkutsk region","Ivanovo region",
+                   "Jewish Autonomous Region","Kabardino-Balkar Republic","Kaliningrad region",
+                   "Kaluga region","Kamchatka Krai",
+                   "Karachay-Cherkess Republic","Kemerovo region","Khabarovsk region","Khanty-Mansiysk",
+                   "Kirov region","Komi Republic","Kostroma region",
+                   "Krasnodar region","Krasnoyarsk region","Kurgan region",
+                   "Kursk region","Leningrad region","Lipetsk region","Magadan Region",
+                   "Mari El Republic","Moscow","Moscow region",
+                   "Murmansk region","Nenets Autonomous Okrug","Nizhny Novgorod Region",
+                   "Novgorod region","Novosibirsk region","Omsk region",
+                   "Orenburg region","Oryol Region","Penza region","Perm",
+                   "Primorsky Krai","Pskov region","Republic of Adygea",
+                   "Republic of Bashkortostan","Republic of Crimea","Republic of Kalmykia",
+                   "Republic of North Ossetia - Alania","Republic of Tatarstan",
+                   "Rostov region","Ryazan Oblast","Sakhalin region",
+                   "Samara Region","Saratov region","Sevastopol","Smolensk region",
+                   "St. Petersburg","Stavropol region","Sverdlovsk region",
+                   "Tambov Region","The Republic of Buryatia",
+                   "The Republic of Dagestan","The Republic of Ingushetia",
+                   "The Republic of Karelia","The Republic of Khakassia",
+                   "The Republic of Mordovia","The Republic of Sakha (Yakutia)","Tomsk region",
+                   "Tula region","Tver region","Tyumen region","Tyva Republic",
+                   "Udmurt republic","Ulyanovsk region","Vladimir region",
+                   "Volgograd region","Vologda Region","Voronezh region",
+                   "Yamalo-Nenets Autonomous Okrug","Yaroslavl region","Zabaykalsky Krai"),
+           ALT = c("AL","AMU","ARK","AST","BEL","BRY",
+                   "CE","CHE","CHU","CU",NA,"IRK","IVA","YEV","KB",
+                   "KGD","KLU","KAM","KC","KEM","KHA","KHM","KIR","KO",
+                   "KOS","KDA","KYA","KGN","KRS","LEN","LIP","MAG","ME",
+                   "MOW","MOS","MUR","NEN","NIZ","NGR","NVS","OMS","ORE",
+                   "ORL","PNZ","PER","PRI","PSK","AD","BA",NA,"KL",
+                   "SE","TA","ROS","RYA","SAK","SAM","SAR",NA,"SMO","SPE",
+                   "STA","SVE","TAM","BU","DA","IN","KR","KK","MO",
+                   "SA","TOM","TUL","TVE","TYU","TY","UD","ULY","VLA",
+                   "VGG","VLG","VOR","YAN","YAR","ZAB")
+)
+
+
+openRU_long <- openRUcases %>% dplyr::select(Date, `Region/City-Eng`, Region_ID, Confirmed, Deaths) %>% 
+  mutate(date_asdate = ymd(Date)) %>% 
+  mutate(admin0_name_original="Russia") %>%
+  mutate(admin1_name_original=`Region/City-Eng`)  %>%
+  mutate(admin2_name_original='')  %>%
+  mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+  mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+  mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+  rex_admin_function()
 
 ```
 
