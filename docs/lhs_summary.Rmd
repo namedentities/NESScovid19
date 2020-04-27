@@ -1726,8 +1726,6 @@ gadm36 = st_read("/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github
 gadm36_df <- gadm36 %>% as.data.frame()
 countries <- gadm36_df %>% dplyr::select(gid=GID_0, name=NAME_0 ) %>% distinct()
 
-
-
 temp1 <- df_slopes %>%
           filter(!gid %>% str_detect("_") ) %>%
           left_join(countries %>% dplyr::select(gid, name_text=name) ) %>% 
@@ -1820,34 +1818,35 @@ india_grid2_rex <- india_grid2 %>%
 
 temp1 <- df_slopes %>%
           filter(gid %>% str_detect("IND\\.[0-9]{1,2}_1$") ) %>%
-          left_join(geonames_small  ) %>% mutate(name_text= name_text %>% as.factor()) %>%
-          left_join(india_grid2, by=c('name_text'='name')) %>% 
+          left_join(india_grid2_rex  ) %>% 
+          mutate(name_text= admin1_name_original %>% as.factor()) %>% #set it to the state's name
           filter(!is.na(name_text))
 temp2 <- temp1 %>% arrange(date_asdate) %>% filter(!duplicated(gid_geonameid_wikidata_id)) %>% mutate(name_text=name_text %>% as.factor())
 
 #t_alligned
 p_confirmed_deaths_test_by_state_india <- temp1 %>% 
-                                        #filter(gid=="USA") %>% #just a test
-                                        ggplot() + 
-                                           geom_line( aes(x=date_asdate, y=confirmed_log_y_hat), color="red") + # #t aligned is broken for the U.S. and some countries, all infinites
-                                           geom_line( aes(x=date_asdate, y=deaths_log_y_hat), color="black") + #
-                                           geom_line( aes(x=date_asdate, y=tested_people_log_y_hat), color="blue") + #
-                                           theme_bw() +
-                                           ggtitle("Covid-19 By U.S. State: Log Tested (blue) Confirmed (red), Death (black)") +
-                                          theme(
-                                            strip.background = element_blank()
-                                          ,  strip.text.x = element_blank()
-                                          ) +
-                                          geom_text(data=temp2,x=18282+20,y=12,aes(label=name_text), size=4) +
-                                          ylab("Counts (log)") + xlab("Date") + #"Days before/Since Takeoff in Confirmed Numbers"
-                                          guides( color = FALSE) +
-                                          facet_geo(~code) 
+                                          #filter(gid=="USA") %>% #just a test
+                                          ggplot() + 
+                                             geom_line( aes(x=date_asdate, y=confirmed_log_y_hat), color="red") + # #t aligned is broken for the U.S. and some countries, all infinites
+                                             geom_line( aes(x=date_asdate, y=deaths_log_y_hat), color="black") + #
+                                             geom_line( aes(x=date_asdate, y=tested_people_log_y_hat), color="blue") + #
+                                             theme_bw() +
+                                             ggtitle("Covid-19 By U.S. State: Log Tested (blue) Confirmed (red), Death (black)") +
+                                            theme(
+                                              strip.background = element_blank()
+                                            ,  strip.text.x = element_blank()
+                                            ) +
+                                            geom_text(data=temp2,x=18282+50,y=7.5,aes(label=name_text), size=2.5) +
+                                            ylab("Counts (log)") + xlab("Date") + #"Days before/Since Takeoff in Confirmed Numbers"
+                                            guides( color = FALSE) +
+                                            #Error: Other than 'row' and 'col', variable names of a custom grid must begin with 'code' or 'name'
+                                            facet_geo(~code, grid = india_grid2 )  #_rex %>% filter(code, row, col, name)
 
  
 ```
 
 ```{r, fig.width=16, fig.height=12}
-p_confirmed_deaths_test_by_state_us
+p_confirmed_deaths_test_by_state_india
 ```
 
 

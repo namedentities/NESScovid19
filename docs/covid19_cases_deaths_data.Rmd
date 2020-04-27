@@ -888,10 +888,73 @@ https://github.com/snikitin-de/covid19-russia/tree/master/covid_19_time_series
 ### Pakistan
 
 https://github.com/ShahrozTanveer/covid-19-pakistan
+https://raw.githubusercontent.com/ShahrozTanveer/covid-19-pakistan/master/covid-19-pakistan-data.csv
+
+#### /covid-19-pakistan
+
+#### Wikipedia
 
 ```{r}
 
-#https://raw.githubusercontent.com/ShahrozTanveer/covid-19-pakistan/master/covid-19-pakistan-data.csv
+library(rvest)	
+library(stringr)
+library(dplyr)
+
+q = "https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data/Pakistan_medical_cases"
+
+temp_tables <- read_html(q)  %>% html_nodes("table") %>%  html_table(fill = TRUE) 	
+tables_list <- list()
+try({	
+  for(h in temp_tables){	
+    if( 	
+      names(h) %>% tolower() %>% str_detect( pattern=c("confirmed")) %>% any(na.rm = TRUE,header = TRUE) #it has a stupid extra header that hangs it up, so added search term for the header	
+    ){	
+      tables_list[[q]] <- h
+      print("Table Found")	
+      break
+    }	
+  }
+})
+
+df = tables_list[[1]]
+df[1,which(names(df) == "Confirmed")] <- paste("Total Confirmed",df[1,which(names(df) == "Confirmed")])
+df[1,which(names(df) == "Deaths")] <- paste("Total Deaths",df[1,which(names(df) == "Deaths")])
+df[1,which(names(df) == "Recovered")] <- paste("Total Recovered",df[1,which(names(df) == "Recovered")])
+df = df[!df[, 1] == df[, 2],] # Cleaning rows with column names
+colnames(df) <- df[1,]
+df = df[2:dim(df)[1],]
+
+provinces <- c("Punjab","Sindh","Khyber Pakhtunkhwa","Balochistan","Gilgit-Baltistan","Azad Kashmir","Islamabad")
+
+for(col in provinces){
+for(i in 2:length(df[,col]) - 1){
+  df[i,col] = gsub('\\[.\\]','',df[i,col])
+  x1 = df[i,col]
+  x2 = df[i+1,col]
+  if(x2 == ""){
+    df[i+1,col] = x1
+  }
+}
+}
+
+df = pivot_longer(df,provinces,names_to= 'Province',values_to= "No. of confirmed cases")
+df$Date = as.Date(paste(df$Date,"2020"), format = "%B %d %Y")
+df=df[!is.na(df$Date), ]
+
+pakistan_wikipedia_cases <- df
+
+pakistan_wikipedia_cases_long <- pakistan_wikipedia_cases %>% janitor::clean_names() %>%
+                                  mutate(date_asdate = ymd(date)) %>%
+                                  mutate(dataset="wikipedia") %>% 
+                                  
+                                  mutate(admin0_name_clean= "Pakistan" %>% rex_clean()) %>%
+                                  mutate(admin1_name_clean= province %>% rex_clean() ) %>%
+                                  mutate(admin2_name_clean= '' ) %>%
+                                  rex_admin_function() 
+                                                  
+forjoining_pakistan_wikipedia_cases <- pakistan_wikipedia_cases_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate, confirmed=total_confirmed_cml)  %>%
+                                               mutate(confirmed=confirmed %>% str_replace_all(",","") %>% as.numeric() )
+
 
 ```
 
@@ -950,7 +1013,8 @@ iedcr_long <- iedcr %>%
                        ) %>%
                 ungroup()
 
-forjoining_iedcr <- iedcr_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate, confirmed=cases)
+forjoining_iedcr <- iedcr_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate, confirmed=cases) %>%
+                       mutate(confirmed=confirmed %>% str_replace_all(",","") %>% as.numeric() )
 
 
 
@@ -2386,6 +2450,9 @@ lhs_long <- bind_rows(
     #India
     forjoining_covid19india,
     forjoining_imhfw,
+  
+    #Pakistan,
+    forjoining_pakistan_wikipedia_cases,
 
   ## Asia
     
