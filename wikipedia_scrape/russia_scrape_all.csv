@@ -1,0 +1,2762 @@
+"","federal_subject","cases","recov","deaths","active","edit_date"
+"1","Moscow",262,9,0,252,2020-03-23
+"2","Moscow Oblast",35,1,0,34,2020-03-23
+"3","Saint Petersburg",16,2,0,14,2020-03-23
+"4","Samara Oblast",9,0,0,9,2020-03-23
+"5","Sverdlovsk Oblast",9,0,0,9,2020-03-23
+"6","Yakutia",7,0,0,7,2020-03-23
+"7","Kaliningrad Oblast",7,0,0,7,2020-03-23
+"8","Kirov Oblast",7,0,0,7,2020-03-23
+"9","Nizhny Novgorod Oblast",7,0,0,7,2020-03-23
+"10","Tatarstan",6,0,0,6,2020-03-23
+"11","Krasnodar Krai",5,0,0,5,2020-03-23
+"12","Krasnoyarsk Krai",5,0,0,5,2020-03-23
+"13","Tula Oblast",5,0,0,5,2020-03-23
+"14","Khabarovsk Krai",4,0,0,4,2020-03-23
+"15","Novosibirsk Oblast",4,0,0,4,2020-03-23
+"16","Perm Krai",3,0,0,3,2020-03-23
+"17","Tambov Oblast",3,0,0,3,2020-03-23
+"18","Tver Oblast",3,0,0,3,2020-03-23
+"19","Tyumen Oblast",3,1,0,2,2020-03-23
+"20","Lipetsk Oblast",3,3,0,0,2020-03-23
+"21","Kabardino-Balkaria",2,0,0,2,2020-03-23
+"22","Udmurtia",2,0,0,2,2020-03-23
+"23","Arkhangelsk Oblast",2,0,0,2,2020-03-23
+"24","Kemerovo Oblast",2,0,0,2,2020-03-23
+"25","Ryazan Oblast",2,0,0,2,2020-03-23
+"26","Voronezh Oblast",2,0,0,2,2020-03-23
+"27","Khanty-Mansi Autonomous Okrug",2,0,0,2,2020-03-23
+"28","Chuvashia",1,0,0,1,2020-03-23
+"29","Republic of Crimea",1,0,0,1,2020-03-23
+"30","Khakassia",1,0,0,1,2020-03-23
+"31","Komi Republic",1,0,0,1,2020-03-23
+"32","Stavropol Krai",1,0,0,1,2020-03-23
+"33","Belgorod Oblast",1,0,0,1,2020-03-23
+"34","Bryansk Oblast",1,0,0,1,2020-03-23
+"35","Chelyabinsk Oblast",1,0,0,1,2020-03-23
+"36","Ivanovo Oblast",1,0,0,1,2020-03-23
+"37","Kaluga Oblast",1,0,0,1,2020-03-23
+"38","Kurgan Oblast",1,0,0,1,2020-03-23
+"39","Leningrad Oblast",1,0,0,1,2020-03-23
+"40","Murmansk Oblast",1,0,0,1,2020-03-23
+"41","Novgorod Oblast",1,0,0,1,2020-03-23
+"42","Orenburg Oblast",1,0,0,1,2020-03-23
+"43","Penza Oblast",1,0,0,1,2020-03-23
+"44","Saratov Oblast",1,0,0,1,2020-03-23
+"45","Tomsk Oblast",1,0,0,1,2020-03-23
+"46","Ulyanovsk Oblast",1,0,0,1,2020-03-23
+"47","Yaroslavl Oblast",1,0,0,1,2020-03-23
+"48","Zabaykalsky Krai",1,1,0,0,2020-03-23
+"49","Moscow",290,9,0,280,2020-03-24
+"50","Moscow Oblast",35,2,0,33,2020-03-24
+"51","Saint Petersburg",21,2,0,19,2020-03-24
+"52","Sverdlovsk Oblast",13,0,0,13,2020-03-24
+"53","Samara Oblast",10,0,0,10,2020-03-24
+"54","Tatarstan",7,0,0,7,2020-03-24
+"55","Yakutia",7,0,0,7,2020-03-24
+"56","Kaliningrad Oblast",7,0,0,7,2020-03-24
+"57","Kirov Oblast",7,0,0,7,2020-03-24
+"58","Nizhny Novgorod Oblast",7,0,0,7,2020-03-24
+"59","Voronezh Oblast",6,0,0,6,2020-03-24
+"60","Krasnodar Krai",5,0,0,5,2020-03-24
+"61","Tula Oblast",5,0,0,5,2020-03-24
+"62","Krasnoyarsk Krai",5,3,0,2,2020-03-24
+"63","Lipetsk Oblast",5,3,0,2,2020-03-24
+"64","Khabarovsk Krai",4,0,0,4,2020-03-24
+"65","Novosibirsk Oblast",4,0,0,4,2020-03-24
+"66","Bashkortostan",3,0,0,0,2020-03-24
+"67","Perm Krai",3,0,0,3,2020-03-24
+"68","Leningrad Oblast",3,0,0,3,2020-03-24
+"69","Tambov Oblast",3,0,0,3,2020-03-24
+"70","Tver Oblast",3,0,0,3,2020-03-24
+"71","Tyumen Oblast",3,1,0,2,2020-03-24
+"72","Kabardino-Balkaria",2,0,0,2,2020-03-24
+"73","Udmurtia",2,0,0,2,2020-03-24
+"74","Primorsky Krai",2,0,0,2,2020-03-24
+"75","Arkhangelsk Oblast",2,0,0,2,2020-03-24
+"76","Kaluga Oblast",2,0,0,2,2020-03-24
+"77","Oryol Oblast",2,0,0,2,2020-03-24
+"78","Ryazan Oblast",2,0,0,2,2020-03-24
+"79","Khanty-Mansi Autonomous Okrug",2,0,0,2,2020-03-24
+"80","Kemerovo Oblast",2,1,0,1,2020-03-24
+"81","Chechnya",1,0,0,1,2020-03-24
+"82","Chuvashia",1,0,0,1,2020-03-24
+"83","Republic of Crimea",1,0,0,1,2020-03-24
+"84","Khakassia",1,0,0,1,2020-03-24
+"85","Komi Republic",1,0,0,1,2020-03-24
+"86","Stavropol Krai",1,0,0,1,2020-03-24
+"87","Belgorod Oblast",1,0,0,1,2020-03-24
+"88","Bryansk Oblast",1,0,0,1,2020-03-24
+"89","Chelyabinsk Oblast",1,0,0,1,2020-03-24
+"90","Ivanovo Oblast",1,0,0,1,2020-03-24
+"91","Kurgan Oblast",1,0,0,1,2020-03-24
+"92","Murmansk Oblast",1,0,0,1,2020-03-24
+"93","Novgorod Oblast",1,0,0,1,2020-03-24
+"94","Orenburg Oblast",1,0,0,1,2020-03-24
+"95","Penza Oblast",1,0,0,1,2020-03-24
+"96","Saratov Oblast",1,0,0,1,2020-03-24
+"97","Tomsk Oblast",1,0,0,1,2020-03-24
+"98","Ulyanovsk Oblast",1,0,0,1,2020-03-24
+"99","Volgograd Oblast",1,0,0,1,2020-03-24
+"100","Yaroslavl Oblast",1,0,0,1,2020-03-24
+"101","Zabaykalsky Krai",1,1,0,0,2020-03-24
+"102","Moscow",410,14,0,395,2020-03-25
+"103","Moscow Oblast",41,2,0,39,2020-03-25
+"104","Saint Petersburg",21,2,0,19,2020-03-25
+"105","Sverdlovsk Oblast",13,0,0,13,2020-03-25
+"106","Yakutia",10,0,0,10,2020-03-25
+"107","Samara Oblast",10,0,0,10,2020-03-25
+"108","Krasnodar Krai",9,0,0,9,2020-03-25
+"109","Kaliningrad Oblast",8,1,0,7,2020-03-25
+"110","Nizhny Novgorod Oblast",8,1,0,7,2020-03-25
+"111","Republic of Crimea",7,0,0,7,2020-03-25
+"112","Tatarstan",7,0,0,7,2020-03-25
+"113","Tula Oblast",7,0,0,7,2020-03-25
+"114","Kirov Oblast",7,0,0,7,2020-03-25
+"115","Voronezh Oblast",6,0,0,6,2020-03-25
+"116","Perm Krai",5,0,0,5,2020-03-25
+"117","Krasnoyarsk Krai",5,3,0,2,2020-03-25
+"118","Lipetsk Oblast",5,3,0,2,2020-03-25
+"119","Bashkortostan",4,0,0,4,2020-03-25
+"120","Kabardino-Balkaria",4,0,0,4,2020-03-25
+"121","Khabarovsk Krai",4,0,0,4,2020-03-25
+"122","Novosibirsk Oblast",4,0,0,4,2020-03-25
+"123","Orenburg Oblast",4,0,0,4,2020-03-25
+"124","Pskov Oblast",4,0,0,4,2020-03-25
+"125","Komi Republic",3,0,0,3,2020-03-25
+"126","Arkhangelsk Oblast",3,0,0,3,2020-03-25
+"127","Leningrad Oblast",3,0,0,3,2020-03-25
+"128","Tambov Oblast",3,0,0,3,2020-03-25
+"129","Tver Oblast",3,0,0,3,2020-03-25
+"130","Tyumen Oblast",3,1,0,2,2020-03-25
+"131","Udmurtia",2,0,0,2,2020-03-25
+"132","Primorsky Krai",2,0,0,2,2020-03-25
+"133","Stavropol Krai",2,0,0,2,2020-03-25
+"134","Bryansk Oblast",2,0,0,2,2020-03-25
+"135","Chelyabinsk Oblast",2,0,0,2,2020-03-25
+"136","Kaluga Oblast",2,0,0,2,2020-03-25
+"137","Oryol Oblast",2,0,0,2,2020-03-25
+"138","Penza Oblast",2,0,0,2,2020-03-25
+"139","Ryazan Oblast",2,0,0,2,2020-03-25
+"140","Khanty-Mansi Autonomous Okrug",2,0,0,2,2020-03-25
+"141","Kemerovo Oblast",2,1,0,1,2020-03-25
+"142","Chechnya",1,0,0,1,2020-03-25
+"143","Chuvashia",1,0,0,1,2020-03-25
+"144","Khakassia",1,0,0,1,2020-03-25
+"145","Belgorod Oblast",1,0,0,1,2020-03-25
+"146","Ivanovo Oblast",1,0,0,1,2020-03-25
+"147","Kurgan Oblast",1,0,0,1,2020-03-25
+"148","Murmansk Oblast",1,0,0,1,2020-03-25
+"149","Novgorod Oblast",1,0,0,1,2020-03-25
+"150","Rostov Oblast",1,0,0,1,2020-03-25
+"151","Saratov Oblast",1,0,0,1,2020-03-25
+"152","Tomsk Oblast",1,0,0,1,2020-03-25
+"153","Ulyanovsk Oblast",1,0,0,1,2020-03-25
+"154","Volgograd Oblast",1,0,0,1,2020-03-25
+"155","Yaroslavl Oblast",1,0,0,1,2020-03-25
+"156","Zabaykalsky Krai",1,1,0,0,2020-03-25
+"157","Moscow",546,15,2,528,2020-03-26
+"158","Moscow Oblast",41,7,0,34,2020-03-26
+"159","Saint Petersburg",26,2,0,24,2020-03-26
+"160","Sverdlovsk Oblast",20,3,0,17,2020-03-26
+"161","Yakutia",14,0,0,14,2020-03-26
+"162","Samara Oblast",12,0,0,12,2020-03-26
+"163","Tatarstan",10,0,0,10,2020-03-26
+"164","Perm Krai",10,0,0,10,2020-03-26
+"165","Krasnodar Krai",9,0,0,9,2020-03-26
+"166","Kaliningrad Oblast",8,1,0,7,2020-03-26
+"167","Nizhny Novgorod Oblast",8,1,0,7,2020-03-26
+"168","Krasnoyarsk Krai",8,3,0,5,2020-03-26
+"169","Republic of Crimea",7,0,0,7,2020-03-26
+"170","Tula Oblast",7,0,0,7,2020-03-26
+"171","Kirov Oblast",7,0,0,7,2020-03-26
+"172","Pskov Oblast",6,0,0,6,2020-03-26
+"173","Voronezh Oblast",6,0,0,6,2020-03-26
+"174","Khabarovsk Krai",5,0,0,5,2020-03-26
+"175","Chelyabinsk Oblast",5,0,0,5,2020-03-26
+"176","Novosibirsk Oblast",5,0,0,5,2020-03-26
+"177","Lipetsk Oblast",5,3,0,2,2020-03-26
+"178","Bashkortostan",4,0,0,4,2020-03-26
+"179","Kabardino-Balkaria",4,0,0,4,2020-03-26
+"180","Orenburg Oblast",4,0,0,4,2020-03-26
+"181","Khanty-Mansi Autonomous Okrug",4,0,0,4,2020-03-26
+"182","Komi Republic",3,0,0,3,2020-03-26
+"183","Arkhangelsk Oblast",3,0,0,3,2020-03-26
+"184","Leningrad Oblast",3,0,0,3,2020-03-26
+"185","Tambov Oblast",3,0,0,3,2020-03-26
+"186","Tver Oblast",3,0,0,3,2020-03-26
+"187","Kemerovo Oblast",3,1,0,2,2020-03-26
+"188","Tyumen Oblast",3,1,0,2,2020-03-26
+"189","Buryatia",2,0,0,2,2020-03-26
+"190","Khakassia",2,0,0,2,2020-03-26
+"191","Udmurtia",2,0,0,2,2020-03-26
+"192","Primorsky Krai",2,0,0,2,2020-03-26
+"193","Stavropol Krai",2,0,0,2,2020-03-26
+"194","Bryansk Oblast",2,0,0,2,2020-03-26
+"195","Kaluga Oblast",2,0,0,2,2020-03-26
+"196","Oryol Oblast",2,0,0,2,2020-03-26
+"197","Penza Oblast",2,0,0,2,2020-03-26
+"198","Ryazan Oblast",2,0,0,2,2020-03-26
+"199","Tomsk Oblast",2,0,0,2,2020-03-26
+"200","Chechnya",1,0,0,1,2020-03-26
+"201","Chuvashia",1,0,0,1,2020-03-26
+"202","Belgorod Oblast",1,0,0,1,2020-03-26
+"203","Ivanovo Oblast",1,0,0,1,2020-03-26
+"204","Kurgan Oblast",1,0,0,1,2020-03-26
+"205","Murmansk Oblast",1,0,0,1,2020-03-26
+"206","Novgorod Oblast",1,0,0,1,2020-03-26
+"207","Rostov Oblast",1,0,0,1,2020-03-26
+"208","Saratov Oblast",1,0,0,1,2020-03-26
+"209","Ulyanovsk Oblast",1,0,0,1,2020-03-26
+"210","Volgograd Oblast",1,0,0,1,2020-03-26
+"211","Yaroslavl Oblast",1,0,0,1,2020-03-26
+"212","Zabaykalsky Krai",1,1,0,0,2020-03-26
+"213","Moscow",703,18,3,682,2020-03-27
+"214","Moscow Oblast",49,8,0,41,2020-03-27
+"215","Saint Petersburg",26,5,0,21,2020-03-27
+"216","Sverdlovsk Oblast",20,0,0,20,2020-03-27
+"217","Republic of Crimea",19,0,0,19,2020-03-27
+"218","Yakutia",14,0,0,14,2020-03-27
+"219","Samara Oblast",14,0,0,14,2020-03-27
+"220","Tatarstan",11,1,0,10,2020-03-27
+"221","Perm Krai",10,0,0,10,2020-03-27
+"222","Krasnodar Krai",9,0,0,9,2020-03-27
+"223","Tula Oblast",8,0,0,8,2020-03-27
+"224","Kaliningrad Oblast",8,1,0,7,2020-03-27
+"225","Nizhny Novgorod Oblast",8,1,0,7,2020-03-27
+"226","Kirov Oblast",8,2,0,6,2020-03-27
+"227","Krasnoyarsk Krai",8,3,0,5,2020-03-27
+"228","Pskov Oblast",6,0,0,6,2020-03-27
+"229","Voronezh Oblast",6,0,0,6,2020-03-27
+"230","Khabarovsk Krai",5,0,0,5,2020-03-27
+"231","Stavropol Krai",5,0,0,5,2020-03-27
+"232","Chelyabinsk Oblast",5,0,0,5,2020-03-27
+"233","Novosibirsk Oblast",5,0,0,5,2020-03-27
+"234","Lipetsk Oblast",5,3,0,2,2020-03-27
+"235","Bashkortostan",4,0,0,4,2020-03-27
+"236","Kabardino-Balkaria",4,0,0,4,2020-03-27
+"237","Udmurtia",4,0,0,4,2020-03-27
+"238","Orenburg Oblast",4,0,0,4,2020-03-27
+"239","Volgograd Oblast",4,0,0,4,2020-03-27
+"240","Khanty-Mansi Autonomous Okrug",4,0,0,4,2020-03-27
+"241","Chechnya",3,0,0,3,2020-03-27
+"242","Komi Republic",3,0,0,3,2020-03-27
+"243","Arkhangelsk Oblast",3,0,0,3,2020-03-27
+"244","Leningrad Oblast",3,0,0,3,2020-03-27
+"245","Oryol Oblast",3,0,0,3,2020-03-27
+"246","Tambov Oblast",3,0,0,3,2020-03-27
+"247","Tver Oblast",3,0,0,3,2020-03-27
+"248","Kemerovo Oblast",3,1,0,2,2020-03-27
+"249","Tyumen Oblast",3,1,0,2,2020-03-27
+"250","Buryatia",2,0,0,2,2020-03-27
+"251","Khakassia",2,0,0,2,2020-03-27
+"252","Mordovia",2,0,0,2,2020-03-27
+"253","Primorsky Krai",2,0,0,2,2020-03-27
+"254","Bryansk Oblast",2,0,0,2,2020-03-27
+"255","Ivanovo Oblast",2,0,0,2,2020-03-27
+"256","Kaluga Oblast",2,0,0,2,2020-03-27
+"257","Penza Oblast",2,0,0,2,2020-03-27
+"258","Rostov Oblast",2,0,0,2,2020-03-27
+"259","Ryazan Oblast",2,0,0,2,2020-03-27
+"260","Tomsk Oblast",2,0,0,2,2020-03-27
+"261","Yaroslavl Oblast",2,0,0,2,2020-03-27
+"262","Chuvashia",1,0,0,1,2020-03-27
+"263","Dagestan",1,0,0,1,2020-03-27
+"264","Belgorod Oblast",1,0,0,1,2020-03-27
+"265","Kurgan Oblast",1,0,0,1,2020-03-27
+"266","Murmansk Oblast",1,0,0,1,2020-03-27
+"267","Novgorod Oblast",1,0,0,1,2020-03-27
+"268","Saratov Oblast",1,0,0,1,2020-03-27
+"269","Ulyanovsk Oblast",1,0,0,1,2020-03-27
+"270","Zabaykalsky Krai",1,1,0,0,2020-03-27
+"271","Moscow",817,18,4,794,2020-03-28
+"272","Moscow Oblast",85,8,0,77,2020-03-28
+"273","Saint Petersburg",37,5,0,32,2020-03-28
+"274","Sverdlovsk Oblast",24,0,0,24,2020-03-28
+"275","Republic of Crimea",20,0,0,20,2020-03-28
+"276","Krasnodar Krai",17,0,0,17,2020-03-28
+"277","Yakutia",14,0,0,14,2020-03-28
+"278","Tatarstan",14,1,0,13,2020-03-28
+"279","Samara Oblast",14,1,0,13,2020-03-28
+"280","Krasnoyarsk Krai",12,3,0,9,2020-03-28
+"281","Kaliningrad Oblast",11,1,0,10,2020-03-28
+"282","Nizhny Novgorod Oblast",11,1,0,10,2020-03-28
+"283","Perm Krai",11,0,0,11,2020-03-28
+"284","Tula Oblast",11,0,0,11,2020-03-28
+"285","Chelyabinsk Oblast",9,0,0,9,2020-03-28
+"286","Buryatia",8,0,0,8,2020-03-28
+"287","Kirov Oblast",8,2,0,6,2020-03-28
+"288","Lipetsk Oblast",8,3,0,5,2020-03-28
+"289","Ivanovo Oblast",7,0,0,7,2020-03-28
+"290","Leningrad Oblast",7,0,0,7,2020-03-28
+"291","Novosibirsk Oblast",7,0,0,7,2020-03-28
+"292","Pskov Oblast",6,0,0,6,2020-03-28
+"293","Voronezh Oblast",6,0,0,6,2020-03-28
+"294","Orenburg Oblast",6,0,0,5,2020-03-28
+"295","Chechnya",5,0,0,5,2020-03-28
+"296","Khabarovsk Krai",5,0,0,5,2020-03-28
+"297","Stavropol Krai",5,0,0,5,2020-03-28
+"298","Bashkortostan",4,0,0,4,2020-03-28
+"299","Kabardino-Balkaria",4,0,0,4,2020-03-28
+"300","Udmurtia",4,0,0,4,2020-03-28
+"301","Sakhalin Oblast",4,0,0,4,2020-03-28
+"302","Volgograd Oblast",4,0,0,4,2020-03-28
+"303","Khanty-Mansi Autonomous Okrug",4,0,0,4,2020-03-28
+"304","Komi Republic",3,0,0,3,2020-03-28
+"305","Arkhangelsk Oblast",3,0,0,3,2020-03-28
+"306","Bryansk Oblast",3,0,0,3,2020-03-28
+"307","Oryol Oblast",3,0,0,3,2020-03-28
+"308","Tambov Oblast",3,0,0,3,2020-03-28
+"309","Kemerovo Oblast",3,1,0,2,2020-03-28
+"310","Tyumen Oblast",3,1,0,2,2020-03-28
+"311","Tver Oblast",3,2,0,1,2020-03-28
+"312","Khakassia",2,0,0,2,2020-03-28
+"313","Mordovia",2,0,0,2,2020-03-28
+"314","Primorsky Krai",2,0,0,2,2020-03-28
+"315","Kaluga Oblast",2,0,0,2,2020-03-28
+"316","Penza Oblast",2,0,0,2,2020-03-28
+"317","Rostov Oblast",2,0,0,2,2020-03-28
+"318","Ryazan Oblast",2,0,0,2,2020-03-28
+"319","Saratov Oblast",2,0,0,2,2020-03-28
+"320","Yaroslavl Oblast",2,0,0,2,2020-03-28
+"321","Tomsk Oblast",2,1,0,1,2020-03-28
+"322","Adygea",1,0,0,1,2020-03-28
+"323","Chuvashia",1,0,0,1,2020-03-28
+"324","Dagestan",1,0,0,1,2020-03-28
+"325","Belgorod Oblast",1,0,0,1,2020-03-28
+"326","Kostroma Oblast",1,0,0,1,2020-03-28
+"327","Kurgan Oblast",1,0,0,1,2020-03-28
+"328","Murmansk Oblast",1,0,0,1,2020-03-28
+"329","Novgorod Oblast",1,0,0,1,2020-03-28
+"330","Smolensk Oblast",1,0,0,1,2020-03-28
+"331","Ulyanovsk Oblast",1,0,0,1,2020-03-28
+"332","Zabaykalsky Krai",1,1,0,0,2020-03-28
+"333","Moscow",1014,28,6,979,2020-03-29
+"334","Moscow Oblast",112,10,0,102,2020-03-29
+"335","Saint Petersburg",42,5,1,36,2020-03-29
+"336","Sverdlovsk Oblast",24,1,0,23,2020-03-29
+"337","Republic of Crimea",20,0,0,20,2020-03-29
+"338","Krasnodar Krai",17,1,0,16,2020-03-29
+"339","Yakutia",15,0,0,15,2020-03-29
+"340","Tatarstan",14,1,0,13,2020-03-29
+"341","Samara Oblast",14,1,0,13,2020-03-29
+"342","Krasnoyarsk Krai",12,3,0,9,2020-03-29
+"343","Chelyabinsk Oblast",12,0,0,12,2020-03-29
+"344","Kaliningrad Oblast",11,1,0,10,2020-03-29
+"345","Nizhny Novgorod Oblast",11,1,0,10,2020-03-29
+"346","Perm Krai",11,0,0,11,2020-03-29
+"347","Tula Oblast",11,0,0,11,2020-03-29
+"348","Chechnya",9,0,0,9,2020-03-29
+"349","Leningrad Oblast",9,0,0,9,2020-03-29
+"350","Kirov Oblast",9,2,0,7,2020-03-29
+"351","Lipetsk Oblast",9,3,0,6,2020-03-29
+"352","Buryatia",8,0,0,8,2020-03-29
+"353","Novosibirsk Oblast",8,0,0,8,2020-03-29
+"354","Komi Republic",7,0,0,7,2020-03-29
+"355","Khabarovsk Krai",7,0,0,7,2020-03-29
+"356","Ivanovo Oblast",7,0,0,7,2020-03-29
+"357","Penza Oblast",7,0,0,7,2020-03-29
+"358","Pskov Oblast",6,0,0,6,2020-03-29
+"359","Voronezh Oblast",6,0,0,6,2020-03-29
+"360","Orenburg Oblast",6,0,1,5,2020-03-29
+"361","Bashkortostan",5,0,0,5,2020-03-29
+"362","Stavropol Krai",5,0,0,5,2020-03-29
+"363","Khanty-Mansi Autonomous Okrug",5,0,0,5,2020-03-29
+"364","Kabardino-Balkaria",4,0,0,4,2020-03-29
+"365","Udmurtia",4,0,0,4,2020-03-29
+"366","Sakhalin Oblast",4,0,0,4,2020-03-29
+"367","Volgograd Oblast",4,0,0,4,2020-03-29
+"368","Tyumen Oblast",4,1,0,3,2020-03-29
+"369","Mordovia",3,0,0,3,2020-03-29
+"370","Arkhangelsk Oblast",3,0,0,3,2020-03-29
+"371","Bryansk Oblast",3,0,0,3,2020-03-29
+"372","Murmansk Oblast",3,0,0,3,2020-03-29
+"373","Novgorod Oblast",3,0,0,3,2020-03-29
+"374","Omsk Oblast",3,0,0,3,2020-03-29
+"375","Oryol Oblast",3,0,0,3,2020-03-29
+"376","Ryazan Oblast",3,0,0,3,2020-03-29
+"377","Tambov Oblast",3,0,0,3,2020-03-29
+"378","Yaroslavl Oblast",3,0,0,3,2020-03-29
+"379","Tomsk Oblast",3,1,0,2,2020-03-29
+"380","Kemerovo Oblast",3,2,0,1,2020-03-29
+"381","Tver Oblast",3,2,0,1,2020-03-29
+"382","Khakassia",2,0,0,2,2020-03-29
+"383","Primorsky Krai",2,0,0,2,2020-03-29
+"384","Belgorod Oblast",2,0,0,2,2020-03-29
+"385","Kaluga Oblast",2,0,0,2,2020-03-29
+"386","Rostov Oblast",2,0,0,2,2020-03-29
+"387","Saratov Oblast",2,0,0,2,2020-03-29
+"388","Adygea",1,0,0,1,2020-03-29
+"389","Chuvashia",1,0,0,1,2020-03-29
+"390","Dagestan",1,0,0,1,2020-03-29
+"391","Amur Oblast",1,0,0,1,2020-03-29
+"392","Irkutsk Oblast",1,0,0,1,2020-03-29
+"393","Kostroma Oblast",1,0,0,1,2020-03-29
+"394","Kurgan Oblast",1,0,0,1,2020-03-29
+"395","Smolensk Oblast",1,0,0,1,2020-03-29
+"396","Ulyanovsk Oblast",1,0,0,1,2020-03-29
+"397","Zabaykalsky Krai",1,1,0,0,2020-03-29
+"398","Moscow",1227,29,6,1191,2020-03-30
+"399","Moscow Oblast",119,10,0,109,2020-03-30
+"400","Saint Petersburg",50,5,1,44,2020-03-30
+"401","Sverdlovsk Oblast",24,1,0,23,2020-03-30
+"402","Komi Republic",22,0,0,22,2020-03-30
+"403","Krasnodar Krai",17,1,0,16,2020-03-30
+"404","Republic of Crimea",15,0,0,15,2020-03-30
+"405","Yakutia",15,0,0,15,2020-03-30
+"406","Chelyabinsk Oblast",14,0,0,14,2020-03-30
+"407","Tatarstan",14,1,0,13,2020-03-30
+"408","Samara Oblast",14,1,0,13,2020-03-30
+"409","Krasnoyarsk Krai",14,3,0,11,2020-03-30
+"410","Perm Krai",13,0,0,13,2020-03-30
+"411","Buryatia",13,0,0,13,2020-03-30
+"412","Tula Oblast",12,0,0,12,2020-03-30
+"413","Kirov Oblast",12,2,0,10,2020-03-30
+"414","Kaliningrad Oblast",12,2,0,10,2020-03-30
+"415","Leningrad Oblast",11,0,0,11,2020-03-30
+"416","Nizhny Novgorod Oblast",11,1,0,10,2020-03-30
+"417","Lipetsk Oblast",10,3,0,7,2020-03-30
+"418","Chechnya",9,0,0,9,2020-03-30
+"419","Ivanovo Oblast",9,0,0,9,2020-03-30
+"420","Novosibirsk Oblast",9,0,0,9,2020-03-30
+"421","Pskov Oblast",9,0,1,8,2020-03-30
+"422","Khabarovsk Krai",7,0,0,7,2020-03-30
+"423","Arkhangelsk Oblast",7,0,0,7,2020-03-30
+"424","Penza Oblast",7,0,0,7,2020-03-30
+"425","Orenburg Oblast",7,0,1,6,2020-03-30
+"426","Kabardino-Balkaria",6,0,0,6,2020-03-30
+"427","Stavropol Krai",6,0,0,6,2020-03-30
+"428","Voronezh Oblast",6,0,0,6,2020-03-30
+"429","Bashkortostan",5,0,0,5,2020-03-30
+"430","Khanty-Mansi Autonomous Okrug",5,0,0,5,2020-03-30
+"431","Sevastopol",5,0,0,5,2020-03-30
+"432","Ryazan Oblast",5,0,0,5,2020-03-30
+"433","Murmansk Oblast",5,1,0,4,2020-03-30
+"434","Adygea",4,0,0,4,2020-03-30
+"435","Dagestan",4,0,0,4,2020-03-30
+"436","Udmurtia",4,0,0,4,2020-03-30
+"437","Belgorod Oblast",4,0,0,4,2020-03-30
+"438","Sakhalin Oblast",4,0,0,4,2020-03-30
+"439","Saratov Oblast",4,0,0,4,2020-03-30
+"440","Volgograd Oblast",4,0,0,4,2020-03-30
+"441","Tyumen Oblast",4,1,0,3,2020-03-30
+"442","Tver Oblast",4,2,0,2,2020-03-30
+"443","Khakassia",3,0,0,3,2020-03-30
+"444","Mordovia",3,0,0,3,2020-03-30
+"445","Bryansk Oblast",3,0,0,3,2020-03-30
+"446","Kaluga Oblast",3,0,0,3,2020-03-30
+"447","Novgorod Oblast",3,0,0,3,2020-03-30
+"448","Omsk Oblast",3,0,0,3,2020-03-30
+"449","Oryol Oblast",3,0,0,3,2020-03-30
+"450","Tambov Oblast",3,0,0,3,2020-03-30
+"451","Yaroslavl Oblast",3,0,0,3,2020-03-30
+"452","Tomsk Oblast",3,1,0,2,2020-03-30
+"453","Kemerovo Oblast",3,2,0,1,2020-03-30
+"454","Mari El",2,0,0,2,2020-03-30
+"455","Primorsky Krai",2,0,0,2,2020-03-30
+"456","Irkutsk Oblast",2,0,0,2,2020-03-30
+"457","Rostov Oblast",2,0,0,2,2020-03-30
+"458","Vladimir Oblast",2,0,0,2,2020-03-30
+"459","Vologda Oblast",2,0,0,2,2020-03-30
+"460","Chuvashia",1,0,0,1,2020-03-30
+"461","Kalmykia",1,0,0,1,2020-03-30
+"462","Altai Krai",1,0,0,1,2020-03-30
+"463","Amur Oblast",1,0,0,1,2020-03-30
+"464","Kostroma Oblast",1,0,0,1,2020-03-30
+"465","Kurgan Oblast",1,0,0,1,2020-03-30
+"466","Smolensk Oblast",1,0,0,1,2020-03-30
+"467","Ulyanovsk Oblast",1,0,0,1,2020-03-30
+"468","Zabaykalsky Krai",1,1,0,0,2020-03-30
+"469","Moscow",1613,70,11,1531,2020-03-31
+"470","Moscow Oblast",119,14,0,115,2020-03-31
+"471","Saint Petersburg",98,7,2,89,2020-03-31
+"472","Sverdlovsk Oblast",33,1,0,32,2020-03-31
+"473","Komi Republic",22,0,0,22,2020-03-31
+"474","Buryatia",19,0,0,19,2020-03-31
+"475","Tatarstan",19,1,0,18,2020-03-31
+"476","Krasnodar Krai",17,2,0,15,2020-03-31
+"477","Republic of Crimea",16,0,0,16,2020-03-31
+"478","Yakutia",15,0,0,15,2020-03-31
+"479","Samara Oblast",15,1,0,14,2020-03-31
+"480","Chelyabinsk Oblast",14,0,0,14,2020-03-31
+"481","Leningrad Oblast",14,1,0,13,2020-03-31
+"482","Krasnoyarsk Krai",14,4,0,10,2020-03-31
+"483","Dagestan",13,0,0,13,2020-03-31
+"484","Perm Krai",13,0,0,13,2020-03-31
+"485","Tula Oblast",12,0,0,12,2020-03-31
+"486","Nizhny Novgorod Oblast",12,1,0,11,2020-03-31
+"487","Penza Oblast",12,0,1,11,2020-03-31
+"488","Kaliningrad Oblast",12,2,0,10,2020-03-31
+"489","Kirov Oblast",12,3,0,9,2020-03-31
+"490","Murmansk Oblast",11,1,0,10,2020-03-31
+"491","Lipetsk Oblast",10,3,0,7,2020-03-31
+"492","Chechnya",9,0,0,9,2020-03-31
+"493","Ivanovo Oblast",9,0,0,9,2020-03-31
+"494","Novosibirsk Oblast",9,0,0,9,2020-03-31
+"495","Pskov Oblast",9,0,1,8,2020-03-31
+"496","Khabarovsk Krai",8,0,0,8,2020-03-31
+"497","Voronezh Oblast",8,2,0,6,2020-03-31
+"498","Bashkortostan",7,0,0,7,2020-03-31
+"499","Arkhangelsk Oblast",7,0,0,7,2020-03-31
+"500","Orenburg Oblast",7,0,1,6,2020-03-31
+"501","Kabardino-Balkaria",6,0,0,6,2020-03-31
+"502","Stavropol Krai",6,0,0,6,2020-03-31
+"503","Tyumen Oblast",6,1,0,5,2020-03-31
+"504","Belgorod Oblast",5,0,0,5,2020-03-31
+"505","Rostov Oblast",5,0,0,5,2020-03-31
+"506","Ryazan Oblast",5,0,0,5,2020-03-31
+"507","Khanty-Mansi Autonomous Okrug",5,0,0,5,2020-03-31
+"508","Sevastopol",5,0,0,5,2020-03-31
+"509","Adygea",4,0,0,4,2020-03-31
+"510","Udmurtia",4,0,0,4,2020-03-31
+"511","Sakhalin Oblast",4,0,0,4,2020-03-31
+"512","Saratov Oblast",4,0,0,4,2020-03-31
+"513","Volgograd Oblast",4,0,0,4,2020-03-31
+"514","Primorsky Krai",4,1,0,3,2020-03-31
+"515","Tver Oblast",4,2,0,2,2020-03-31
+"516","Khakassia",3,0,0,3,2020-03-31
+"517","Mordovia",3,0,0,3,2020-03-31
+"518","Bryansk Oblast",3,0,0,3,2020-03-31
+"519","Kaluga Oblast",3,0,0,3,2020-03-31
+"520","Kostroma Oblast",3,0,0,3,2020-03-31
+"521","Novgorod Oblast",3,0,0,3,2020-03-31
+"522","Omsk Oblast",3,0,0,3,2020-03-31
+"523","Oryol Oblast",3,0,0,3,2020-03-31
+"524","Tambov Oblast",3,0,0,3,2020-03-31
+"525","Yaroslavl Oblast",3,0,0,3,2020-03-31
+"526","Tomsk Oblast",3,1,0,2,2020-03-31
+"527","Kemerovo Oblast",3,2,0,1,2020-03-31
+"528","Kalmykia",2,0,0,2,2020-03-31
+"529","Mari El",2,0,0,2,2020-03-31
+"530","Altai Krai",2,0,0,2,2020-03-31
+"531","Astrakhan Oblast",2,0,0,2,2020-03-31
+"532","Irkutsk Oblast",2,0,0,2,2020-03-31
+"533","Vladimir Oblast",2,0,1,1,2020-03-31
+"534","Vologda Oblast",2,0,0,2,2020-03-31
+"535","Chuvashia",1,0,0,1,2020-03-31
+"536","Amur Oblast",1,0,0,1,2020-03-31
+"537","Magadan Oblast",1,0,0,1,2020-03-31
+"538","Smolensk Oblast",1,0,0,1,2020-03-31
+"539","Ulyanovsk Oblast",1,0,0,1,2020-03-31
+"540","Zabaykalsky Krai",1,1,0,0,2020-03-31
+"541","Kurgan Oblast",1,1,0,0,2020-03-31
+"542","Moscow",1880,115,16,1748,2020-04-01
+"543","Moscow Oblast",134,17,1,116,2020-04-01
+"544","Saint Petersburg",125,7,2,116,2020-04-01
+"545","Komi Republic",54,0,0,54,2020-04-01
+"546","Sverdlovsk Oblast",33,1,0,32,2020-04-01
+"547","Buryatia",25,0,0,25,2020-04-01
+"548","Krasnodar Krai",22,3,0,19,2020-04-01
+"549","Chelyabinsk Oblast",21,0,0,21,2020-04-01
+"550","Leningrad Oblast",20,1,0,19,2020-04-01
+"551","Krasnoyarsk Krai",20,4,0,16,2020-04-01
+"552","Tatarstan",19,2,0,17,2020-04-01
+"553","Tula Oblast",17,3,0,14,2020-04-01
+"554","Republic of Crimea",16,0,0,16,2020-04-01
+"555","Penza Oblast",16,0,1,15,2020-04-01
+"556","Dagestan",15,0,0,15,2020-04-01
+"557","Yakutia",15,1,0,14,2020-04-01
+"558","Saratov Oblast",15,1,0,14,2020-04-01
+"559","Samara Oblast",15,2,0,13,2020-04-01
+"560","Perm Krai",13,0,0,13,2020-04-01
+"561","Nizhny Novgorod Oblast",12,1,0,11,2020-04-01
+"562","Voronezh Oblast",12,2,0,10,2020-04-01
+"563","Kirov Oblast",12,3,0,9,2020-04-01
+"564","Kaliningrad Oblast",12,5,0,7,2020-04-01
+"565","Ivanovo Oblast",11,0,0,11,2020-04-01
+"566","Murmansk Oblast",11,1,0,10,2020-04-01
+"567","Lipetsk Oblast",11,3,0,8,2020-04-01
+"568","Chechnya",10,0,0,10,2020-04-01
+"569","Novosibirsk Oblast",10,2,0,8,2020-04-01
+"570","Khabarovsk Krai",9,0,0,9,2020-04-01
+"571","Vologda Oblast",9,0,0,9,2020-04-01
+"572","Pskov Oblast",9,0,2,7,2020-04-01
+"573","Kabardino-Balkaria",8,0,0,8,2020-04-01
+"574","Volgograd Oblast",8,0,0,8,2020-04-01
+"575","Khanty-Mansi Autonomous Okrug",8,0,0,8,2020-04-01
+"576","Bashkortostan",8,1,0,7,2020-04-01
+"577","Arkhangelsk Oblast",7,0,0,7,2020-04-01
+"578","Omsk Oblast",7,0,0,7,2020-04-01
+"579","Orenburg Oblast",7,0,1,6,2020-04-01
+"580","Stavropol Krai",6,0,0,6,2020-04-01
+"581","Tambov Oblast",6,0,0,6,2020-04-01
+"582","Tyumen Oblast",6,2,0,4,2020-04-01
+"583","Belgorod Oblast",5,0,0,5,2020-04-01
+"584","Bryansk Oblast",5,0,0,5,2020-04-01
+"585","Rostov Oblast",5,0,0,5,2020-04-01
+"586","Sakhalin Oblast",5,0,0,5,2020-04-01
+"587","Sevastopol",5,0,0,5,2020-04-01
+"588","Primorsky Krai",5,1,0,4,2020-04-01
+"589","Ryazan Oblast",5,1,0,4,2020-04-01
+"590","Tver Oblast",5,2,0,3,2020-04-01
+"591","Adygea",4,0,0,4,2020-04-01
+"592","Mordovia",4,0,0,4,2020-04-01
+"593","Udmurtia",4,3,0,1,2020-04-01
+"594","Khakassia",3,0,0,3,2020-04-01
+"595","Altai Krai",3,0,0,3,2020-04-01
+"596","Irkutsk Oblast",3,0,0,3,2020-04-01
+"597","Kaluga Oblast",3,0,0,3,2020-04-01
+"598","Kostroma Oblast",3,0,0,3,2020-04-01
+"599","Kursk Oblast",3,0,0,3,2020-04-01
+"600","Novgorod Oblast",3,0,0,3,2020-04-01
+"601","Oryol Oblast",3,0,0,3,2020-04-01
+"602","Tomsk Oblast",3,1,0,2,2020-04-01
+"603","Vladimir Oblast",3,0,1,2,2020-04-01
+"604","Yaroslavl Oblast",3,1,0,2,2020-04-01
+"605","Kemerovo Oblast",3,2,0,1,2020-04-01
+"606","Kalmykia",2,0,0,2,2020-04-01
+"607","Mari El",2,0,0,2,2020-04-01
+"608","North Ossetia-Alania",2,0,0,2,2020-04-01
+"609","Astrakhan Oblast",2,0,0,2,2020-04-01
+"610","Chuvashia",1,0,0,1,2020-04-01
+"611","Amur Oblast",1,0,0,1,2020-04-01
+"612","Magadan Oblast",1,0,0,1,2020-04-01
+"613","Smolensk Oblast",1,0,0,1,2020-04-01
+"614","Ulyanovsk Oblast",1,0,0,1,2020-04-01
+"615","Zabaykalsky Krai",1,1,0,0,2020-04-01
+"616","Kurgan Oblast",1,1,0,0,2020-04-01
+"617","Moscow",2475,140,19,2315,2020-04-02
+"618","Moscow Oblast",177,17,2,158,2020-04-02
+"619","Saint Petersburg",147,7,2,138,2020-04-02
+"620","Komi Republic",56,1,0,55,2020-04-02
+"621","Sverdlovsk Oblast",38,8,0,30,2020-04-02
+"622","Leningrad Oblast",31,1,0,30,2020-04-02
+"623","Buryatia",30,0,0,30,2020-04-02
+"624","Dagestan",25,0,0,25,2020-04-02
+"625","Nizhny Novgorod Oblast",25,1,0,24,2020-04-02
+"626","Krasnoyarsk Krai",25,4,0,21,2020-04-02
+"627","Krasnodar Krai",22,4,0,18,2020-04-02
+"628","Chelyabinsk Oblast",21,2,0,19,2020-04-02
+"629","Perm Krai",20,1,1,18,2020-04-02
+"630","Tatarstan",19,2,0,17,2020-04-02
+"631","Kaliningrad Oblast",19,5,0,12,2020-04-02
+"632","Samara Oblast",17,2,0,15,2020-04-02
+"633","Tula Oblast",17,3,0,14,2020-04-02
+"634","Republic of Crimea",16,1,0,15,2020-04-02
+"635","Penza Oblast",16,0,1,15,2020-04-02
+"636","Murmansk Oblast",15,1,0,14,2020-04-02
+"637","Saratov Oblast",15,1,0,14,2020-04-02
+"638","Lipetsk Oblast",15,3,0,12,2020-04-02
+"639","Yakutia",15,4,0,11,2020-04-02
+"640","Vologda Oblast",12,0,0,12,2020-04-02
+"641","Orenburg Oblast",12,0,1,11,2020-04-02
+"642","Voronezh Oblast",12,2,0,10,2020-04-02
+"643","Kirov Oblast",12,3,0,9,2020-04-02
+"644","Stavropol Krai",11,1,0,10,2020-04-02
+"645","Ivanovo Oblast",11,1,0,10,2020-04-02
+"646","Bashkortostan",10,1,0,9,2020-04-02
+"647","Chechnya",10,0,1,9,2020-04-02
+"648","Novosibirsk Oblast",10,2,0,8,2020-04-02
+"649","Khabarovsk Krai",9,0,0,9,2020-04-02
+"650","Omsk Oblast",9,0,0,9,2020-04-02
+"651","Rostov Oblast",9,0,0,9,2020-04-02
+"652","Pskov Oblast",9,0,2,7,2020-04-02
+"653","Kabardino-Balkaria",8,0,0,8,2020-04-02
+"654","Volgograd Oblast",8,0,0,8,2020-04-02
+"655","Khanty-Mansi Autonomous Okrug",8,0,0,8,2020-04-02
+"656","Arkhangelsk Oblast",7,0,0,7,2020-04-02
+"657","Irkutsk Oblast",7,0,0,7,2020-04-02
+"658","Belgorod Oblast",6,0,0,6,2020-04-02
+"659","Tambov Oblast",6,0,0,6,2020-04-02
+"660","Tyumen Oblast",6,2,0,4,2020-04-02
+"661","Adygea",5,0,0,5,2020-04-02
+"662","Bryansk Oblast",5,0,0,5,2020-04-02
+"663","Sakhalin Oblast",5,0,0,5,2020-04-02
+"664","Sevastopol",5,0,0,5,2020-04-02
+"665","Kaluga Oblast",5,1,0,4,2020-04-02
+"666","Ryazan Oblast",5,1,0,4,2020-04-02
+"667","Primorsky Krai",5,2,0,3,2020-04-02
+"668","Tver Oblast",5,2,0,3,2020-04-02
+"669","Mari El",4,0,0,4,2020-04-02
+"670","Mordovia",4,0,0,4,2020-04-02
+"671","North Ossetia-Alania",4,0,0,4,2020-04-02
+"672","Altai Krai",4,0,0,4,2020-04-02
+"673","Udmurtia",4,3,0,1,2020-04-02
+"674","Khakassia",3,0,0,3,2020-04-02
+"675","Kostroma Oblast",3,0,0,3,2020-04-02
+"676","Kursk Oblast",3,0,0,3,2020-04-02
+"677","Novgorod Oblast",3,0,0,3,2020-04-02
+"678","Oryol Oblast",3,0,0,3,2020-04-02
+"679","Tomsk Oblast",3,1,0,2,2020-04-02
+"680","Vladimir Oblast",3,0,1,2,2020-04-02
+"681","Yaroslavl Oblast",3,1,0,2,2020-04-02
+"682","Kemerovo Oblast",3,2,0,1,2020-04-02
+"683","Kalmykia",2,0,0,2,2020-04-02
+"684","Astrakhan Oblast",2,0,0,2,2020-04-02
+"685","Yamalo-Nenets Autonomous Okrug",2,0,0,2,2020-04-02
+"686","Chuvashia",1,0,0,1,2020-04-02
+"687","Amur Oblast",1,0,0,1,2020-04-02
+"688","Magadan Oblast",1,0,0,1,2020-04-02
+"689","Smolensk Oblast",1,0,0,1,2020-04-02
+"690","Ulyanovsk Oblast",1,0,0,1,2020-04-02
+"691","Zabaykalsky Krai",1,1,0,0,2020-04-02
+"692","Kurgan Oblast",1,1,0,0,2020-04-02
+"693","Moscow",2923,168,20,2734,2020-04-03
+"694","Moscow Oblast",211,17,2,192,2020-04-03
+"695","Saint Petersburg",156,7,2,147,2020-04-03
+"696","Komi Republic",56,1,2,53,2020-04-03
+"697","Leningrad Oblast",41,1,0,40,2020-04-03
+"698","Krasnodar Krai",39,4,0,35,2020-04-03
+"699","Sverdlovsk Oblast",39,8,0,31,2020-04-03
+"700","Buryatia",31,0,0,31,2020-04-03
+"701","Penza Oblast",27,0,1,26,2020-04-03
+"702","Dagestan",25,0,0,25,2020-04-03
+"703","Nizhny Novgorod Oblast",25,1,0,24,2020-04-03
+"704","Krasnoyarsk Krai",25,4,0,21,2020-04-03
+"705","Tatarstan",25,6,0,19,2020-04-03
+"706","Chelyabinsk Oblast",23,2,0,21,2020-04-03
+"707","Perm Krai",21,3,2,16,2020-04-03
+"708","Saratov Oblast",19,1,0,18,2020-04-03
+"709","Kaliningrad Oblast",19,5,0,12,2020-04-03
+"710","Republic of Crimea",18,1,0,17,2020-04-03
+"711","Lipetsk Oblast",18,3,0,15,2020-04-03
+"712","Tula Oblast",17,3,0,14,2020-04-03
+"713","Samara Oblast",17,7,0,10,2020-04-03
+"714","Khanty-Mansi Autonomous Okrug",16,2,0,14,2020-04-03
+"715","Murmansk Oblast",15,1,0,14,2020-04-03
+"716","Kirov Oblast",15,3,0,12,2020-04-03
+"717","Yakutia",15,4,0,11,2020-04-03
+"718","Ivanovo Oblast",13,1,0,12,2020-04-03
+"719","Vologda Oblast",12,0,0,12,2020-04-03
+"720","Yamalo-Nenets Autonomous Okrug",12,0,0,12,2020-04-03
+"721","Chechnya",12,0,1,11,2020-04-03
+"722","Orenburg Oblast",12,0,1,11,2020-04-03
+"723","Voronezh Oblast",12,2,0,10,2020-04-03
+"724","Stavropol Krai",11,1,0,10,2020-04-03
+"725","Tyumen Oblast",11,2,0,9,2020-04-03
+"726","Khabarovsk Krai",10,0,0,10,2020-04-03
+"727","Novosibirsk Oblast",10,2,0,8,2020-04-03
+"728","Bashkortostan",10,5,0,5,2020-04-03
+"729","Omsk Oblast",9,0,0,9,2020-04-03
+"730","Rostov Oblast",9,0,0,9,2020-04-03
+"731","Pskov Oblast",9,0,2,7,2020-04-03
+"732","Kabardino-Balkaria",8,0,0,8,2020-04-03
+"733","Arkhangelsk Oblast",8,0,0,8,2020-04-03
+"734","Irkutsk Oblast",8,0,0,8,2020-04-03
+"735","Volgograd Oblast",8,0,0,8,2020-04-03
+"736","Kalmykia",7,0,0,7,2020-04-03
+"737","Bryansk Oblast",7,0,0,7,2020-04-03
+"738","Primorsky Krai",7,2,0,5,2020-04-03
+"739","Belgorod Oblast",6,0,0,6,2020-04-03
+"740","Tambov Oblast",6,0,0,6,2020-04-03
+"741","Ryazan Oblast",6,1,0,5,2020-04-03
+"742","Tver Oblast",6,2,0,4,2020-04-03
+"743","Adygea",5,0,0,5,2020-04-03
+"744","Astrakhan Oblast",5,0,0,5,2020-04-03
+"745","Sakhalin Oblast",5,0,0,5,2020-04-03
+"746","Sevastopol",5,0,0,5,2020-04-03
+"747","Kaluga Oblast",5,1,0,4,2020-04-03
+"748","Mari El",4,0,0,4,2020-04-03
+"749","Mordovia",4,0,0,4,2020-04-03
+"750","North Ossetia-Alania",4,0,0,4,2020-04-03
+"751","Altai Krai",4,0,0,4,2020-04-03
+"752","Kursk Oblast",4,0,0,4,2020-04-03
+"753","Udmurtia",4,3,0,1,2020-04-03
+"754","Khakassia",3,0,0,3,2020-04-03
+"755","Kostroma Oblast",3,0,0,3,2020-04-03
+"756","Novgorod Oblast",3,0,0,3,2020-04-03
+"757","Oryol Oblast",3,0,0,3,2020-04-03
+"758","Jewish Autonomous Oblast",3,0,0,3,2020-04-03
+"759","Tomsk Oblast",3,1,0,2,2020-04-03
+"760","Vladimir Oblast",3,0,1,2,2020-04-03
+"761","Yaroslavl Oblast",3,1,0,2,2020-04-03
+"762","Kemerovo Oblast",3,2,0,1,2020-04-03
+"763","Chuvashia",1,0,0,1,2020-04-03
+"764","Ingushetia",1,0,0,1,2020-04-03
+"765","Amur Oblast",1,0,0,1,2020-04-03
+"766","Magadan Oblast",1,0,0,1,2020-04-03
+"767","Smolensk Oblast",1,0,0,1,2020-04-03
+"768","Zabaykalsky Krai",1,1,0,0,2020-04-03
+"769","Kurgan Oblast",1,1,0,0,2020-04-03
+"770","Ulyanovsk Oblast",1,1,0,0,2020-04-03
+"771","Moscow",3357,194,27,3135,2020-04-04
+"772","Moscow Oblast",260,30,2,228,2020-04-04
+"773","Saint Petersburg",171,7,2,162,2020-04-04
+"774","Komi Republic",59,1,2,56,2020-04-04
+"775","Leningrad Oblast",47,1,0,46,2020-04-04
+"776","Sverdlovsk Oblast",40,13,0,27,2020-04-04
+"777","Krasnodar Krai",39,4,0,35,2020-04-04
+"778","Buryatia",35,0,0,35,2020-04-04
+"779","Penza Oblast",27,0,1,26,2020-04-04
+"780","Chelyabinsk Oblast",26,2,0,24,2020-04-04
+"781","Dagestan",25,0,0,25,2020-04-04
+"782","Nizhny Novgorod Oblast",25,1,0,24,2020-04-04
+"783","Krasnoyarsk Krai",25,4,0,21,2020-04-04
+"784","Tatarstan",25,6,0,19,2020-04-04
+"785","Ivanovo Oblast",23,1,0,22,2020-04-04
+"786","Perm Krai",21,3,2,16,2020-04-04
+"787","Bryansk Oblast",19,0,0,19,2020-04-04
+"788","Saratov Oblast",19,1,0,18,2020-04-04
+"789","Tula Oblast",19,3,0,16,2020-04-04
+"790","Kaliningrad Oblast",19,5,0,12,2020-04-04
+"791","Republic of Crimea",18,3,0,15,2020-04-04
+"792","Kirov Oblast",18,3,0,15,2020-04-04
+"793","Lipetsk Oblast",18,3,0,15,2020-04-04
+"794","Samara Oblast",17,7,0,10,2020-04-04
+"795","Khanty-Mansi Autonomous Okrug",16,2,0,14,2020-04-04
+"796","Chechnya",15,0,1,14,2020-04-04
+"797","Murmansk Oblast",15,1,0,14,2020-04-04
+"798","Voronezh Oblast",14,2,0,12,2020-04-04
+"799","Vologda Oblast",13,0,0,13,2020-04-04
+"800","Yakutia",15,4,0,11,2020-04-04
+"801","Yamalo-Nenets Autonomous Okrug",12,0,0,12,2020-04-04
+"802","Orenburg Oblast",12,1,1,10,2020-04-04
+"803","Ryazan Oblast",12,2,0,10,2020-04-04
+"804","Stavropol Krai",11,1,0,10,2020-04-04
+"805","Tyumen Oblast",11,2,0,9,2020-04-04
+"806","Khabarovsk Krai",10,0,0,10,2020-04-04
+"807","Omsk Oblast",10,0,0,10,2020-04-04
+"808","Novosibirsk Oblast",10,2,0,8,2020-04-04
+"809","Bashkortostan",10,5,0,5,2020-04-04
+"810","Rostov Oblast",9,0,0,9,2020-04-04
+"811","Pskov Oblast",9,2,2,5,2020-04-04
+"812","Kabardino-Balkaria",8,0,0,8,2020-04-04
+"813","Arkhangelsk Oblast",8,0,0,8,2020-04-04
+"814","Irkutsk Oblast",8,0,0,8,2020-04-04
+"815","Kostroma Oblast",8,0,1,7,2020-04-04
+"816","Volgograd Oblast",8,1,0,7,2020-04-04
+"817","Adygea",7,0,0,7,2020-04-04
+"818","Kalmykia",7,0,0,7,2020-04-04
+"819","Altai Krai",7,0,0,7,2020-04-04
+"820","Belgorod Oblast",7,0,0,7,2020-04-04
+"821","Tambov Oblast",7,0,0,7,2020-04-04
+"822","Primorsky Krai",7,2,1,4,2020-04-04
+"823","Oryol Oblast",6,0,0,6,2020-04-04
+"824","Sakhalin Oblast",6,0,0,6,2020-04-04
+"825","Kaluga Oblast",6,1,0,5,2020-04-04
+"826","Tver Oblast",6,2,0,4,2020-04-04
+"827","Mordovia",5,0,0,5,2020-04-04
+"828","North Ossetia-Alania",5,0,0,5,2020-04-04
+"829","Astrakhan Oblast",5,0,0,5,2020-04-04
+"830","Sevastopol",5,0,0,5,2020-04-04
+"831","Yaroslavl Oblast",5,1,0,4,2020-04-04
+"832","Udmurtia",5,3,0,2,2020-04-04
+"833","Mari El",4,0,0,4,2020-04-04
+"834","Amur Oblast",4,0,0,4,2020-04-04
+"835","Kursk Oblast",4,0,0,4,2020-04-04
+"836","Novgorod Oblast",3,0,0,3,2020-04-04
+"837","Jewish Autonomous Oblast",3,0,0,3,2020-04-04
+"838","Khakassia",3,1,0,2,2020-04-04
+"839","Tomsk Oblast",3,1,0,2,2020-04-04
+"840","Vladimir Oblast",3,0,1,2,2020-04-04
+"841","Kemerovo Oblast",3,2,0,1,2020-04-04
+"842","Smolensk Oblast",2,0,0,2,2020-04-04
+"843","Kurgan Oblast",2,1,0,1,2020-04-04
+"844","Chuvashia",1,0,0,1,2020-04-04
+"845","Ingushetia",1,0,0,1,2020-04-04
+"846","Magadan Oblast",1,0,0,1,2020-04-04
+"847","Zabaykalsky Krai",1,1,0,0,2020-04-04
+"848","Ulyanovsk Oblast",1,1,0,0,2020-04-04
+"849","Moscow",3893,198,29,3665,2020-04-05
+"850","Moscow Oblast",305,33,2,270,2020-04-05
+"851","Saint Petersburg",191,7,2,182,2020-04-05
+"852","Komi Republic",59,1,2,56,2020-04-05
+"853","Leningrad Oblast",57,1,0,56,2020-04-05
+"854","Nizhny Novgorod Oblast",47,1,0,46,2020-04-05
+"855","Sverdlovsk Oblast",40,13,0,27,2020-04-05
+"856","Krasnodar Krai",39,4,0,35,2020-04-05
+"857","Buryatia",35,0,0,35,2020-04-05
+"858","Tula Oblast",29,3,0,26,2020-04-05
+"859","Krasnoyarsk Krai",29,4,0,25,2020-04-05
+"860","Chelyabinsk Oblast",27,2,0,25,2020-04-05
+"861","Penza Oblast",27,1,1,25,2020-04-05
+"862","Dagestan",25,0,0,25,2020-04-05
+"863","Tatarstan",25,6,0,19,2020-04-05
+"864","Ivanovo Oblast",23,1,0,22,2020-04-05
+"865","Perm Krai",21,3,2,16,2020-04-05
+"866","Republic of Crimea",20,3,0,17,2020-04-05
+"867","Bryansk Oblast",19,0,0,19,2020-04-05
+"868","Saratov Oblast",19,1,0,18,2020-04-05
+"869","Khanty-Mansi Autonomous Okrug",19,2,0,17,2020-04-05
+"870","Kaliningrad Oblast",19,5,0,12,2020-04-05
+"871","Kirov Oblast",18,3,0,15,2020-04-05
+"872","Lipetsk Oblast",18,4,0,14,2020-04-05
+"873","Samara Oblast",17,8,0,9,2020-04-05
+"874","Chechnya",15,0,1,14,2020-04-05
+"875","Murmansk Oblast",15,1,0,14,2020-04-05
+"876","Yakutia",15,4,0,11,2020-04-05
+"877","Voronezh Oblast",14,4,0,10,2020-04-05
+"878","Vologda Oblast",13,0,0,13,2020-04-05
+"879","Yamalo-Nenets Autonomous Okrug",12,0,0,12,2020-04-05
+"880","Orenburg Oblast",12,1,1,10,2020-04-05
+"881","Ryazan Oblast",12,2,0,10,2020-04-05
+"882","Khabarovsk Krai",11,0,0,11,2020-04-05
+"883","Stavropol Krai",11,2,0,9,2020-04-05
+"884","Novosibirsk Oblast",11,2,0,9,2020-04-05
+"885","Tyumen Oblast",11,2,0,9,2020-04-05
+"886","Omsk Oblast",10,0,0,10,2020-04-05
+"887","Bashkortostan",10,5,0,5,2020-04-05
+"888","Rostov Oblast",9,0,0,9,2020-04-05
+"889","Pskov Oblast",9,3,2,4,2020-04-05
+"890","Kabardino-Balkaria",8,0,0,8,2020-04-05
+"891","Irkutsk Oblast",8,0,0,8,2020-04-05
+"892","Kostroma Oblast",8,0,1,7,2020-04-05
+"893","Volgograd Oblast",8,1,0,7,2020-04-05
+"894","Arkhangelsk Oblast",8,3,0,5,2020-04-05
+"895","Adygea",7,0,0,7,2020-04-05
+"896","Kalmykia",7,0,0,7,2020-04-05
+"897","Altai Krai",7,0,0,7,2020-04-05
+"898","Belgorod Oblast",7,0,0,7,2020-04-05
+"899","Tambov Oblast",7,2,0,5,2020-04-05
+"900","Primorsky Krai",7,2,1,4,2020-04-05
+"901","Oryol Oblast",6,0,0,6,2020-04-05
+"902","Sakhalin Oblast",6,0,0,6,2020-04-05
+"903","Kaluga Oblast",6,1,0,5,2020-04-05
+"904","Yaroslavl Oblast",6,1,0,5,2020-04-05
+"905","Tver Oblast",6,2,0,4,2020-04-05
+"906","North Ossetia-Alania",5,0,0,5,2020-04-05
+"907","Astrakhan Oblast",5,0,0,5,2020-04-05
+"908","Sevastopol",5,0,0,5,2020-04-05
+"909","Udmurtia",5,3,0,2,2020-04-05
+"910","Mordovia",5,2,0,3,2020-04-05
+"911","Mari El",4,0,0,4,2020-04-05
+"912","Amur Oblast",4,0,0,4,2020-04-05
+"913","Kursk Oblast",4,0,0,4,2020-04-05
+"914","Novgorod Oblast",3,0,0,3,2020-04-05
+"915","Jewish Autonomous Oblast",3,0,0,3,2020-04-05
+"916","Khakassia",3,1,0,2,2020-04-05
+"917","Tomsk Oblast",3,1,0,2,2020-04-05
+"918","Vladimir Oblast",3,0,1,2,2020-04-05
+"919","Kemerovo Oblast",3,2,0,1,2020-04-05
+"920","Kamchatka Krai",2,0,0,2,2020-04-05
+"921","Smolensk Oblast",2,0,0,2,2020-04-05
+"922","Kurgan Oblast",2,1,0,1,2020-04-05
+"923","Ingushetia",1,0,0,1,2020-04-05
+"924","Magadan Oblast",1,0,0,1,2020-04-05
+"925","Chuvashia",1,1,0,0,2020-04-05
+"926","Zabaykalsky Krai",1,1,0,0,2020-04-05
+"927","Ulyanovsk Oblast",1,1,0,0,2020-04-05
+"928","Moscow",4484,206,29,4248,2020-04-06
+"929","Moscow Oblast",387,34,3,350,2020-04-06
+"930","Saint Petersburg",226,32,2,192,2020-04-06
+"931","Komi Republic",90,1,3,86,2020-04-06
+"932","Leningrad Oblast",62,1,0,61,2020-04-06
+"933","Nizhny Novgorod Oblast",56,4,0,50,2020-04-06
+"934","Krasnodar Krai",50,8,0,42,2020-04-06
+"935","Sverdlovsk Oblast",44,13,0,31,2020-04-06
+"936","Buryatia",43,0,1,42,2020-04-06
+"937","Tatarstan",41,6,0,35,2020-04-06
+"938","Tula Oblast",39,4,0,35,2020-04-06
+"939","Ivanovo Oblast",33,1,0,32,2020-04-06
+"940","Penza Oblast",32,1,1,30,2020-04-06
+"941","Krasnoyarsk Krai",32,5,0,27,2020-04-06
+"942","Chelyabinsk Oblast",31,2,0,29,2020-04-06
+"943","Dagestan",30,4,0,26,2020-04-06
+"944","Lipetsk Oblast",26,4,0,22,2020-04-06
+"945","Bryansk Oblast",24,0,0,24,2020-04-06
+"946","Vologda Oblast",23,0,0,23,2020-04-06
+"947","Voronezh Oblast",23,4,0,19,2020-04-06
+"948","Perm Krai",21,3,2,16,2020-04-06
+"949","Republic of Crimea",21,6,0,15,2020-04-06
+"950","Stavropol Krai",20,2,0,18,2020-04-06
+"951","Saratov Oblast",19,1,0,18,2020-04-06
+"952","Khanty-Mansi Autonomous Okrug",19,2,0,17,2020-04-06
+"953","Kaliningrad Oblast",19,5,0,14,2020-04-06
+"954","Kirov Oblast",18,3,0,15,2020-04-06
+"955","Murmansk Oblast",18,1,0,17,2020-04-06
+"956","Samara Oblast",17,9,0,8,2020-04-06
+"957","Ryazan Oblast",17,2,0,15,2020-04-06
+"958","Chechnya",16,0,1,15,2020-04-06
+"959","Yakutia",15,4,0,11,2020-04-06
+"960","Volgograd Oblast",15,1,0,14,2020-04-06
+"961","Tambov Oblast",15,2,0,13,2020-04-06
+"962","Orenburg Oblast",14,1,1,12,2020-04-06
+"963","Arkhangelsk Oblast",14,3,0,11,2020-04-06
+"964","Adygea",13,0,0,13,2020-04-06
+"965","Mari El",13,0,0,13,2020-04-06
+"966","Altai Krai",12,0,0,12,2020-04-06
+"967","Yamalo-Nenets Autonomous Okrug",12,0,0,12,2020-04-06
+"968","Khabarovsk Krai",11,0,0,11,2020-04-06
+"969","Belgorod Oblast",11,0,0,11,2020-04-06
+"970","Irkutsk Oblast",11,0,0,11,2020-04-06
+"971","Novosibirsk Oblast",11,2,0,9,2020-04-06
+"972","Tyumen Oblast",11,2,0,9,2020-04-06
+"973","Omsk Oblast",10,0,0,10,2020-04-06
+"974","Bashkortostan",10,5,0,5,2020-04-06
+"975","Pskov Oblast",10,3,2,5,2020-04-06
+"976","Rostov Oblast",9,0,0,9,2020-04-06
+"977","Kostroma Oblast",9,0,1,8,2020-04-06
+"978","Kabardino-Balkaria",8,0,0,8,2020-04-06
+"979","North Ossetia-Alania",8,0,0,8,2020-04-06
+"980","Tver Oblast",8,2,0,6,2020-04-06
+"981","Kalmykia",7,0,0,7,2020-04-06
+"982","Oryol Oblast",7,0,0,7,2020-04-06
+"983","Kaluga Oblast",7,1,0,6,2020-04-06
+"984","Primorsky Krai",7,2,1,4,2020-04-06
+"985","Sakhalin Oblast",6,0,0,6,2020-04-06
+"986","Yaroslavl Oblast",6,1,0,5,2020-04-06
+"987","Mordovia",6,2,0,4,2020-04-06
+"988","Astrakhan Oblast",5,0,0,5,2020-04-06
+"989","Novgorod Oblast",5,0,0,5,2020-04-06
+"990","Sevastopol",5,0,0,5,2020-04-06
+"991","Khakassia",5,1,0,4,2020-04-06
+"992","Vladimir Oblast",5,0,1,4,2020-04-06
+"993","Kemerovo Oblast",5,2,0,3,2020-04-06
+"994","Udmurtia",5,3,0,2,2020-04-06
+"995","Amur Oblast",4,0,0,4,2020-04-06
+"996","Kursk Oblast",4,0,0,4,2020-04-06
+"997","Smolensk Oblast",3,0,0,3,2020-04-06
+"998","Jewish Autonomous Oblast",3,0,0,3,2020-04-06
+"999","Chuvashia",3,1,0,2,2020-04-06
+"1000","Tomsk Oblast",3,1,0,2,2020-04-06
+"1001","Republic of Karelia",2,0,0,2,2020-04-06
+"1002","Kamchatka Krai",2,0,0,2,2020-04-06
+"1003","Kurgan Oblast",2,1,0,1,2020-04-06
+"1004","Ulyanovsk Oblast",2,1,0,1,2020-04-06
+"1005","Ingushetia",1,0,0,1,2020-04-06
+"1006","Magadan Oblast",1,0,0,1,2020-04-06
+"1007","Zabaykalsky Krai",1,1,0,0,2020-04-06
+"1008","Moscow",5181,222,31,4927,2020-04-07
+"1009","Moscow Oblast",454,47,8,399,2020-04-07
+"1010","Saint Petersburg",295,32,2,261,2020-04-07
+"1011","Komi Republic",101,1,3,97,2020-04-07
+"1012","Leningrad Oblast",62,1,0,61,2020-04-07
+"1013","Krasnodar Krai",61,9,1,51,2020-04-07
+"1014","Bryansk Oblast",56,0,0,56,2020-04-07
+"1015","Nizhny Novgorod Oblast",56,8,0,46,2020-04-07
+"1016","Penza Oblast",51,1,1,49,2020-04-07
+"1017","Sverdlovsk Oblast",51,22,0,29,2020-04-07
+"1018","Buryatia",50,0,1,49,2020-04-07
+"1019","Tula Oblast",49,4,0,45,2020-04-07
+"1020","Kaliningrad Oblast",48,8,0,40,2020-04-07
+"1021","Ivanovo Oblast",47,1,0,46,2020-04-07
+"1022","Dagestan",43,4,0,39,2020-04-07
+"1023","Tatarstan",41,8,0,33,2020-04-07
+"1024","Stavropol Krai",39,2,0,37,2020-04-07
+"1025","Khanty-Mansi Autonomous Okrug",38,2,0,36,2020-04-07
+"1026","Chelyabinsk Oblast",32,4,0,28,2020-04-07
+"1027","Krasnoyarsk Krai",32,5,0,27,2020-04-07
+"1028","Perm Krai",32,5,2,25,2020-04-07
+"1029","Yamalo-Nenets Autonomous Okrug",30,0,0,30,2020-04-07
+"1030","Volgograd Oblast",26,1,0,25,2020-04-07
+"1031","Lipetsk Oblast",26,4,0,22,2020-04-07
+"1032","Saratov Oblast",25,1,0,24,2020-04-07
+"1033","Vologda Oblast",23,0,0,23,2020-04-07
+"1034","Voronezh Oblast",23,9,0,14,2020-04-07
+"1035","Republic of Crimea",22,6,0,16,2020-04-07
+"1036","Kirov Oblast",20,7,0,13,2020-04-07
+"1037","Murmansk Oblast",18,1,0,17,2020-04-07
+"1038","Tyumen Oblast",18,2,0,16,2020-04-07
+"1039","Rostov Oblast",17,0,0,17,2020-04-07
+"1040","Ryazan Oblast",17,2,0,15,2020-04-07
+"1041","Samara Oblast",17,9,0,8,2020-04-07
+"1042","Chechnya",17,12,1,4,2020-04-07
+"1043","Khabarovsk Krai",16,0,0,16,2020-04-07
+"1044","Tambov Oblast",15,3,0,12,2020-04-07
+"1045","Yakutia",15,7,0,8,2020-04-07
+"1046","Omsk Oblast",14,0,0,14,2020-04-07
+"1047","Irkutsk Oblast",14,0,1,13,2020-04-07
+"1048","Belgorod Oblast",14,1,0,13,2020-04-07
+"1049","Orenburg Oblast",14,1,1,12,2020-04-07
+"1050","Arkhangelsk Oblast",14,3,0,11,2020-04-07
+"1051","Pskov Oblast",14,3,2,9,2020-04-07
+"1052","Adygea",13,0,0,13,2020-04-07
+"1053","Kabardino-Balkaria",13,0,0,13,2020-04-07
+"1054","Mari El",13,0,0,13,2020-04-07
+"1055","Altai Krai",12,0,0,12,2020-04-07
+"1056","Vladimir Oblast",12,0,1,11,2020-04-07
+"1057","Bashkortostan",12,5,0,7,2020-04-07
+"1058","Oryol Oblast",12,3,0,9,2020-04-07
+"1059","Kalmykia",11,0,0,11,2020-04-07
+"1060","Kaluga Oblast",11,1,0,10,2020-04-07
+"1061","Yaroslavl Oblast",11,1,0,10,2020-04-07
+"1062","Novosibirsk Oblast",11,2,0,9,2020-04-07
+"1063","North Ossetia-Alania",9,0,0,9,2020-04-07
+"1064","Kostroma Oblast",9,2,1,6,2020-04-07
+"1065","Udmurtia",9,3,0,6,2020-04-07
+"1066","Tver Oblast",8,2,0,6,2020-04-07
+"1067","Primorsky Krai",8,2,2,4,2020-04-07
+"1068","Ingushetia",7,0,0,7,2020-04-07
+"1069","Mordovia",6,3,0,3,2020-04-07
+"1070","Sakhalin Oblast",6,4,0,2,2020-04-07
+"1071","Chuvashia",6,1,0,5,2020-04-07
+"1072","Astrakhan Oblast",5,0,0,5,2020-04-07
+"1073","Novgorod Oblast",5,0,0,5,2020-04-07
+"1074","Sevastopol",5,0,0,5,2020-04-07
+"1075","Khakassia",5,1,0,4,2020-04-07
+"1076","Kemerovo Oblast",5,2,0,3,2020-04-07
+"1077","Amur Oblast",4,0,0,4,2020-04-07
+"1078","Kursk Oblast",4,0,0,4,2020-04-07
+"1079","Ulyanovsk Oblast",4,1,0,3,2020-04-07
+"1080","Karachay-Cherkessia",3,0,0,3,2020-04-07
+"1081","Smolensk Oblast",3,0,0,3,2020-04-07
+"1082","Jewish Autonomous Oblast",3,0,0,3,2020-04-07
+"1083","Tomsk Oblast",3,1,0,2,2020-04-07
+"1084","Republic of Karelia",2,0,0,2,2020-04-07
+"1085","Kamchatka Krai",2,0,0,2,2020-04-07
+"1086","Kurgan Oblast",2,1,0,1,2020-04-07
+"1087","Magadan Oblast",1,0,0,1,2020-04-07
+"1088","Zabaykalsky Krai",1,1,0,0,2020-04-07
+"1089","Moscow",5841,270,31,5539,2020-04-08
+"1090","Moscow Oblast",549,50,10,489,2020-04-08
+"1091","Saint Petersburg",329,32,2,295,2020-04-08
+"1092","Komi Republic",119,1,3,115,2020-04-08
+"1093","Leningrad Oblast",94,2,0,92,2020-04-08
+"1094","Krasnodar Krai",85,15,1,69,2020-04-08
+"1095","Nizhny Novgorod Oblast",80,13,0,65,2020-04-08
+"1096","Bryansk Oblast",57,0,0,57,2020-04-08
+"1097","Sverdlovsk Oblast",56,25,0,31,2020-04-08
+"1098","Tula Oblast",54,4,0,50,2020-04-08
+"1099","Buryatia",54,9,1,44,2020-04-08
+"1100","Penza Oblast",52,1,1,20,2020-04-08
+"1101","Kaliningrad Oblast",49,9,0,40,2020-04-08
+"1102","Ivanovo Oblast",47,1,0,46,2020-04-08
+"1103","Dagestan",44,4,0,40,2020-04-08
+"1104","Lipetsk Oblast",44,5,0,39,2020-04-08
+"1105","Murmansk Oblast",43,2,0,41,2020-04-08
+"1106","Yamalo-Nenets Autonomous Okrug",41,0,0,41,2020-04-08
+"1107","Tatarstan",41,10,0,31,2020-04-08
+"1108","Khanty-Mansi Autonomous Okrug",41,3,0,38,2020-04-08
+"1109","Mari El",40,0,0,40,2020-04-08
+"1110","Stavropol Krai",39,5,0,34,2020-04-08
+"1111","Krasnoyarsk Krai",39,6,0,33,2020-04-08
+"1112","Voronezh Oblast",33,9,0,24,2020-04-08
+"1113","Chelyabinsk Oblast",32,4,0,28,2020-04-08
+"1114","Perm Krai",32,6,2,24,2020-04-08
+"1115","Ryazan Oblast",32,2,0,30,2020-04-08
+"1116","Vologda Oblast",27,0,0,27,2020-04-08
+"1117","Volgograd Oblast",26,2,0,24,2020-04-08
+"1118","Saratov Oblast",26,1,0,25,2020-04-08
+"1119","Ingushetia",25,0,0,25,2020-04-08
+"1120","Khabarovsk Krai",24,0,1,23,2020-04-08
+"1121","Kabardino-Balkaria",23,1,0,22,2020-04-08
+"1122","Republic of Crimea",23,6,0,17,2020-04-08
+"1123","Orenburg Oblast",22,1,1,20,2020-04-08
+"1124","Chechnya",22,15,1,6,2020-04-08
+"1125","Rostov Oblast",21,0,0,21,2020-04-08
+"1126","Tambov Oblast",21,3,0,18,2020-04-08
+"1127","Kirov Oblast",20,7,0,13,2020-04-08
+"1128","Altai Krai",18,0,0,18,2020-04-08
+"1129","Belgorod Oblast",18,1,0,17,2020-04-08
+"1130","Tyumen Oblast",18,2,0,16,2020-04-08
+"1131","Samara Oblast",18,9,0,9,2020-04-08
+"1132","Bashkortostan",16,5,0,11,2020-04-08
+"1133","Yakutia",16,7,0,9,2020-04-08
+"1134","Omsk Oblast",15,0,0,15,2020-04-08
+"1135","North Ossetia-Alania",15,0,1,14,2020-04-08
+"1136","Chuvashia",15,1,0,14,2020-04-08
+"1137","Kalmykia",15,2,0,13,2020-04-08
+"1138","Primorsky Krai",15,2,2,11,2020-04-08
+"1139","Vladimir Oblast",14,0,1,13,2020-04-08
+"1140","Irkutsk Oblast",14,0,2,12,2020-04-08
+"1141","Arkhangelsk Oblast",14,3,0,11,2020-04-08
+"1142","Pskov Oblast",14,3,2,9,2020-04-08
+"1143","Adygea",13,0,0,13,2020-04-08
+"1144","Novosibirsk Oblast",13,2,0,11,2020-04-08
+"1145","Mordovia",13,3,0,10,2020-04-08
+"1146","Tver Oblast",12,2,0,10,2020-04-08
+"1147","Oryol Oblast",12,3,0,9,2020-04-08
+"1148","Kaluga Oblast",11,1,0,10,2020-04-08
+"1149","Yaroslavl Oblast",11,1,0,10,2020-04-08
+"1150","Sakhalin Oblast",11,4,0,7,2020-04-08
+"1151","Kursk Oblast",10,0,0,10,2020-04-08
+"1152","Kostroma Oblast",9,2,1,6,2020-04-08
+"1153","Udmurtia",9,3,0,6,2020-04-08
+"1154","Smolensk Oblast",7,0,0,7,2020-04-08
+"1155","Kemerovo Oblast",7,2,0,5,2020-04-08
+"1156","Jewish Autonomous Oblast",6,0,0,6,2020-04-08
+"1157","Khakassia",6,1,0,5,2020-04-08
+"1158","Karachay-Cherkessia",5,0,0,5,2020-04-08
+"1159","Astrakhan Oblast",5,0,0,5,2020-04-08
+"1160","Novgorod Oblast",5,0,0,5,2020-04-08
+"1161","Sevastopol",5,2,0,3,2020-04-08
+"1162","Amur Oblast",4,0,0,4,2020-04-08
+"1163","Zabaykalsky Krai",4,1,0,3,2020-04-08
+"1164","Tomsk Oblast",4,1,0,3,2020-04-08
+"1165","Ulyanovsk Oblast",4,1,0,3,2020-04-08
+"1166","Kurgan Oblast",3,1,0,2,2020-04-08
+"1167","Republic of Karelia",2,0,0,2,2020-04-08
+"1168","Kamchatka Krai",2,0,0,2,2020-04-08
+"1169","Magadan Oblast",1,0,0,1,2020-04-08
+"1170","Moscow",6698,313,38,6346,2020-04-09
+"1171","Moscow Oblast",748,52,13,683,2020-04-09
+"1172","Saint Petersburg",373,43,4,326,2020-04-09
+"1173","Komi Republic",150,1,3,146,2020-04-09
+"1174","Leningrad Oblast",112,3,0,109,2020-04-09
+"1175","Krasnodar Krai",105,15,1,89,2020-04-09
+"1176","Bryansk Oblast",97,3,0,94,2020-04-09
+"1177","Nizhny Novgorod Oblast",87,13,0,72,2020-04-09
+"1178","Tula Oblast",66,6,0,60,2020-04-09
+"1179","Ivanovo Oblast",60,7,0,53,2020-04-09
+"1180","Buryatia",60,9,1,50,2020-04-09
+"1181","Sverdlovsk Oblast",59,25,0,34,2020-04-09
+"1182","Dagestan",57,4,0,53,2020-04-09
+"1183","Penza Oblast",52,1,1,50,2020-04-09
+"1184","Kaliningrad Oblast",52,9,0,43,2020-04-09
+"1185","Tatarstan",50,10,0,40,2020-04-09
+"1186","Lipetsk Oblast",48,5,0,43,2020-04-09
+"1187","Murmansk Oblast",44,5,0,39,2020-04-09
+"1188","Stavropol Krai",42,6,0,36,2020-04-09
+"1189","Yamalo-Nenets Autonomous Okrug",41,0,0,41,2020-04-09
+"1190","Mari El",41,2,0,39,2020-04-09
+"1191","Khanty-Mansi Autonomous Okrug",41,3,0,38,2020-04-09
+"1192","Perm Krai",41,6,3,32,2020-04-09
+"1193","Krasnoyarsk Krai",39,8,0,31,2020-04-09
+"1194","Vladimir Oblast",38,0,1,37,2020-04-09
+"1195","Vologda Oblast",35,0,0,35,2020-04-09
+"1196","Chelyabinsk Oblast",34,6,0,28,2020-04-09
+"1197","Voronezh Oblast",33,9,0,24,2020-04-09
+"1198","Ryazan Oblast",32,3,0,29,2020-04-09
+"1199","Saratov Oblast",30,1,0,29,2020-04-09
+"1200","Kirov Oblast",28,8,0,20,2020-04-09
+"1201","Volgograd Oblast",26,2,0,24,2020-04-09
+"1202","Republic of Crimea",26,7,0,19,2020-04-09
+"1203","Ingushetia",25,0,0,25,2020-04-09
+"1204","Rostov Oblast",24,1,0,23,2020-04-09
+"1205","Khabarovsk Krai",24,3,1,20,2020-04-09
+"1206","Kabardino-Balkaria",23,1,0,22,2020-04-09
+"1207","Kalmykia",23,5,0,18,2020-04-09
+"1208","North Ossetia-Alania",22,0,1,21,2020-04-09
+"1209","Orenburg Oblast",22,4,1,17,2020-04-09
+"1210","Bashkortostan",22,5,0,17,2020-04-09
+"1211","Chechnya",22,15,1,6,2020-04-09
+"1212","Tambov Oblast",21,3,0,18,2020-04-09
+"1213","Altai Krai",21,0,0,21,2020-04-09
+"1214","Astrakhan Oblast",21,0,0,21,2020-04-09
+"1215","Kursk Oblast",20,3,0,17,2020-04-09
+"1216","Primorsky Krai",20,2,2,16,2020-04-09
+"1217","Tver Oblast",19,2,0,17,2020-04-09
+"1218","Tyumen Oblast",19,2,0,17,2020-04-09
+"1219","Belgorod Oblast",18,1,0,17,2020-04-09
+"1220","Novosibirsk Oblast",18,2,0,16,2020-04-09
+"1221","Samara Oblast",18,10,0,8,2020-04-09
+"1222","Chuvashia",17,1,0,16,2020-04-09
+"1223","Irkutsk Oblast",17,0,2,15,2020-04-09
+"1224","Mordovia",17,3,0,14,2020-04-09
+"1225","Oryol Oblast",17,3,0,14,2020-04-09
+"1226","Pskov Oblast",16,5,2,9,2020-04-09
+"1227","Yakutia",16,8,0,8,2020-04-09
+"1228","Omsk Oblast",15,0,0,15,2020-04-09
+"1229","Arkhangelsk Oblast",14,3,0,11,2020-04-09
+"1230","Adygea",13,2,0,11,2020-04-09
+"1231","Yaroslavl Oblast",13,2,0,11,2020-04-09
+"1232","Novgorod Oblast",12,1,0,10,2020-04-09
+"1233","Kostroma Oblast",12,3,1,8,2020-04-09
+"1234","Kaluga Oblast",11,1,0,10,2020-04-09
+"1235","Smolensk Oblast",11,1,0,10,2020-04-09
+"1236","Sakhalin Oblast",11,4,0,7,2020-04-09
+"1237","Udmurtia",9,3,0,6,2020-04-09
+"1238","Kemerovo Oblast",7,3,0,4,2020-04-09
+"1239","Karachay-Cherkessia",6,0,0,6,2020-04-09
+"1240","Jewish Autonomous Oblast",6,0,0,6,2020-04-09
+"1241","Khakassia",6,1,0,5,2020-04-09
+"1242","Ulyanovsk Oblast",6,1,0,5,2020-04-09
+"1243","Kamchatka Krai",5,0,0,5,2020-04-09
+"1244","Sevastopol",5,2,0,3,2020-04-09
+"1245","Zabaykalsky Krai",4,1,0,3,2020-04-09
+"1246","Amur Oblast",4,1,0,3,2020-04-09
+"1247","Tomsk Oblast",4,1,0,3,2020-04-09
+"1248","Kurgan Oblast",3,1,0,2,2020-04-09
+"1249","Republic of Karelia",2,0,0,2,2020-04-09
+"1250","Magadan Oblast",1,1,0,0,2020-04-09
+"1251","Moscow",7822,350,50,7421,2020-04-10
+"1252","Moscow Oblast",930,66,13,851,2020-04-10
+"1253","Saint Petersburg",408,43,4,361,2020-04-10
+"1254","Komi Republic",208,1,3,204,2020-04-10
+"1255","Leningrad Oblast",129,3,0,126,2020-04-10
+"1256","Krasnodar Krai",125,15,3,107,2020-04-10
+"1257","Nizhny Novgorod Oblast",119,14,1,102,2020-04-10
+"1258","Bryansk Oblast",97,3,0,94,2020-04-10
+"1259","Tula Oblast",71,7,0,64,2020-04-10
+"1260","Penza Oblast",67,1,1,65,2020-04-10
+"1261","Murmansk Oblast",67,5,0,62,2020-04-10
+"1262","Mari El",63,2,1,60,2020-04-10
+"1263","Kaliningrad Oblast",62,9,0,53,2020-04-10
+"1264","Buryatia",61,12,1,48,2020-04-10
+"1265","Sverdlovsk Oblast",61,25,0,36,2020-04-10
+"1266","Ivanovo Oblast",60,7,0,53,2020-04-10
+"1267","Dagestan",58,4,0,54,2020-04-10
+"1268","Lipetsk Oblast",55,9,0,46,2020-04-10
+"1269","Stavropol Krai",52,6,1,45,2020-04-10
+"1270","Tatarstan",50,11,0,39,2020-04-10
+"1271","Perm Krai",45,6,3,36,2020-04-10
+"1272","Vladimir Oblast",42,0,1,41,2020-04-10
+"1273","Yamalo-Nenets Autonomous Okrug",41,0,1,40,2020-04-10
+"1274","Khanty-Mansi Autonomous Okrug",41,4,0,37,2020-04-10
+"1275","Ulyanovsk Oblast",40,2,0,38,2020-04-10
+"1276","Bashkortostan",40,6,0,34,2020-04-10
+"1277","Krasnoyarsk Krai",39,8,0,31,2020-04-10
+"1278","Vologda Oblast",38,0,0,38,2020-04-10
+"1279","Ryazan Oblast",38,3,0,35,2020-04-10
+"1280","Voronezh Oblast",37,9,0,28,2020-04-10
+"1281","Saratov Oblast",34,2,0,32,2020-04-10
+"1282","Chelyabinsk Oblast",34,10,0,24,2020-04-10
+"1283","Tambov Oblast",33,3,0,30,2020-04-10
+"1284","Chuvashia",32,1,0,31,2020-04-10
+"1285","Ingushetia",29,0,0,29,2020-04-10
+"1286","Rostov Oblast",29,2,0,27,2020-04-10
+"1287","Republic of Crimea",29,7,0,22,2020-04-10
+"1288","Kirov Oblast",29,8,0,21,2020-04-10
+"1289","Volgograd Oblast",28,5,0,23,2020-04-10
+"1290","Khabarovsk Krai",28,6,1,21,2020-04-10
+"1291","North Ossetia-Alania",27,1,1,25,2020-04-10
+"1292","Kabardino-Balkaria",27,2,0,25,2020-04-10
+"1293","Belgorod Oblast",26,1,0,25,2020-04-10
+"1294","Orenburg Oblast",25,4,1,20,2020-04-10
+"1295","Oryol Oblast",24,3,0,21,2020-04-10
+"1296","Tver Oblast",24,3,0,21,2020-04-10
+"1297","Arkhangelsk Oblast",24,4,0,20,2020-04-10
+"1298","Kalmykia",23,5,0,18,2020-04-10
+"1299","Tyumen Oblast",22,4,0,18,2020-04-10
+"1300","Chechnya",22,15,1,6,2020-04-10
+"1301","Altai Krai",21,0,0,21,2020-04-10
+"1302","Astrakhan Oblast",21,0,0,21,2020-04-10
+"1303","Irkutsk Oblast",21,0,2,19,2020-04-10
+"1304","Kursk Oblast",21,3,0,18,2020-04-10
+"1305","Novosibirsk Oblast",21,8,0,13,2020-04-10
+"1306","Adygea",20,2,0,18,2020-04-10
+"1307","Primorsky Krai",20,2,2,16,2020-04-10
+"1308","Samara Oblast",20,11,0,9,2020-04-10
+"1309","Mordovia",19,3,0,16,2020-04-10
+"1310","Kaluga Oblast",18,2,0,16,2020-04-10
+"1311","Novgorod Oblast",18,3,0,15,2020-04-10
+"1312","Omsk Oblast",17,3,0,14,2020-04-10
+"1313","Pskov Oblast",16,5,2,9,2020-04-10
+"1314","Yakutia",16,10,0,6,2020-04-10
+"1315","Kostroma Oblast",15,3,1,11,2020-04-10
+"1316","Smolensk Oblast",13,1,0,12,2020-04-10
+"1317","Yaroslavl Oblast",13,2,0,11,2020-04-10
+"1318","Udmurtia",11,3,0,8,2020-04-10
+"1319","Kemerovo Oblast",11,3,0,8,2020-04-10
+"1320","Sakhalin Oblast",11,4,0,7,2020-04-10
+"1321","Karachay-Cherkessia",9,0,0,9,2020-04-10
+"1322","Khakassia",9,3,0,6,2020-04-10
+"1323","Jewish Autonomous Oblast",8,0,0,8,2020-04-10
+"1324","Tuva",6,0,0,6,2020-04-10
+"1325","Kamchatka Krai",5,0,0,5,2020-04-10
+"1326","Sevastopol",5,2,0,3,2020-04-10
+"1327","Zabaykalsky Krai",4,1,0,3,2020-04-10
+"1328","Amur Oblast",4,1,0,3,2020-04-10
+"1329","Tomsk Oblast",4,1,0,3,2020-04-10
+"1330","Kurgan Oblast",3,1,0,2,2020-04-10
+"1331","Republic of Karelia",2,0,0,2,2020-04-10
+"1332","Magadan Oblast",1,1,0,0,2020-04-10
+"1333","Moscow",8852,499,58,8294,2020-04-11
+"1334","Moscow Oblast",1082,69,14,999,2020-04-11
+"1335","Saint Petersburg",488,74,4,410,2020-04-11
+"1336","Komi Republic",208,1,3,204,2020-04-11
+"1337","Nizhny Novgorod Oblast",152,14,1,135,2020-04-11
+"1338","Krasnodar Krai",138,25,3,110,2020-04-11
+"1339","Leningrad Oblast",134,3,0,131,2020-04-11
+"1340","Bryansk Oblast",123,3,0,120,2020-04-11
+"1341","Dagestan",84,4,0,80,2020-04-11
+"1342","Sverdlovsk Oblast",74,32,0,42,2020-04-11
+"1343","Tatarstan",73,11,0,62,2020-04-11
+"1344","Buryatia",73,14,1,58,2020-04-11
+"1345","Tula Oblast",71,9,0,62,2020-04-11
+"1346","Penza Oblast",67,1,1,65,2020-04-11
+"1347","Murmansk Oblast",67,6,0,61,2020-04-11
+"1348","Stavropol Krai",66,9,2,55,2020-04-11
+"1349","Bashkortostan",65,7,0,58,2020-04-11
+"1350","Kaliningrad Oblast",65,12,1,52,2020-04-11
+"1351","Mari El",63,3,1,59,2020-04-11
+"1352","Ulyanovsk Oblast",62,2,0,60,2020-04-11
+"1353","Ivanovo Oblast",62,7,0,55,2020-04-11
+"1354","Krasnoyarsk Krai",60,8,0,52,2020-04-11
+"1355","Lipetsk Oblast",58,10,0,48,2020-04-11
+"1356","Ryazan Oblast",55,4,0,51,2020-04-11
+"1357","Yamalo-Nenets Autonomous Okrug",50,0,1,49,2020-04-11
+"1358","Vladimir Oblast",48,1,1,46,2020-04-11
+"1359","Perm Krai",45,15,3,27,2020-04-11
+"1360","Kursk Oblast",42,3,0,39,2020-04-11
+"1361","Khanty-Mansi Autonomous Okrug",41,5,0,36,2020-04-11
+"1362","Chelyabinsk Oblast",40,10,0,30,2020-04-11
+"1363","Vologda Oblast",39,0,0,39,2020-04-11
+"1364","Chuvashia",39,1,0,38,2020-04-11
+"1365","Rostov Oblast",38,2,0,36,2020-04-11
+"1366","Voronezh Oblast",37,10,0,27,2020-04-11
+"1367","Saratov Oblast",35,2,0,33,2020-04-11
+"1368","Kirov Oblast",35,9,0,26,2020-04-11
+"1369","Volgograd Oblast",33,5,0,28,2020-04-11
+"1370","Tambov Oblast",33,6,0,27,2020-04-11
+"1371","Kalmykia",32,5,0,27,2020-04-11
+"1372","Tver Oblast",31,3,0,28,2020-04-11
+"1373","Kabardino-Balkaria",30,2,0,28,2020-04-11
+"1374","Tyumen Oblast",30,4,0,26,2020-04-11
+"1375","Chechnya",30,15,1,14,2020-04-11
+"1376","Ingushetia",29,0,0,29,2020-04-11
+"1377","Altai Krai",29,2,0,27,2020-04-11
+"1378","Oryol Oblast",29,3,0,26,2020-04-11
+"1379","Republic of Crimea",29,7,0,22,2020-04-11
+"1380","Khabarovsk Krai",29,7,2,20,2020-04-11
+"1381","Novosibirsk Oblast",28,10,0,18,2020-04-11
+"1382","North Ossetia-Alania",27,1,1,25,2020-04-11
+"1383","Belgorod Oblast",26,2,0,24,2020-04-11
+"1384","Orenburg Oblast",25,4,1,20,2020-04-11
+"1385","Kaluga Oblast",24,3,0,21,2020-04-11
+"1386","Arkhangelsk Oblast",24,5,0,19,2020-04-11
+"1387","Irkutsk Oblast",23,0,2,21,2020-04-11
+"1388","Primorsky Krai",23,2,2,19,2020-04-11
+"1389","Astrakhan Oblast",21,0,0,21,2020-04-11
+"1390","Samara Oblast",21,14,0,7,2020-04-11
+"1391","Adygea",20,2,0,18,2020-04-11
+"1392","Mordovia",19,4,0,15,2020-04-11
+"1393","Yakutia",19,13,0,6,2020-04-11
+"1394","Novgorod Oblast",18,4,0,14,2020-04-11
+"1395","Smolensk Oblast",17,1,0,16,2020-04-11
+"1396","Omsk Oblast",17,3,0,14,2020-04-11
+"1397","Pskov Oblast",16,6,2,8,2020-04-11
+"1398","Kostroma Oblast",15,3,1,11,2020-04-11
+"1399","Yaroslavl Oblast",13,2,0,11,2020-04-11
+"1400","Khakassia",12,3,0,9,2020-04-11
+"1401","Kemerovo Oblast",12,3,0,9,2020-04-11
+"1402","Udmurtia",11,3,0,8,2020-04-11
+"1403","Sakhalin Oblast",11,4,0,7,2020-04-11
+"1404","Kamchatka Krai",10,0,0,10,2020-04-11
+"1405","Karachay-Cherkessia",9,0,0,9,2020-04-11
+"1406","Jewish Autonomous Oblast",8,0,0,8,2020-04-11
+"1407","Tuva",6,0,0,6,2020-04-11
+"1408","Amur Oblast",6,1,0,5,2020-04-11
+"1409","Sevastopol",6,2,0,4,2020-04-11
+"1410","Zabaykalsky Krai",4,1,0,3,2020-04-11
+"1411","Tomsk Oblast",4,3,0,1,2020-04-11
+"1412","Kurgan Oblast",3,1,0,2,2020-04-11
+"1413","Republic of Karelia",2,0,0,2,2020-04-11
+"1414","Magadan Oblast",1,1,0,0,2020-04-11
+"1415","Moscow",10158,687,72,9398,2020-04-12
+"1416","Moscow Oblast",1360,75,18,1267,2020-04-12
+"1417","Saint Petersburg",557,74,4,479,2020-04-12
+"1418","Komi Republic",208,1,3,204,2020-04-12
+"1419","Nizhny Novgorod Oblast",194,14,1,177,2020-04-12
+"1420","Krasnodar Krai",169,25,3,141,2020-04-12
+"1421","Bryansk Oblast",141,3,0,138,2020-04-12
+"1422","Leningrad Oblast",139,3,0,136,2020-04-12
+"1423","Krasnoyarsk Krai",85,8,0,77,2020-04-12
+"1424","Bashkortostan",84,7,1,76,2020-04-12
+"1425","Dagestan",84,9,0,75,2020-04-12
+"1426","Ivanovo Oblast",80,7,0,73,2020-04-12
+"1427","Sverdlovsk Oblast",78,35,0,43,2020-04-12
+"1428","Buryatia",77,15,1,61,2020-04-12
+"1429","Tula Oblast",74,9,0,65,2020-04-12
+"1430","Stavropol Krai",74,10,2,62,2020-04-12
+"1431","Tatarstan",73,14,0,59,2020-04-12
+"1432","Vladimir Oblast",71,1,1,69,2020-04-12
+"1433","Ryazan Oblast",71,4,0,67,2020-04-12
+"1434","Ulyanovsk Oblast",70,2,0,68,2020-04-12
+"1435","Mari El",70,5,1,64,2020-04-12
+"1436","Kaliningrad Oblast",70,16,1,53,2020-04-12
+"1437","Penza Oblast",67,1,1,65,2020-04-12
+"1438","Murmansk Oblast",67,6,0,61,2020-04-12
+"1439","Lipetsk Oblast",63,10,0,53,2020-04-12
+"1440","Yamalo-Nenets Autonomous Okrug",62,0,1,61,2020-04-12
+"1441","Perm Krai",60,15,3,42,2020-04-12
+"1442","Rostov Oblast",52,4,0,48,2020-04-12
+"1443","Chuvashia",50,2,0,48,2020-04-12
+"1444","Voronezh Oblast",49,12,0,37,2020-04-12
+"1445","Tambov Oblast",48,6,0,42,2020-04-12
+"1446","Chechnya",47,15,3,29,2020-04-12
+"1447","Kursk Oblast",43,3,0,40,2020-04-12
+"1448","Vologda Oblast",42,0,0,42,2020-04-12
+"1449","Saratov Oblast",42,2,0,40,2020-04-12
+"1450","Mordovia",42,4,0,38,2020-04-12
+"1451","Khanty-Mansi Autonomous Okrug",41,5,0,36,2020-04-12
+"1452","Chelyabinsk Oblast",40,11,0,29,2020-04-12
+"1453","Tyumen Oblast",39,8,0,31,2020-04-12
+"1454","Volgograd Oblast",38,7,0,31,2020-04-12
+"1455","Kirov Oblast",36,9,0,27,2020-04-12
+"1456","Kabardino-Balkaria",35,3,0,32,2020-04-12
+"1457","North Ossetia-Alania",34,1,1,32,2020-04-12
+"1458","Kalmykia",32,5,0,27,2020-04-12
+"1459","Belgorod Oblast",31,3,0,28,2020-04-12
+"1460","Tver Oblast",31,3,0,28,2020-04-12
+"1461","Republic of Crimea",31,12,0,19,2020-04-12
+"1462","Astrakhan Oblast",29,0,0,29,2020-04-12
+"1463","Ingushetia",29,0,1,28,2020-04-12
+"1464","Altai Krai",29,3,0,26,2020-04-12
+"1465","Oryol Oblast",29,3,0,26,2020-04-12
+"1466","Khabarovsk Krai",29,7,2,20,2020-04-12
+"1467","Irkutsk Oblast",28,0,2,26,2020-04-12
+"1468","Novosibirsk Oblast",28,10,0,18,2020-04-12
+"1469","Yaroslavl Oblast",27,3,0,24,2020-04-12
+"1470","Orenburg Oblast",25,5,1,19,2020-04-12
+"1471","Primorsky Krai",24,2,2,20,2020-04-12
+"1472","Arkhangelsk Oblast",24,5,0,19,2020-04-12
+"1473","Kaluga Oblast",24,5,0,19,2020-04-12
+"1474","Samara Oblast",24,14,0,10,2020-04-12
+"1475","Yakutia",22,13,0,9,2020-04-12
+"1476","Adygea",20,5,0,15,2020-04-12
+"1477","Omsk Oblast",19,5,0,14,2020-04-12
+"1478","Novgorod Oblast",18,4,0,14,2020-04-12
+"1479","Kostroma Oblast",18,3,2,13,2020-04-12
+"1480","Amur Oblast",17,1,0,16,2020-04-12
+"1481","Smolensk Oblast",17,1,1,15,2020-04-12
+"1482","Pskov Oblast",16,6,2,8,2020-04-12
+"1483","Udmurtia",13,3,0,10,2020-04-12
+"1484","Khakassia",12,3,0,9,2020-04-12
+"1485","Kemerovo Oblast",12,3,0,9,2020-04-12
+"1486","Karachay-Cherkessia",11,0,0,11,2020-04-12
+"1487","Sakhalin Oblast",11,4,0,7,2020-04-12
+"1488","Kamchatka Krai",10,0,0,10,2020-04-12
+"1489","Jewish Autonomous Oblast",8,0,0,8,2020-04-12
+"1490","Zabaykalsky Krai",8,1,0,7,2020-04-12
+"1491","Tuva",6,0,0,6,2020-04-12
+"1492","Sevastopol",6,2,0,4,2020-04-12
+"1493","Kurgan Oblast",4,1,0,3,2020-04-12
+"1494","Tomsk Oblast",4,3,0,1,2020-04-12
+"1495","Republic of Karelia",2,0,0,2,2020-04-12
+"1496","Magadan Oblast",1,1,0,0,2020-04-12
+"1497","Moscow",11513,837,82,10594,2020-04-13
+"1498","Moscow Oblast",1855,75,19,1761,2020-04-13
+"1499","Saint Petersburg",678,78,4,596,2020-04-13
+"1500","Nizhny Novgorod Oblast",224,20,4,200,2020-04-13
+"1501","Krasnodar Krai",210,28,3,179,2020-04-13
+"1502","Komi Republic",208,1,3,204,2020-04-13
+"1503","Leningrad Oblast",155,3,0,152,2020-04-13
+"1504","Bryansk Oblast",142,3,0,139,2020-04-13
+"1505","Murmansk Oblast",128,10,1,117,2020-04-13
+"1506","Krasnoyarsk Krai",110,8,0,102,2020-04-13
+"1507","Bashkortostan",107,7,1,99,2020-04-13
+"1508","Ryazan Oblast",89,4,0,85,2020-04-13
+"1509","Ulyanovsk Oblast",86,2,0,84,2020-04-13
+"1510","Ivanovo Oblast",86,7,0,79,2020-04-13
+"1511","Stavropol Krai",86,10,2,74,2020-04-13
+"1512","Buryatia",86,17,1,68,2020-04-13
+"1513","Tula Oblast",85,13,0,72,2020-04-13
+"1514","Sverdlovsk Oblast",85,35,0,50,2020-04-13
+"1515","Penza Oblast",84,1,1,82,2020-04-13
+"1516","Vladimir Oblast",84,1,1,82,2020-04-13
+"1517","Dagestan",84,9,0,75,2020-04-13
+"1518","Tatarstan",84,14,0,70,2020-04-13
+"1519","Mari El",80,5,1,74,2020-04-13
+"1520","Rostov Oblast",78,5,0,73,2020-04-13
+"1521","Tver Oblast",75,3,0,72,2020-04-13
+"1522","Kaliningrad Oblast",74,16,1,57,2020-04-13
+"1523","Lipetsk Oblast",69,10,0,59,2020-04-13
+"1524","Yamalo-Nenets Autonomous Okrug",66,0,1,65,2020-04-13
+"1525","Chuvashia",65,2,0,63,2020-04-13
+"1526","Voronezh Oblast",60,12,0,48,2020-04-13
+"1527","Perm Krai",60,15,3,42,2020-04-13
+"1528","Kursk Oblast",58,3,0,55,2020-04-13
+"1529","Mordovia",58,4,0,54,2020-04-13
+"1530","Khabarovsk Krai",54,7,2,45,2020-04-13
+"1531","Tyumen Oblast",53,9,0,44,2020-04-13
+"1532","Kirov Oblast",51,9,0,42,2020-04-13
+"1533","Kabardino-Balkaria",50,3,0,47,2020-04-13
+"1534","Chechnya",49,15,5,29,2020-04-13
+"1535","Tambov Oblast",48,6,0,42,2020-04-13
+"1536","Orenburg Oblast",45,5,1,39,2020-04-13
+"1537","Volgograd Oblast",44,7,0,37,2020-04-13
+"1538","Saratov Oblast",44,2,0,42,2020-04-13
+"1539","Vologda Oblast",43,0,0,43,2020-04-13
+"1540","Chelyabinsk Oblast",43,12,0,31,2020-04-13
+"1541","Khanty-Mansi Autonomous Okrug",41,5,0,36,2020-04-13
+"1542","Novosibirsk Oblast",36,10,0,26,2020-04-13
+"1543","Irkutsk Oblast",35,3,2,30,2020-04-13
+"1544","Ingushetia",34,0,1,33,2020-04-13
+"1545","North Ossetia-Alania",34,1,2,31,2020-04-13
+"1546","Oryol Oblast",34,3,0,31,2020-04-13
+"1547","Kaluga Oblast",34,5,0,29,2020-04-13
+"1548","Kalmykia",32,5,0,27,2020-04-13
+"1549","Republic of Crimea",32,12,0,20,2020-04-13
+"1550","Altai Krai",31,3,0,28,2020-04-13
+"1551","Belgorod Oblast",31,3,0,28,2020-04-13
+"1552","Arkhangelsk Oblast",31,5,0,26,2020-04-13
+"1553","Astrakhan Oblast",30,0,0,30,2020-04-13
+"1554","Samara Oblast",29,14,0,15,2020-04-13
+"1555","Primorsky Krai",28,2,2,24,2020-04-13
+"1556","Yaroslavl Oblast",27,3,0,24,2020-04-13
+"1557","Novgorod Oblast",26,4,0,22,2020-04-13
+"1558","Yakutia",25,13,0,12,2020-04-13
+"1559","Smolensk Oblast",21,1,1,19,2020-04-13
+"1560","Pskov Oblast",21,6,2,13,2020-04-13
+"1561","Adygea",20,5,0,15,2020-04-13
+"1562","Omsk Oblast",20,5,0,15,2020-04-13
+"1563","Kostroma Oblast",18,3,2,13,2020-04-13
+"1564","Zabaykalsky Krai",14,1,0,13,2020-04-13
+"1565","Kemerovo Oblast",14,3,0,11,2020-04-13
+"1566","Karachay-Cherkessia",13,0,0,13,2020-04-13
+"1567","Udmurtia",13,3,0,10,2020-04-13
+"1568","Khakassia",12,3,0,9,2020-04-13
+"1569","Sakhalin Oblast",11,6,0,5,2020-04-13
+"1570","Kamchatka Krai",10,0,0,10,2020-04-13
+"1571","Jewish Autonomous Oblast",9,0,0,9,2020-04-13
+"1572","Tomsk Oblast",8,3,0,5,2020-04-13
+"1573","Tuva",6,0,0,6,2020-04-13
+"1574","Amur Oblast",6,1,0,5,2020-04-13
+"1575","Sevastopol",6,2,0,4,2020-04-13
+"1576","Kurgan Oblast",4,1,0,3,2020-04-13
+"1577","Republic of Karelia",3,0,0,3,2020-04-13
+"1578","Magadan Oblast",2,1,0,1,2020-04-13
+"1579","Moscow",13002,1016,95,11890,2020-04-14
+"1580","Moscow Oblast",2315,75,24,2216,2020-04-14
+"1581","Saint Petersburg",799,78,4,717,2020-04-14
+"1582","Komi Republic",305,1,3,301,2020-04-14
+"1583","Nizhny Novgorod Oblast",292,20,4,266,2020-04-14
+"1584","Krasnodar Krai",215,32,3,180,2020-04-14
+"1585","Leningrad Oblast",190,5,0,185,2020-04-14
+"1586","Bryansk Oblast",142,7,0,135,2020-04-14
+"1587","Krasnoyarsk Krai",131,17,0,114,2020-04-14
+"1588","Bashkortostan",129,9,3,117,2020-04-14
+"1589","Murmansk Oblast",128,10,1,117,2020-04-14
+"1590","Ryazan Oblast",116,4,0,112,2020-04-14
+"1591","Tatarstan",107,14,0,93,2020-04-14
+"1592","Vladimir Oblast",100,1,2,97,2020-04-14
+"1593","Dagestan",100,9,0,91,2020-04-14
+"1594","Rostov Oblast",98,5,0,93,2020-04-14
+"1595","Ivanovo Oblast",96,8,0,88,2020-04-14
+"1596","Stavropol Krai",95,10,2,83,2020-04-14
+"1597","Sverdlovsk Oblast",93,37,0,56,2020-04-14
+"1598","Buryatia",92,22,2,68,2020-04-14
+"1599","Mari El",91,5,1,85,2020-04-14
+"1600","Perm Krai",87,16,3,68,2020-04-14
+"1601","Ulyanovsk Oblast",86,2,0,84,2020-04-14
+"1602","Tula Oblast",85,13,0,72,2020-04-14
+"1603","Penza Oblast",84,1,1,82,2020-04-14
+"1604","Tambov Oblast",83,6,0,77,2020-04-14
+"1605","Kaliningrad Oblast",79,16,1,62,2020-04-14
+"1606","Tver Oblast",75,3,0,72,2020-04-14
+"1607","Lipetsk Oblast",74,12,0,62,2020-04-14
+"1608","Mordovia",71,4,0,67,2020-04-14
+"1609","Voronezh Oblast",68,16,1,51,2020-04-14
+"1610","Tyumen Oblast",67,9,0,58,2020-04-14
+"1611","Yamalo-Nenets Autonomous Okrug",66,0,1,65,2020-04-14
+"1612","Chuvashia",65,2,0,63,2020-04-14
+"1613","Chechnya",64,15,5,44,2020-04-14
+"1614","Kursk Oblast",58,3,0,55,2020-04-14
+"1615","Khanty-Mansi Autonomous Okrug",56,5,0,51,2020-04-14
+"1616","Smolensk Oblast",55,1,1,53,2020-04-14
+"1617","Khabarovsk Krai",54,7,2,45,2020-04-14
+"1618","Orenburg Oblast",53,6,1,47,2020-04-14
+"1619","North Ossetia-Alania",52,1,2,49,2020-04-14
+"1620","Kirov Oblast",51,9,0,42,2020-04-14
+"1621","Vologda Oblast",50,0,0,50,2020-04-14
+"1622","Kabardino-Balkaria",50,3,0,47,2020-04-14
+"1623","Kaluga Oblast",49,5,0,44,2020-04-14
+"1624","Saratov Oblast",49,6,0,43,2020-04-14
+"1625","Chelyabinsk Oblast",48,12,0,36,2020-04-14
+"1626","Volgograd Oblast",46,7,0,39,2020-04-14
+"1627","Belgorod Oblast",41,3,0,38,2020-04-14
+"1628","Oryol Oblast",41,3,0,38,2020-04-14
+"1629","Samara Oblast",40,14,0,26,2020-04-14
+"1630","Irkutsk Oblast",39,3,2,34,2020-04-14
+"1631","Altai Krai",36,3,0,33,2020-04-14
+"1632","Novosibirsk Oblast",36,10,0,26,2020-04-14
+"1633","Ingushetia",34,0,1,33,2020-04-14
+"1634","Primorsky Krai",32,3,2,27,2020-04-14
+"1635","Arkhangelsk Oblast",32,5,0,27,2020-04-14
+"1636","Kalmykia",32,9,0,23,2020-04-14
+"1637","Republic of Crimea",32,12,0,20,2020-04-14
+"1638","Astrakhan Oblast",30,0,0,30,2020-04-14
+"1639","Adygea",27,6,0,21,2020-04-14
+"1640","Yaroslavl Oblast",27,6,0,21,2020-04-14
+"1641","Novgorod Oblast",26,4,0,22,2020-04-14
+"1642","Yakutia",26,13,0,13,2020-04-14
+"1643","Pskov Oblast",21,6,2,13,2020-04-14
+"1644","Khakassia",20,3,0,17,2020-04-14
+"1645","Omsk Oblast",20,6,0,14,2020-04-14
+"1646","Udmurtia",19,3,0,16,2020-04-14
+"1647","Kostroma Oblast",18,3,2,13,2020-04-14
+"1648","Karachay-Cherkessia",16,0,0,16,2020-04-14
+"1649","Tomsk Oblast",15,4,0,11,2020-04-14
+"1650","Zabaykalsky Krai",14,1,0,13,2020-04-14
+"1651","Kemerovo Oblast",14,3,0,11,2020-04-14
+"1652","Sakhalin Oblast",11,6,0,5,2020-04-14
+"1653","Kamchatka Krai",10,0,0,10,2020-04-14
+"1654","Jewish Autonomous Oblast",9,0,0,9,2020-04-14
+"1655","Sevastopol",7,2,0,5,2020-04-14
+"1656","Tuva",6,0,0,6,2020-04-14
+"1657","Amur Oblast",6,1,0,5,2020-04-14
+"1658","Kurgan Oblast",4,1,0,3,2020-04-14
+"1659","Republic of Karelia",3,0,0,3,2020-04-14
+"1660","Magadan Oblast",3,1,0,2,2020-04-14
+"1661","Moscow",14776,1205,106,13464,2020-04-15
+"1662","Moscow Oblast",2587,75,26,2486,2020-04-15
+"1663","Saint Petersburg",929,95,5,829,2020-04-15
+"1664","Komi Republic",402,1,3,399,2020-04-15
+"1665","Nizhny Novgorod Oblast",339,21,4,312,2020-04-15
+"1666","Leningrad Oblast",298,5,0,293,2020-04-15
+"1667","Murmansk Oblast",265,14,1,250,2020-04-15
+"1668","Krasnodar Krai",239,40,3,196,2020-04-15
+"1669","Bryansk Oblast",164,12,0,152,2020-04-15
+"1670","Bashkortostan",149,9,5,135,2020-04-15
+"1671","Vladimir Oblast",145,1,2,142,2020-04-15
+"1672","Krasnoyarsk Krai",142,17,0,125,2020-04-15
+"1673","Tula Oblast",130,17,0,113,2020-04-15
+"1674","Ivanovo Oblast",121,8,0,113,2020-04-15
+"1675","Mari El",118,8,1,109,2020-04-15
+"1676","Tver Oblast",117,3,0,114,2020-04-15
+"1677","Ryazan Oblast",116,4,0,112,2020-04-15
+"1678","Stavropol Krai",115,11,2,102,2020-04-15
+"1679","Perm Krai",114,16,3,95,2020-04-15
+"1680","Tatarstan",107,14,0,93,2020-04-15
+"1681","Smolensk Oblast",106,1,1,104,2020-04-15
+"1682","Dagestan",105,9,3,93,2020-04-15
+"1683","Chechnya",105,15,5,85,2020-04-15
+"1684","Sverdlovsk Oblast",105,37,0,68,2020-04-15
+"1685","Ulyanovsk Oblast",104,2,0,102,2020-04-15
+"1686","Rostov Oblast",104,8,0,96,2020-04-15
+"1687","Penza Oblast",100,4,2,93,2020-04-15
+"1688","Buryatia",92,23,2,67,2020-04-15
+"1689","Ingushetia",90,1,1,88,2020-04-15
+"1690","Kursk Oblast",89,3,0,86,2020-04-15
+"1691","Tyumen Oblast",85,10,1,74,2020-04-15
+"1692","Lipetsk Oblast",85,15,0,70,2020-04-15
+"1693","Kaliningrad Oblast",84,24,1,59,2020-04-15
+"1694","Tambov Oblast",83,6,0,77,2020-04-15
+"1695","Chuvashia",78,2,0,76,2020-04-15
+"1696","Khabarovsk Krai",77,7,2,68,2020-04-15
+"1697","Voronezh Oblast",75,19,1,55,2020-04-15
+"1698","Kaluga Oblast",74,5,0,69,2020-04-15
+"1699","Yamalo-Nenets Autonomous Okrug",73,0,1,72,2020-04-15
+"1700","Mordovia",71,5,0,66,2020-04-15
+"1701","Khanty-Mansi Autonomous Okrug",71,9,0,62,2020-04-15
+"1702","Kirov Oblast",64,9,0,55,2020-04-15
+"1703","Saratov Oblast",56,8,0,48,2020-04-15
+"1704","Orenburg Oblast",54,6,1,47,2020-04-15
+"1705","Novosibirsk Oblast",53,11,0,42,2020-04-15
+"1706","Vologda Oblast",52,0,0,52,2020-04-15
+"1707","North Ossetia-Alania",52,1,2,49,2020-04-15
+"1708","Chelyabinsk Oblast",51,13,0,38,2020-04-15
+"1709","Kabardino-Balkaria",50,3,0,47,2020-04-15
+"1710","Astrakhan Oblast",47,2,1,44,2020-04-15
+"1711","Volgograd Oblast",47,7,0,40,2020-04-15
+"1712","Belgorod Oblast",45,3,1,41,2020-04-15
+"1713","Oryol Oblast",41,3,0,38,2020-04-15
+"1714","Samara Oblast",40,14,0,26,2020-04-15
+"1715","Altai Krai",39,3,0,36,2020-04-15
+"1716","Irkutsk Oblast",39,3,2,34,2020-04-15
+"1717","Yaroslavl Oblast",39,7,0,32,2020-04-15
+"1718","Primorsky Krai",36,3,2,31,2020-04-15
+"1719","Kalmykia",35,9,2,24,2020-04-15
+"1720","Republic of Crimea",34,12,0,22,2020-04-15
+"1721","Yakutia",33,15,0,18,2020-04-15
+"1722","Arkhangelsk Oblast",32,10,0,22,2020-04-15
+"1723","Pskov Oblast",27,8,4,15,2020-04-15
+"1724","Udmurtia",27,4,0,23,2020-04-15
+"1725","Kostroma Oblast",27,3,2,22,2020-04-15
+"1726","Adygea",27,12,0,15,2020-04-15
+"1727","Khakassia",26,3,0,23,2020-04-15
+"1728","Novgorod Oblast",26,4,0,22,2020-04-15
+"1729","Karachay-Cherkessia",23,0,0,23,2020-04-15
+"1730","Omsk Oblast",22,9,0,13,2020-04-15
+"1731","Kemerovo Oblast",15,4,0,11,2020-04-15
+"1732","Tomsk Oblast",15,4,0,11,2020-04-15
+"1733","Zabaykalsky Krai",14,1,0,13,2020-04-15
+"1734","Sakhalin Oblast",12,6,0,6,2020-04-15
+"1735","Kamchatka Krai",10,0,0,10,2020-04-15
+"1736","Kurgan Oblast",10,1,0,9,2020-04-15
+"1737","Jewish Autonomous Oblast",9,0,0,9,2020-04-15
+"1738","Sevastopol",8,2,0,6,2020-04-15
+"1739","Republic of Karelia",7,0,0,7,2020-04-15
+"1740","Tuva",6,0,0,6,2020-04-15
+"1741","Amur Oblast",6,1,0,5,2020-04-15
+"1742","Magadan Oblast",3,1,0,2,2020-04-15
+"1743","Chukotka Autonomous Okrug",1,0,0,1,2020-04-15
+"1744","Nenets Autonomous Okrug",1,0,0,1,2020-04-15
+"1745","Moscow",16146,1394,113,14638,2020-04-16
+"1746","Moscow Oblast",3054,91,33,2930,2020-04-16
+"1747","Saint Petersburg",1083,110,7,966,2020-04-16
+"1748","Komi Republic",441,6,3,432,2020-04-16
+"1749","Nizhny Novgorod Oblast",404,21,4,377,2020-04-16
+"1750","Leningrad Oblast",330,5,0,325,2020-04-16
+"1751","Murmansk Oblast",306,15,1,290,2020-04-16
+"1752","Krasnodar Krai",260,40,3,217,2020-04-16
+"1753","Krasnoyarsk Krai",202,17,0,185,2020-04-16
+"1754","Bryansk Oblast",201,23,0,178,2020-04-16
+"1755","Bashkortostan",191,9,5,177,2020-04-16
+"1756","Tula Oblast",174,19,0,155,2020-04-16
+"1757","Vladimir Oblast",159,1,5,153,2020-04-16
+"1758","Ryazan Oblast",154,4,0,150,2020-04-16
+"1759","Dagestan",154,9,6,139,2020-04-16
+"1760","Ingushetia",153,1,2,150,2020-04-16
+"1761","Tver Oblast",151,9,0,142,2020-04-16
+"1762","Mari El",147,8,1,138,2020-04-16
+"1763","Rostov Oblast",145,8,0,137,2020-04-16
+"1764","Stavropol Krai",143,11,2,130,2020-04-16
+"1765","Ivanovo Oblast",136,8,0,128,2020-04-16
+"1766","Tambov Oblast",133,6,0,127,2020-04-16
+"1767","Smolensk Oblast",132,1,1,130,2020-04-16
+"1768","Perm Krai",132,19,3,110,2020-04-16
+"1769","Tatarstan",128,14,0,114,2020-04-16
+"1770","Chuvashia",125,2,1,122,2020-04-16
+"1771","Ulyanovsk Oblast",123,2,0,121,2020-04-16
+"1772","Kursk Oblast",120,5,2,113,2020-04-16
+"1773","Tyumen Oblast",112,10,1,101,2020-04-16
+"1774","Sverdlovsk Oblast",111,44,0,67,2020-04-16
+"1775","Khanty-Mansi Autonomous Okrug",110,15,0,95,2020-04-16
+"1776","Chechnya",108,15,5,88,2020-04-16
+"1777","Penza Oblast",107,4,2,101,2020-04-16
+"1778","Kaluga Oblast",102,8,1,93,2020-04-16
+"1779","Buryatia",100,24,2,74,2020-04-16
+"1780","Lipetsk Oblast",96,22,0,74,2020-04-16
+"1781","Yamalo-Nenets Autonomous Okrug",95,0,1,94,2020-04-16
+"1782","Kaliningrad Oblast",92,26,1,65,2020-04-16
+"1783","Khabarovsk Krai",91,7,2,82,2020-04-16
+"1784","Voronezh Oblast",89,20,1,68,2020-04-16
+"1785","Orenburg Oblast",82,12,2,69,2020-04-16
+"1786","Oryol Oblast",73,7,0,66,2020-04-16
+"1787","Kirov Oblast",73,9,0,64,2020-04-16
+"1788","Mordovia",71,5,1,65,2020-04-16
+"1789","Saratov Oblast",70,8,0,62,2020-04-16
+"1790","Kabardino-Balkaria",69,3,0,66,2020-04-16
+"1791","Vologda Oblast",67,8,0,59,2020-04-16
+"1792","Novosibirsk Oblast",64,14,1,49,2020-04-16
+"1793","Yaroslavl Oblast",62,7,0,55,2020-04-16
+"1794","Astrakhan Oblast",60,2,3,55,2020-04-16
+"1795","Belgorod Oblast",58,3,2,53,2020-04-16
+"1796","Volgograd Oblast",58,7,0,51,2020-04-16
+"1797","Novgorod Oblast",53,4,0,49,2020-04-16
+"1798","Chelyabinsk Oblast",53,22,0,31,2020-04-16
+"1799","North Ossetia-Alania",52,3,2,47,2020-04-16
+"1800","Samara Oblast",50,14,0,36,2020-04-16
+"1801","Altai Krai",48,3,0,45,2020-04-16
+"1802","Irkutsk Oblast",45,4,2,39,2020-04-16
+"1803","Adygea",43,15,1,27,2020-04-16
+"1804","Udmurtia",42,4,0,38,2020-04-16
+"1805","Primorsky Krai",40,3,2,35,2020-04-16
+"1806","Kostroma Oblast",38,3,2,33,2020-04-16
+"1807","Republic of Crimea",37,14,0,23,2020-04-16
+"1808","Kalmykia",36,9,2,25,2020-04-16
+"1809","Yakutia",35,15,0,20,2020-04-16
+"1810","Arkhangelsk Oblast",33,10,0,23,2020-04-16
+"1811","Pskov Oblast",32,8,4,20,2020-04-16
+"1812","Karachay-Cherkessia",30,0,0,30,2020-04-16
+"1813","Zabaykalsky Krai",28,1,0,27,2020-04-16
+"1814","Khakassia",27,3,0,24,2020-04-16
+"1815","Omsk Oblast",23,9,0,14,2020-04-16
+"1816","Kamchatka Krai",21,0,0,21,2020-04-16
+"1817","Tomsk Oblast",21,4,0,17,2020-04-16
+"1818","Magadan Oblast",18,1,0,17,2020-04-16
+"1819","Kemerovo Oblast",18,5,0,13,2020-04-16
+"1820","Sakhalin Oblast",12,6,0,6,2020-04-16
+"1821","Kurgan Oblast",11,3,0,8,2020-04-16
+"1822","Jewish Autonomous Oblast",10,0,0,10,2020-04-16
+"1823","Amur Oblast",9,1,0,8,2020-04-16
+"1824","Republic of Karelia",8,0,0,8,2020-04-16
+"1825","Tuva",8,0,0,8,2020-04-16
+"1826","Sevastopol",8,2,0,6,2020-04-16
+"1827","Chukotka Autonomous Okrug",1,0,0,1,2020-04-16
+"1828","Nenets Autonomous Okrug",1,0,0,1,2020-04-16
+"1829","Moscow Oblast",3526,7690863,4,NA,2020-04-17
+"1830","Saint Petersburg",1507,5398064,2,NA,2020-04-17
+"1831","Nizhny Novgorod Oblast",458,3202946,1,NA,2020-04-17
+"1832","Komi Republic",455,820473,5,NA,2020-04-17
+"1833","Leningrad Oblast",354,1875872,1,NA,2020-04-17
+"1834","Murmansk Oblast",314,741404,4,NA,2020-04-17
+"1835","Krasnodar Krai",290,5675462,0,NA,2020-04-17
+"1836","Krasnoyarsk Krai",231,2866255,0,NA,2020-04-17
+"1837","Bryansk Oblast",228,1192491,1,NA,2020-04-17
+"1838","Dagestan",213,3110858,0,NA,2020-04-17
+"1839","Bashkortostan",213,4038151,0,NA,2020-04-17
+"1840","Tula Oblast",199,1466127,1,NA,2020-04-17
+"1841","Ingushetia",191,507061,3,NA,2020-04-17
+"1842","Tver Oblast",188,1260379,1,NA,2020-04-17
+"1843","Ryazan Oblast",184,1108847,1,NA,2020-04-17
+"1844","Vladimir Oblast",183,1358416,1,NA,2020-04-17
+"1845","Mari El",179,679417,2,NA,2020-04-17
+"1846","Rostov Oblast",168,4197821,0,NA,2020-04-17
+"1847","Stavropol Krai",155,2803573,0,NA,2020-04-17
+"1848","Ivanovo Oblast",149,997135,1,NA,2020-04-17
+"1849","Tyumen Oblast",146,3756536,0,NA,2020-04-17
+"1850","Kursk Oblast",145,1104008,1,NA,2020-04-17
+"1851","Tatarstan",144,3902642,0,NA,2020-04-17
+"1852","Perm Krai",144,2599260,0,NA,2020-04-17
+"1853","Smolensk Oblast",139,934889,1,NA,2020-04-17
+"1854","Ulyanovsk Oblast",138,1229824,1,NA,2020-04-17
+"1855","Chuvashia",137,1217818,1,NA,2020-04-17
+"1856","Mordovia",136,790197,1,NA,2020-04-17
+"1857","Tambov Oblast",133,1006748,1,NA,2020-04-17
+"1858","Khanty-Mansi Autonomous Okrug",128,1674676,0,NA,2020-04-17
+"1859","Kaluga Oblast",122,1002575,1,NA,2020-04-17
+"1860","Orenburg Oblast",120,1956835,0,NA,2020-04-17
+"1861","Penza Oblast",119,1305563,0,NA,2020-04-17
+"1862","Chechnya",115,1478726,0,NA,2020-04-17
+"1863","Sverdlovsk Oblast",115,4310681,0,NA,2020-04-17
+"1864","Khabarovsk Krai",109,1315643,0,NA,2020-04-17
+"1865","Voronezh Oblast",108,2324205,0,NA,2020-04-17
+"1866","Lipetsk Oblast",108,1139371,0,NA,2020-04-17
+"1867","Kaliningrad Oblast",104,1012512,1,NA,2020-04-17
+"1868","Buryatia",103,985937,1,NA,2020-04-17
+"1869","Yamalo-Nenets Autonomous Okrug",101,544444,1,NA,2020-04-17
+"1870","Kabardino-Balkaria",92,868350,1,NA,2020-04-17
+"1871","Kirov Oblast",91,1262402,0,NA,2020-04-17
+"1872","Saratov Oblast",87,2421895,0,NA,2020-04-17
+"1873","Oryol Oblast",85,733498,1,NA,2020-04-17
+"1874","Yaroslavl Oblast",81,1253389,0,NA,2020-04-17
+"1875","Adygea",79,463088,1,NA,2020-04-17
+"1876","Vologda Oblast",77,1160445,0,NA,2020-04-17
+"1877","Novosibirsk Oblast",76,2798170,0,NA,2020-04-17
+"1878","Novgorod Oblast",74,596508,1,NA,2020-04-17
+"1879","Belgorod Oblast",70,1549151,0,NA,2020-04-17
+"1880","North Ossetia-Alania",65,696837,0,NA,2020-04-17
+"1881","Astrakhan Oblast",64,1005782,0,NA,2020-04-17
+"1882","Samara Oblast",63,3179532,0,NA,2020-04-17
+"1883","Volgograd Oblast",62,2491036,0,NA,2020-04-17
+"1884","Udmurtia",58,1500955,0,NA,2020-04-17
+"1885","Chelyabinsk Oblast",57,3466369,0,NA,2020-04-17
+"1886","Kalmykia",53,271135,1,NA,2020-04-17
+"1887","Altai Krai",53,2317153,0,NA,2020-04-17
+"1888","Karachay-Cherkessia",49,465528,1,NA,2020-04-17
+"1889","Primorsky Krai",49,1895868,0,NA,2020-04-17
+"1890","Irkutsk Oblast",47,2391193,0,NA,2020-04-17
+"1891","Kostroma Oblast",47,633385,0,NA,2020-04-17
+"1892","Republic of Crimea",40,1912622,0,NA,2020-04-17
+"1893","Khakassia",38,534262,0,NA,2020-04-17
+"1894","Yakutia",38,971996,0,NA,2020-04-17
+"1895","Pskov Oblast",37,626115,0,NA,2020-04-17
+"1896","Arkhangelsk Oblast",34,1136535,0,NA,2020-04-17
+"1897","Zabaykalsky Krai",30,1059700,0,NA,2020-04-17
+"1898","Kamchatka Krai",29,313016,0,NA,2020-04-17
+"1899","Omsk Oblast",26,1926665,0,NA,2020-04-17
+"1900","Kemerovo Oblast",22,2657854,0,NA,2020-04-17
+"1901","Tomsk Oblast",21,1079271,0,NA,2020-04-17
+"1902","Sakhalin Oblast",19,488257,0,NA,2020-04-17
+"1903","Magadan Oblast",18,140149,1,NA,2020-04-17
+"1904","Jewish Autonomous Oblast",16,158305,1,NA,2020-04-17
+"1905","Sevastopol",12,449138,0,NA,2020-04-17
+"1906","Kurgan Oblast",12,827166,0,NA,2020-04-17
+"1907","Amur Oblast",11,790044,0,NA,2020-04-17
+"1908","Republic of Karelia",9,614064,0,NA,2020-04-17
+"1909","Tuva",9,327383,0,NA,2020-04-17
+"1910","Chukotka Autonomous Okrug",2,50288,0,NA,2020-04-17
+"1911","Altai Republic",1,220181,0,NA,2020-04-17
+"1912","Nenets Autonomous Okrug",1,44111,0,NA,2020-04-17
+"1913","Moscow Oblast",3954,126,40,NA,2020-04-18
+"1914","Saint Petersburg",1646,232,8,NA,2020-04-18
+"1915","Nizhny Novgorod Oblast",517,21,4,NA,2020-04-18
+"1916","Komi Republic",474,6,3,NA,2020-04-18
+"1917","Leningrad Oblast",388,9,0,NA,2020-04-18
+"1918","Murmansk Oblast",321,27,2,NA,2020-04-18
+"1919","Krasnodar Krai",335,49,4,NA,2020-04-18
+"1920","Krasnoyarsk Krai",276,17,0,NA,2020-04-18
+"1921","Dagestan",257,28,9,NA,2020-04-18
+"1922","Bryansk Oblast",256,29,1,NA,2020-04-18
+"1923","Bashkortostan",252,14,8,NA,2020-04-18
+"1924","Tver Oblast",237,9,0,NA,2020-04-18
+"1925","Tula Oblast",229,25,0,NA,2020-04-18
+"1926","Ingushetia",227,22,4,NA,2020-04-18
+"1927","Ryazan Oblast",225,9,0,NA,2020-04-18
+"1928","Mari El",219,24,1,NA,2020-04-18
+"1929","Stavropol Krai",209,24,2,NA,2020-04-18
+"1930","Mordovia",198,5,1,NA,2020-04-18
+"1931","Vladimir Oblast",198,11,5,NA,2020-04-18
+"1932","Rostov Oblast",197,12,0,NA,2020-04-18
+"1933","Tyumen Oblast",185,10,2,NA,2020-04-18
+"1934","Chechnya",175,15,5,NA,2020-04-18
+"1935","Kursk Oblast",170,8,2,NA,2020-04-18
+"1936","Perm Krai",170,21,3,NA,2020-04-18
+"1937","Tambov Oblast",165,8,0,NA,2020-04-18
+"1938","Chuvashia",164,6,1,NA,2020-04-18
+"1939","Ivanovo Oblast",164,12,1,NA,2020-04-18
+"1940","Khanty-Mansi Autonomous Okrug",161,19,0,NA,2020-04-18
+"1941","Tatarstan",160,25,0,NA,2020-04-18
+"1942","Ulyanovsk Oblast",157,2,2,NA,2020-04-18
+"1943","Smolensk Oblast",152,1,2,NA,2020-04-18
+"1944","Kaluga Oblast",151,9,2,NA,2020-04-18
+"1945","Khabarovsk Krai",147,12,4,NA,2020-04-18
+"1946","Penza Oblast",140,4,2,NA,2020-04-18
+"1947","Orenburg Oblast",140,15,2,NA,2020-04-18
+"1948","Voronezh Oblast",130,24,5,NA,2020-04-18
+"1949","Lipetsk Oblast",129,38,0,NA,2020-04-18
+"1950","Sverdlovsk Oblast",126,49,1,NA,2020-04-18
+"1951","Oryol Oblast",119,7,1,NA,2020-04-18
+"1952","Kaliningrad Oblast",115,30,1,NA,2020-04-18
+"1953","Kabardino-Balkaria",114,8,0,NA,2020-04-18
+"1954","Buryatia",112,26,2,NA,2020-04-18
+"1955","Kirov Oblast",111,13,2,NA,2020-04-18
+"1956","Yamalo-Nenets Autonomous Okrug",106,7,1,NA,2020-04-18
+"1957","Yaroslavl Oblast",105,12,0,NA,2020-04-18
+"1958","Astrakhan Oblast",99,7,3,NA,2020-04-18
+"1959","Saratov Oblast",98,13,0,NA,2020-04-18
+"1960","North Ossetia-Alania",94,5,2,NA,2020-04-18
+"1961","Vologda Oblast",86,13,0,NA,2020-04-18
+"1962","Novosibirsk Oblast",86,16,2,NA,2020-04-18
+"1963","Adygea",84,15,2,NA,2020-04-18
+"1964","Belgorod Oblast",81,9,2,NA,2020-04-18
+"1965","Novgorod Oblast",80,4,1,NA,2020-04-18
+"1966","Volgograd Oblast",79,23,1,NA,2020-04-18
+"1967","Primorsky Krai",67,4,2,NA,2020-04-18
+"1968","Kalmykia",67,9,3,NA,2020-04-18
+"1969","Samara Oblast",64,15,0,NA,2020-04-18
+"1970","Altai Krai",63,4,0,NA,2020-04-18
+"1971","Magadan Oblast",62,1,0,NA,2020-04-18
+"1972","Udmurtia",62,6,3,NA,2020-04-18
+"1973","Chelyabinsk Oblast",61,29,0,NA,2020-04-18
+"1974","Irkutsk Oblast",54,10,2,NA,2020-04-18
+"1975","Kostroma Oblast",53,7,2,NA,2020-04-18
+"1976","Karachay-Cherkessia",50,1,0,NA,2020-04-18
+"1977","Yakutia",47,16,0,NA,2020-04-18
+"1978","Khakassia",46,3,0,NA,2020-04-18
+"1979","Republic of Crimea",43,21,0,NA,2020-04-18
+"1980","Pskov Oblast",42,8,6,NA,2020-04-18
+"1981","Arkhangelsk Oblast",39,11,0,NA,2020-04-18
+"1982","Zabaykalsky Krai",33,4,0,NA,2020-04-18
+"1983","Omsk Oblast",31,13,0,NA,2020-04-18
+"1984","Kamchatka Krai",29,2,0,NA,2020-04-18
+"1985","Kemerovo Oblast",26,6,1,NA,2020-04-18
+"1986","Tomsk Oblast",24,4,0,NA,2020-04-18
+"1987","Jewish Autonomous Oblast",19,4,0,NA,2020-04-18
+"1988","Sakhalin Oblast",19,6,0,NA,2020-04-18
+"1989","Republic of Karelia",15,0,0,NA,2020-04-18
+"1990","Amur Oblast",14,4,0,NA,2020-04-18
+"1991","Kurgan Oblast",13,3,0,NA,2020-04-18
+"1992","Sevastopol",12,2,0,NA,2020-04-18
+"1993","Tuva",9,0,0,NA,2020-04-18
+"1994","Altai Republic",2,0,0,NA,2020-04-18
+"1995","Chukotka Autonomous Okrug",2,0,0,NA,2020-04-18
+"1996","Nenets Autonomous Okrug",1,0,0,NA,2020-04-18
+"1997","Moscow",24324,1763,176,NA,2020-04-19
+"1998","Moscow Oblast",4663,162,49,NA,2020-04-19
+"1999","Saint Petersburg",1760,239,8,NA,2020-04-19
+"2000","Nizhny Novgorod Oblast",646,21,4,NA,2020-04-19
+"2001","Komi Republic",481,10,3,NA,2020-04-19
+"2002","Leningrad Oblast",417,9,0,NA,2020-04-19
+"2003","Krasnodar Krai",383,54,5,NA,2020-04-19
+"2004","Murmansk Oblast",354,28,3,NA,2020-04-19
+"2005","Krasnoyarsk Krai",300,17,0,NA,2020-04-19
+"2006","Dagestan",292,28,9,NA,2020-04-19
+"2007","Tula Oblast",287,39,0,NA,2020-04-19
+"2008","Bryansk Oblast",279,30,1,NA,2020-04-19
+"2009","Tver Oblast",270,12,0,NA,2020-04-19
+"2010","Ingushetia",269,22,5,NA,2020-04-19
+"2011","Ryazan Oblast",267,9,0,NA,2020-04-19
+"2012","Mari El",262,24,1,NA,2020-04-19
+"2013","Mordovia",258,5,1,NA,2020-04-19
+"2014","Bashkortostan",252,14,10,NA,2020-04-19
+"2015","Rostov Oblast",232,13,0,NA,2020-04-19
+"2016","Stavropol Krai",232,26,3,NA,2020-04-19
+"2017","Tyumen Oblast",227,20,2,NA,2020-04-19
+"2018","Vladimir Oblast",225,11,5,NA,2020-04-19
+"2019","Chechnya",219,19,5,NA,2020-04-19
+"2020","Perm Krai",198,27,3,NA,2020-04-19
+"2021","Kursk Oblast",196,8,2,NA,2020-04-19
+"2022","Chuvashia",193,9,1,NA,2020-04-19
+"2023","Tatarstan",191,25,0,NA,2020-04-19
+"2024","Kaluga Oblast",188,9,2,NA,2020-04-19
+"2025","Tambov Oblast",187,8,0,NA,2020-04-19
+"2026","Khabarovsk Krai",185,12,4,NA,2020-04-19
+"2027","Orenburg Oblast",184,16,2,NA,2020-04-19
+"2028","Ivanovo Oblast",183,12,1,NA,2020-04-19
+"2029","Khanty-Mansi Autonomous Okrug",175,20,0,NA,2020-04-19
+"2030","Smolensk Oblast",173,4,2,NA,2020-04-19
+"2031","Ulyanovsk Oblast",168,3,2,NA,2020-04-19
+"2032","Voronezh Oblast",156,28,5,NA,2020-04-19
+"2033","Kirov Oblast",150,14,2,NA,2020-04-19
+"2034","Lipetsk Oblast",149,48,1,NA,2020-04-19
+"2035","Sverdlovsk Oblast",141,49,1,NA,2020-04-19
+"2036","Penza Oblast",140,4,5,NA,2020-04-19
+"2037","Kabardino-Balkaria",136,8,0,NA,2020-04-19
+"2038","Oryol Oblast",132,10,1,NA,2020-04-19
+"2039","Kaliningrad Oblast",126,30,1,NA,2020-04-19
+"2040","Astrakhan Oblast",123,9,3,NA,2020-04-19
+"2041","North Ossetia-Alania",120,7,2,NA,2020-04-19
+"2042","Yaroslavl Oblast",117,12,0,NA,2020-04-19
+"2043","Yamalo-Nenets Autonomous Okrug",116,7,1,NA,2020-04-19
+"2044","Buryatia",115,37,2,NA,2020-04-19
+"2045","Saratov Oblast",114,13,0,NA,2020-04-19
+"2046","Novosibirsk Oblast",108,16,3,NA,2020-04-19
+"2047","Arkhangelsk Oblast",107,11,0,NA,2020-04-19
+"2048","Novgorod Oblast",98,4,1,NA,2020-04-19
+"2049","Vologda Oblast",93,13,0,NA,2020-04-19
+"2050","Volgograd Oblast",93,23,1,NA,2020-04-19
+"2051","Adygea",91,15,2,NA,2020-04-19
+"2052","Belgorod Oblast",90,11,2,NA,2020-04-19
+"2053","Yakutia",88,16,0,NA,2020-04-19
+"2054","Primorsky Krai",80,4,2,NA,2020-04-19
+"2055","Samara Oblast",79,15,0,NA,2020-04-19
+"2056","Kalmykia",74,9,3,NA,2020-04-19
+"2057","Altai Krai",72,4,0,NA,2020-04-19
+"2058","Khakassia",68,3,0,NA,2020-04-19
+"2059","Chelyabinsk Oblast",68,33,0,NA,2020-04-19
+"2060","Karachay-Cherkessia",67,1,0,NA,2020-04-19
+"2061","Kostroma Oblast",66,7,2,NA,2020-04-19
+"2062","Udmurtia",66,7,3,NA,2020-04-19
+"2063","Magadan Oblast",63,1,0,NA,2020-04-19
+"2064","Irkutsk Oblast",55,12,2,NA,2020-04-19
+"2065","Republic of Crimea",45,22,0,NA,2020-04-19
+"2066","Pskov Oblast",44,8,6,NA,2020-04-19
+"2067","Kemerovo Oblast",35,6,1,NA,2020-04-19
+"2068","Kamchatka Krai",34,3,0,NA,2020-04-19
+"2069","Zabaykalsky Krai",34,4,0,NA,2020-04-19
+"2070","Omsk Oblast",33,14,0,NA,2020-04-19
+"2071","Tomsk Oblast",29,4,0,NA,2020-04-19
+"2072","Jewish Autonomous Oblast",20,4,0,NA,2020-04-19
+"2073","Sakhalin Oblast",19,8,0,NA,2020-04-19
+"2074","Republic of Karelia",19,0,0,NA,2020-04-19
+"2075","Amur Oblast",16,4,0,NA,2020-04-19
+"2076","Tuva",13,0,0,NA,2020-04-19
+"2077","Sevastopol",13,2,0,NA,2020-04-19
+"2078","Kurgan Oblast",13,3,0,NA,2020-04-19
+"2079","Altai Republic",2,0,0,NA,2020-04-19
+"2080","Chukotka Autonomous Okrug",2,0,0,NA,2020-04-19
+"2081","Nenets Autonomous Okrug",1,0,0,NA,2020-04-19
+"2082","Moscow",26350,1838,204,NA,2020-04-20
+"2083","Moscow Oblast",5241,176,49,NA,2020-04-20
+"2084","Saint Petersburg",1846,241,8,NA,2020-04-20
+"2085","Nizhny Novgorod Oblast",759,26,5,NA,2020-04-20
+"2086","Komi Republic",491,21,3,NA,2020-04-20
+"2087","Leningrad Oblast",454,9,0,NA,2020-04-20
+"2088","Krasnodar Krai",417,59,8,NA,2020-04-20
+"2089","Murmansk Oblast",400,28,3,NA,2020-04-20
+"2090","Dagestan",331,28,9,NA,2020-04-20
+"2091","Bryansk Oblast",321,30,1,NA,2020-04-20
+"2092","Tula Oblast",309,41,0,NA,2020-04-20
+"2093","Ingushetia",308,22,5,NA,2020-04-20
+"2094","Krasnoyarsk Krai",306,17,2,NA,2020-04-20
+"2095","Bashkortostan",297,14,14,NA,2020-04-20
+"2096","Tver Oblast",296,12,0,NA,2020-04-20
+"2097","Mordovia",293,5,1,NA,2020-04-20
+"2098","Rostov Oblast",292,13,0,NA,2020-04-20
+"2099","Mari El",291,24,1,NA,2020-04-20
+"2100","Ryazan Oblast",289,9,0,NA,2020-04-20
+"2101","Chechnya",264,19,5,NA,2020-04-20
+"2102","Vladimir Oblast",259,11,5,NA,2020-04-20
+"2103","Tyumen Oblast",254,20,2,NA,2020-04-20
+"2104","Stavropol Krai",244,26,3,NA,2020-04-20
+"2105","Tatarstan",230,25,0,NA,2020-04-20
+"2106","Kaluga Oblast",228,9,4,NA,2020-04-20
+"2107","Chuvashia",225,9,2,NA,2020-04-20
+"2108","Kursk Oblast",220,11,2,NA,2020-04-20
+"2109","Perm Krai",215,30,3,NA,2020-04-20
+"2110","Khabarovsk Krai",215,16,5,NA,2020-04-20
+"2111","Tambov Oblast",209,8,0,NA,2020-04-20
+"2112","Ivanovo Oblast",203,12,2,NA,2020-04-20
+"2113","Smolensk Oblast",189,4,2,NA,2020-04-20
+"2114","Khanty-Mansi Autonomous Okrug",188,21,0,NA,2020-04-20
+"2115","Ulyanovsk Oblast",187,3,2,NA,2020-04-20
+"2116","Orenburg Oblast",184,16,2,NA,2020-04-20
+"2117","Voronezh Oblast",180,28,5,NA,2020-04-20
+"2118","Oryol Oblast",175,10,1,NA,2020-04-20
+"2119","Kirov Oblast",169,14,2,NA,2020-04-20
+"2120","Lipetsk Oblast",169,60,1,NA,2020-04-20
+"2121","Penza Oblast",165,4,5,NA,2020-04-20
+"2122","Kabardino-Balkaria",152,8,0,NA,2020-04-20
+"2123","Sverdlovsk Oblast",149,52,1,NA,2020-04-20
+"2124","North Ossetia-Alania",145,8,2,NA,2020-04-20
+"2125","Yaroslavl Oblast",144,12,0,NA,2020-04-20
+"2126","Saratov Oblast",142,13,0,NA,2020-04-20
+"2127","Yamalo-Nenets Autonomous Okrug",140,7,1,NA,2020-04-20
+"2128","Kaliningrad Oblast",138,35,1,NA,2020-04-20
+"2129","Astrakhan Oblast",136,9,3,NA,2020-04-20
+"2130","Novosibirsk Oblast",132,16,3,NA,2020-04-20
+"2131","Buryatia",115,37,2,NA,2020-04-20
+"2132","Arkhangelsk Oblast",114,11,1,NA,2020-04-20
+"2133","Belgorod Oblast",112,11,2,NA,2020-04-20
+"2134","Volgograd Oblast",111,25,1,NA,2020-04-20
+"2135","Novgorod Oblast",108,4,1,NA,2020-04-20
+"2136","Yakutia",107,16,0,NA,2020-04-20
+"2137","Vologda Oblast",100,13,0,NA,2020-04-20
+"2138","Adygea",100,16,2,NA,2020-04-20
+"2139","Primorsky Krai",97,4,2,NA,2020-04-20
+"2140","Samara Oblast",95,15,0,NA,2020-04-20
+"2141","Udmurtia",92,7,3,NA,2020-04-20
+"2142","Karachay-Cherkessia",87,1,0,NA,2020-04-20
+"2143","Altai Krai",84,4,0,NA,2020-04-20
+"2144","Chelyabinsk Oblast",78,35,0,NA,2020-04-20
+"2145","Kalmykia",77,9,3,NA,2020-04-20
+"2146","Khakassia",76,3,0,NA,2020-04-20
+"2147","Kostroma Oblast",70,7,2,NA,2020-04-20
+"2148","Irkutsk Oblast",65,12,2,NA,2020-04-20
+"2149","Magadan Oblast",63,1,0,NA,2020-04-20
+"2150","Pskov Oblast",52,9,6,NA,2020-04-20
+"2151","Republic of Crimea",45,22,0,NA,2020-04-20
+"2152","Zabaykalsky Krai",43,4,0,NA,2020-04-20
+"2153","Kamchatka Krai",41,4,0,NA,2020-04-20
+"2154","Kemerovo Oblast",41,6,1,NA,2020-04-20
+"2155","Omsk Oblast",36,16,0,NA,2020-04-20
+"2156","Tomsk Oblast",33,4,0,NA,2020-04-20
+"2157","Republic of Karelia",27,0,0,NA,2020-04-20
+"2158","Jewish Autonomous Oblast",22,4,0,NA,2020-04-20
+"2159","Amur Oblast",20,4,0,NA,2020-04-20
+"2160","Sakhalin Oblast",19,8,0,NA,2020-04-20
+"2161","Sevastopol",17,2,0,NA,2020-04-20
+"2162","Tuva",13,0,0,NA,2020-04-20
+"2163","Kurgan Oblast",13,3,0,NA,2020-04-20
+"2164","Altai Republic",4,0,0,NA,2020-04-20
+"2165","Chukotka Autonomous Okrug",2,0,0,NA,2020-04-20
+"2166","Nenets Autonomous Okrug",1,0,0,NA,2020-04-20
+"2167","Moscow",29433,2057,233,NA,2020-04-21
+"2168","Moscow Oblast",5959,179,49,NA,2020-04-21
+"2169","Saint Petersburg",1973,280,11,NA,2020-04-21
+"2170","Nizhny Novgorod Oblast",860,28,5,NA,2020-04-21
+"2171","Komi Republic",507,21,3,NA,2020-04-21
+"2172","Leningrad Oblast",496,9,0,NA,2020-04-21
+"2173","Krasnodar Krai",461,70,8,NA,2020-04-21
+"2174","Murmansk Oblast",435,32,3,NA,2020-04-21
+"2175","Tula Oblast",384,46,1,NA,2020-04-21
+"2176","Bashkortostan",371,20,14,NA,2020-04-21
+"2177","Dagestan",371,43,11,NA,2020-04-21
+"2178","Krasnoyarsk Krai",370,17,2,NA,2020-04-21
+"2179","Ingushetia",354,30,9,NA,2020-04-21
+"2180","Bryansk Oblast",350,58,1,NA,2020-04-21
+"2181","Rostov Oblast",346,13,0,NA,2020-04-21
+"2182","Tver Oblast",329,15,0,NA,2020-04-21
+"2183","Mordovia",327,10,1,NA,2020-04-21
+"2184","Ryazan Oblast",316,9,0,NA,2020-04-21
+"2185","Mari El",311,46,1,NA,2020-04-21
+"2186","Chechnya",303,19,5,NA,2020-04-21
+"2187","Tyumen Oblast",290,28,2,NA,2020-04-21
+"2188","Vladimir Oblast",280,11,5,NA,2020-04-21
+"2189","Tatarstan",280,30,0,NA,2020-04-21
+"2190","Stavropol Krai",266,27,4,NA,2020-04-21
+"2191","Kaluga Oblast",258,9,6,NA,2020-04-21
+"2192","Khabarovsk Krai",243,16,5,NA,2020-04-21
+"2193","Kursk Oblast",242,11,3,NA,2020-04-21
+"2194","Perm Krai",237,30,3,NA,2020-04-21
+"2195","Chuvashia",235,9,5,NA,2020-04-21
+"2196","Sverdlovsk Oblast",233,55,1,NA,2020-04-21
+"2197","Orenburg Oblast",226,20,2,NA,2020-04-21
+"2198","Tambov Oblast",222,9,0,NA,2020-04-21
+"2199","Ivanovo Oblast",213,12,2,NA,2020-04-21
+"2200","Voronezh Oblast",211,30,6,NA,2020-04-21
+"2201","Smolensk Oblast",208,4,2,NA,2020-04-21
+"2202","Oryol Oblast",198,10,1,NA,2020-04-21
+"2203","Khanty-Mansi Autonomous Okrug",197,22,0,NA,2020-04-21
+"2204","Lipetsk Oblast",189,60,2,NA,2020-04-21
+"2205","Kirov Oblast",188,14,2,NA,2020-04-21
+"2206","Ulyanovsk Oblast",187,3,2,NA,2020-04-21
+"2207","Yaroslavl Oblast",187,12,0,NA,2020-04-21
+"2208","Penza Oblast",180,6,5,NA,2020-04-21
+"2209","North Ossetia-Alania",177,8,2,NA,2020-04-21
+"2210","Kabardino-Balkaria",170,8,1,NA,2020-04-21
+"2211","Saratov Oblast",168,13,0,NA,2020-04-21
+"2212","Yamalo-Nenets Autonomous Okrug",146,7,1,NA,2020-04-21
+"2213","Kaliningrad Oblast",144,41,1,NA,2020-04-21
+"2214","Astrakhan Oblast",137,9,3,NA,2020-04-21
+"2215","Novosibirsk Oblast",135,16,4,NA,2020-04-21
+"2216","Volgograd Oblast",134,25,1,NA,2020-04-21
+"2217","Altai Krai",127,9,0,NA,2020-04-21
+"2218","Buryatia",125,38,2,NA,2020-04-21
+"2219","Belgorod Oblast",122,11,2,NA,2020-04-21
+"2220","Udmurtia",118,7,3,NA,2020-04-21
+"2221","Arkhangelsk Oblast",118,15,1,NA,2020-04-21
+"2222","Novgorod Oblast",114,4,1,NA,2020-04-21
+"2223","Yakutia",111,16,0,NA,2020-04-21
+"2224","Adygea",108,21,2,NA,2020-04-21
+"2225","Vologda Oblast",107,13,0,NA,2020-04-21
+"2226","Karachay-Cherkessia",106,1,0,NA,2020-04-21
+"2227","Primorsky Krai",104,7,2,NA,2020-04-21
+"2228","Samara Oblast",103,15,0,NA,2020-04-21
+"2229","Chelyabinsk Oblast",92,35,0,NA,2020-04-21
+"2230","Khakassia",84,4,0,NA,2020-04-21
+"2231","Kostroma Oblast",81,7,2,NA,2020-04-21
+"2232","Kalmykia",77,9,3,NA,2020-04-21
+"2233","Irkutsk Oblast",68,12,3,NA,2020-04-21
+"2234","Magadan Oblast",65,1,0,NA,2020-04-21
+"2235","Pskov Oblast",58,9,6,NA,2020-04-21
+"2236","Zabaykalsky Krai",50,4,0,NA,2020-04-21
+"2237","Kamchatka Krai",48,4,0,NA,2020-04-21
+"2238","Kemerovo Oblast",47,11,1,NA,2020-04-21
+"2239","Republic of Crimea",46,22,0,NA,2020-04-21
+"2240","Jewish Autonomous Oblast",43,4,0,NA,2020-04-21
+"2241","Omsk Oblast",41,16,0,NA,2020-04-21
+"2242","Tomsk Oblast",37,4,0,NA,2020-04-21
+"2243","Republic of Karelia",30,0,0,NA,2020-04-21
+"2244","Amur Oblast",20,4,0,NA,2020-04-21
+"2245","Sakhalin Oblast",19,8,0,NA,2020-04-21
+"2246","Sevastopol",18,2,0,NA,2020-04-21
+"2247","Kurgan Oblast",15,3,0,NA,2020-04-21
+"2248","Tuva",13,0,0,NA,2020-04-21
+"2249","Altai Republic",8,0,0,NA,2020-04-21
+"2250","Chukotka Autonomous Okrug",2,0,0,NA,2020-04-21
+"2251","Nenets Autonomous Okrug",1,0,0,NA,2020-04-21
+"2252","Moscow",31981,2267,233,NA,2020-04-22
+"2253","Moscow Oblast",6590,186,56,NA,2020-04-22
+"2254","Saint Petersburg",2267,327,14,NA,2020-04-22
+"2255","Nizhny Novgorod Oblast",929,49,6,NA,2020-04-22
+"2256","Leningrad Oblast",537,24,0,NA,2020-04-22
+"2257","Komi Republic",527,21,4,NA,2020-04-22
+"2258","Murmansk Oblast",506,56,3,NA,2020-04-22
+"2259","Krasnodar Krai",481,72,11,NA,2020-04-22
+"2260","Tula Oblast",436,49,2,NA,2020-04-22
+"2261","Dagestan",417,43,11,NA,2020-04-22
+"2262","Bryansk Oblast",399,62,1,NA,2020-04-22
+"2263","Rostov Oblast",398,15,0,NA,2020-04-22
+"2264","Ingushetia",397,38,12,NA,2020-04-22
+"2265","Bashkortostan",396,34,14,NA,2020-04-22
+"2266","Krasnoyarsk Krai",392,28,2,NA,2020-04-22
+"2267","Ryazan Oblast",392,15,0,NA,2020-04-22
+"2268","Mordovia",357,11,1,NA,2020-04-22
+"2269","Tver Oblast",356,15,0,NA,2020-04-22
+"2270","Tatarstan",355,33,0,NA,2020-04-22
+"2271","Mari El",333,46,1,NA,2020-04-22
+"2272","Kaluga Oblast",330,9,8,NA,2020-04-22
+"2273","Chechnya",323,19,6,NA,2020-04-22
+"2274","Tyumen Oblast",319,28,2,NA,2020-04-22
+"2275","Vladimir Oblast",293,11,5,NA,2020-04-22
+"2276","Stavropol Krai",277,37,5,NA,2020-04-22
+"2277","Kursk Oblast",276,26,3,NA,2020-04-22
+"2278","Khabarovsk Krai",272,18,5,NA,2020-04-22
+"2279","Perm Krai",266,37,3,NA,2020-04-22
+"2280","Chuvashia",262,14,5,NA,2020-04-22
+"2281","Orenburg Oblast",254,32,2,NA,2020-04-22
+"2282","Smolensk Oblast",244,4,2,NA,2020-04-22
+"2283","Sverdlovsk Oblast",243,60,1,NA,2020-04-22
+"2284","Tambov Oblast",240,14,0,NA,2020-04-22
+"2285","Oryol Oblast",238,10,2,NA,2020-04-22
+"2286","Voronezh Oblast",236,30,7,NA,2020-04-22
+"2287","Ivanovo Oblast",225,12,2,NA,2020-04-22
+"2288","Kirov Oblast",216,18,3,NA,2020-04-22
+"2289","Lipetsk Oblast",213,62,2,NA,2020-04-22
+"2290","North Ossetia-Alania",211,8,2,NA,2020-04-22
+"2291","Khanty-Mansi Autonomous Okrug",203,29,1,NA,2020-04-22
+"2292","Yaroslavl Oblast",198,17,0,NA,2020-04-22
+"2293","Penza Oblast",196,6,5,NA,2020-04-22
+"2294","Ulyanovsk Oblast",196,5,2,NA,2020-04-22
+"2295","Kabardino-Balkaria",193,11,1,NA,2020-04-22
+"2296","Saratov Oblast",190,19,0,NA,2020-04-22
+"2297","Primorsky Krai",166,11,2,NA,2020-04-22
+"2298","Kaliningrad Oblast",163,42,1,NA,2020-04-22
+"2299","Buryatia",153,49,2,NA,2020-04-22
+"2300","Udmurtia",152,8,3,NA,2020-04-22
+"2301","Novosibirsk Oblast",151,20,4,NA,2020-04-22
+"2302","Yamalo-Nenets Autonomous Okrug",149,22,1,NA,2020-04-22
+"2303","Astrakhan Oblast",148,13,3,NA,2020-04-22
+"2304","Volgograd Oblast",145,30,2,NA,2020-04-22
+"2305","Karachay-Cherkessia",145,1,0,NA,2020-04-22
+"2306","Belgorod Oblast",144,12,2,NA,2020-04-22
+"2307","Novgorod Oblast",140,4,1,NA,2020-04-22
+"2308","Altai Krai",136,9,0,NA,2020-04-22
+"2309","Arkhangelsk Oblast",120,18,1,NA,2020-04-22
+"2310","Yakutia",116,16,0,NA,2020-04-22
+"2311","Samara Oblast",115,15,0,NA,2020-04-22
+"2312","Vologda Oblast",114,23,0,NA,2020-04-22
+"2313","Adygea",113,26,3,NA,2020-04-22
+"2314","Chelyabinsk Oblast",102,38,0,NA,2020-04-22
+"2315","Kalmykia",88,12,3,NA,2020-04-22
+"2316","Kostroma Oblast",88,7,2,NA,2020-04-22
+"2317","Khakassia",87,4,0,NA,2020-04-22
+"2318","Irkutsk Oblast",75,13,3,NA,2020-04-22
+"2319","Magadan Oblast",67,1,0,NA,2020-04-22
+"2320","Kamchatka Krai",63,4,0,NA,2020-04-22
+"2321","Pskov Oblast",62,9,6,NA,2020-04-22
+"2322","Zabaykalsky Krai",61,5,0,NA,2020-04-22
+"2323","Kemerovo Oblast",56,11,1,NA,2020-04-22
+"2324","Jewish Autonomous Oblast",52,6,0,NA,2020-04-22
+"2325","Republic of Crimea",46,23,0,NA,2020-04-22
+"2326","Omsk Oblast",45,17,0,NA,2020-04-22
+"2327","Tomsk Oblast",43,4,0,NA,2020-04-22
+"2328","Republic of Karelia",30,0,0,NA,2020-04-22
+"2329","Amur Oblast",23,4,0,NA,2020-04-22
+"2330","Sakhalin Oblast",19,8,0,NA,2020-04-22
+"2331","Sevastopol",19,5,0,NA,2020-04-22
+"2332","Kurgan Oblast",15,3,0,NA,2020-04-22
+"2333","Tuva",13,0,0,NA,2020-04-22
+"2334","Altai Republic",8,0,0,NA,2020-04-22
+"2335","Chukotka Autonomous Okrug",6,0,0,NA,2020-04-22
+"2336","Nenets Autonomous Okrug",1,0,0,NA,2020-04-22
+"2337","Moscow",33940,2448,288,NA,2020-04-23
+"2338","Moscow Oblast",7278,186,56,NA,2020-04-23
+"2339","Saint Petersburg",2458,368,17,NA,2020-04-23
+"2340","Nizhny Novgorod Oblast",1002,60,7,NA,2020-04-23
+"2341","Murmansk Oblast",603,61,3,NA,2020-04-23
+"2342","Leningrad Oblast",576,36,0,NA,2020-04-23
+"2343","Komi Republic",542,23,4,NA,2020-04-23
+"2344","Krasnodar Krai",539,88,14,NA,2020-04-23
+"2345","Rostov Oblast",469,18,0,NA,2020-04-23
+"2346","Tula Oblast",461,53,3,NA,2020-04-23
+"2347","Bryansk Oblast",459,68,2,NA,2020-04-23
+"2348","Dagestan",454,43,11,NA,2020-04-23
+"2349","Ingushetia",436,50,13,NA,2020-04-23
+"2350","Ryazan Oblast",429,32,0,NA,2020-04-23
+"2351","Krasnoyarsk Krai",427,48,5,NA,2020-04-23
+"2352","Bashkortostan",422,38,14,NA,2020-04-23
+"2353","Tatarstan",412,33,0,NA,2020-04-23
+"2354","Mordovia",385,13,1,NA,2020-04-23
+"2355","Tver Oblast",383,15,0,NA,2020-04-23
+"2356","Kaluga Oblast",383,14,8,NA,2020-04-23
+"2357","Mari El",348,46,1,NA,2020-04-23
+"2358","Chechnya",347,19,6,NA,2020-04-23
+"2359","Tyumen Oblast",341,34,2,NA,2020-04-23
+"2360","Vladimir Oblast",339,11,5,NA,2020-04-23
+"2361","Stavropol Krai",332,38,5,NA,2020-04-23
+"2362","Khabarovsk Krai",310,19,5,NA,2020-04-23
+"2363","Kursk Oblast",308,27,3,NA,2020-04-23
+"2364","Chuvashia",305,14,5,NA,2020-04-23
+"2365","Perm Krai",287,43,4,NA,2020-04-23
+"2366","Orenburg Oblast",277,32,2,NA,2020-04-23
+"2367","Sverdlovsk Oblast",271,65,1,NA,2020-04-23
+"2368","Yaroslavl Oblast",263,18,1,NA,2020-04-23
+"2369","Tambov Oblast",263,25,0,NA,2020-04-23
+"2370","Voronezh Oblast",261,30,7,NA,2020-04-23
+"2371","Smolensk Oblast",251,4,2,NA,2020-04-23
+"2372","Oryol Oblast",249,10,2,NA,2020-04-23
+"2373","Yamalo-Nenets Autonomous Okrug",243,22,1,NA,2020-04-23
+"2374","North Ossetia-Alania",242,18,2,NA,2020-04-23
+"2375","Kirov Oblast",240,20,3,NA,2020-04-23
+"2376","Ivanovo Oblast",239,12,2,NA,2020-04-23
+"2377","Lipetsk Oblast",238,62,2,NA,2020-04-23
+"2378","Saratov Oblast",229,19,0,NA,2020-04-23
+"2379","Ulyanovsk Oblast",228,5,2,NA,2020-04-23
+"2380","Kabardino-Balkaria",218,15,1,NA,2020-04-23
+"2381","Khanty-Mansi Autonomous Okrug",215,36,1,NA,2020-04-23
+"2382","Penza Oblast",211,6,5,NA,2020-04-23
+"2383","Primorsky Krai",185,13,2,NA,2020-04-23
+"2384","Belgorod Oblast",176,13,2,NA,2020-04-23
+"2385","Kaliningrad Oblast",171,45,1,NA,2020-04-23
+"2386","Karachay-Cherkessia",169,1,0,NA,2020-04-23
+"2387","Novosibirsk Oblast",168,23,4,NA,2020-04-23
+"2388","Astrakhan Oblast",165,25,3,NA,2020-04-23
+"2389","Volgograd Oblast",165,31,2,NA,2020-04-23
+"2390","Buryatia",163,55,2,NA,2020-04-23
+"2391","Udmurtia",161,18,3,NA,2020-04-23
+"2392","Novgorod Oblast",157,6,1,NA,2020-04-23
+"2393","Altai Krai",144,13,0,NA,2020-04-23
+"2394","Samara Oblast",141,15,0,NA,2020-04-23
+"2395","Yakutia",128,17,0,NA,2020-04-23
+"2396","Arkhangelsk Oblast",123,18,1,NA,2020-04-23
+"2397","Vologda Oblast",120,23,0,NA,2020-04-23
+"2398","Adygea",114,32,3,NA,2020-04-23
+"2399","Chelyabinsk Oblast",111,38,0,NA,2020-04-23
+"2400","Kostroma Oblast",104,11,2,NA,2020-04-23
+"2401","Khakassia",99,8,0,NA,2020-04-23
+"2402","Kalmykia",94,14,3,NA,2020-04-23
+"2403","Kamchatka Krai",78,5,0,NA,2020-04-23
+"2404","Magadan Oblast",76,2,0,NA,2020-04-23
+"2405","Irkutsk Oblast",75,21,3,NA,2020-04-23
+"2406","Kemerovo Oblast",67,11,1,NA,2020-04-23
+"2407","Pskov Oblast",66,9,6,NA,2020-04-23
+"2408","Jewish Autonomous Oblast",66,6,0,NA,2020-04-23
+"2409","Zabaykalsky Krai",64,5,0,NA,2020-04-23
+"2410","Omsk Oblast",53,19,0,NA,2020-04-23
+"2411","Tomsk Oblast",52,4,0,NA,2020-04-23
+"2412","Republic of Crimea",51,23,0,NA,2020-04-23
+"2413","Republic of Karelia",35,1,0,NA,2020-04-23
+"2414","Sevastopol",25,5,0,NA,2020-04-23
+"2415","Amur Oblast",25,5,0,NA,2020-04-23
+"2416","Kurgan Oblast",20,3,0,NA,2020-04-23
+"2417","Sakhalin Oblast",19,8,0,NA,2020-04-23
+"2418","Tuva",14,0,0,NA,2020-04-23
+"2419","Altai Republic",9,0,0,NA,2020-04-23
+"2420","Chukotka Autonomous Okrug",6,0,0,NA,2020-04-23
+"2421","Nenets Autonomous Okrug",1,0,0,NA,2020-04-23
+"2422","Moscow",36897,2735,325,NA,2020-04-24
+"2423","Moscow Oblast",7889,235,66,NA,2020-04-24
+"2424","Saint Petersburg",2711,411,20,NA,2020-04-24
+"2425","Nizhny Novgorod Oblast",1096,77,8,NA,2020-04-24
+"2426","Murmansk Oblast",663,64,4,NA,2020-04-24
+"2427","Krasnodar Krai",623,104,16,NA,2020-04-24
+"2428","Leningrad Oblast",615,56,0,NA,2020-04-24
+"2429","Dagestan",567,43,11,NA,2020-04-24
+"2430","Komi Republic",553,28,4,NA,2020-04-24
+"2431","Rostov Oblast",533,18,0,NA,2020-04-24
+"2432","Tula Oblast",505,53,3,NA,2020-04-24
+"2433","Bryansk Oblast",494,82,2,NA,2020-04-24
+"2434","Ryazan Oblast",475,32,0,NA,2020-04-24
+"2435","Ingushetia",474,56,13,NA,2020-04-24
+"2436","Bashkortostan",455,57,14,NA,2020-04-24
+"2437","Krasnoyarsk Krai",449,48,5,NA,2020-04-24
+"2438","Kaluga Oblast",444,14,8,NA,2020-04-24
+"2439","Tatarstan",426,37,0,NA,2020-04-24
+"2440","Mordovia",424,18,2,NA,2020-04-24
+"2441","Tver Oblast",412,15,0,NA,2020-04-24
+"2442","Vladimir Oblast",381,11,5,NA,2020-04-24
+"2443","Mari El",377,46,1,NA,2020-04-24
+"2444","Chechnya",365,23,6,NA,2020-04-24
+"2445","Stavropol Krai",358,44,5,NA,2020-04-24
+"2446","Tyumen Oblast",357,40,2,NA,2020-04-24
+"2447","Khabarovsk Krai",351,21,5,NA,2020-04-24
+"2448","Chuvashia",348,17,5,NA,2020-04-24
+"2449","Kursk Oblast",345,36,3,NA,2020-04-24
+"2450","Perm Krai",318,48,4,NA,2020-04-24
+"2451","Orenburg Oblast",305,32,2,NA,2020-04-24
+"2452","Yaroslavl Oblast",305,19,2,NA,2020-04-24
+"2453","Sverdlovsk Oblast",304,71,1,NA,2020-04-24
+"2454","Tambov Oblast",298,29,0,NA,2020-04-24
+"2455","Oryol Oblast",296,10,2,NA,2020-04-24
+"2456","Voronezh Oblast",291,38,7,NA,2020-04-24
+"2457","Kirov Oblast",276,27,3,NA,2020-04-24
+"2458","North Ossetia-Alania",275,18,2,NA,2020-04-24
+"2459","Yamalo-Nenets Autonomous Okrug",266,35,1,NA,2020-04-24
+"2460","Lipetsk Oblast",263,62,2,NA,2020-04-24
+"2461","Smolensk Oblast",262,15,2,NA,2020-04-24
+"2462","Ulyanovsk Oblast",253,5,3,NA,2020-04-24
+"2463","Ivanovo Oblast",247,41,2,NA,2020-04-24
+"2464","Saratov Oblast",245,30,0,NA,2020-04-24
+"2465","Kabardino-Balkaria",243,15,1,NA,2020-04-24
+"2466","Penza Oblast",232,6,5,NA,2020-04-24
+"2467","Primorsky Krai",220,23,2,NA,2020-04-24
+"2468","Khanty-Mansi Autonomous Okrug",217,39,1,NA,2020-04-24
+"2469","Novosibirsk Oblast",209,24,4,NA,2020-04-24
+"2470","Belgorod Oblast",202,16,2,NA,2020-04-24
+"2471","Karachay-Cherkessia",194,1,0,NA,2020-04-24
+"2472","Kaliningrad Oblast",189,48,1,NA,2020-04-24
+"2473","Volgograd Oblast",186,32,3,NA,2020-04-24
+"2474","Astrakhan Oblast",186,25,3,NA,2020-04-24
+"2475","Samara Oblast",185,19,0,NA,2020-04-24
+"2476","Udmurtia",178,19,4,NA,2020-04-24
+"2477","Novgorod Oblast",171,8,1,NA,2020-04-24
+"2478","Chelyabinsk Oblast",168,43,0,NA,2020-04-24
+"2479","Buryatia",167,62,2,NA,2020-04-24
+"2480","Altai Krai",152,15,0,NA,2020-04-24
+"2481","Yakutia",137,17,0,NA,2020-04-24
+"2482","Arkhangelsk Oblast",137,18,1,NA,2020-04-24
+"2483","Vologda Oblast",129,26,0,NA,2020-04-24
+"2484","Kostroma Oblast",120,11,2,NA,2020-04-24
+"2485","Adygea",117,32,3,NA,2020-04-24
+"2486","Kalmykia",104,16,3,NA,2020-04-24
+"2487","Khakassia",102,10,1,NA,2020-04-24
+"2488","Kamchatka Krai",84,5,0,NA,2020-04-24
+"2489","Pskov Oblast",81,9,6,NA,2020-04-24
+"2490","Irkutsk Oblast",80,23,3,NA,2020-04-24
+"2491","Jewish Autonomous Oblast",80,9,0,NA,2020-04-24
+"2492","Magadan Oblast",78,2,0,NA,2020-04-24
+"2493","Kemerovo Oblast",76,11,1,NA,2020-04-24
+"2494","Zabaykalsky Krai",73,7,0,NA,2020-04-24
+"2495","Tomsk Oblast",59,4,0,NA,2020-04-24
+"2496","Omsk Oblast",54,19,0,NA,2020-04-24
+"2497","Republic of Crimea",53,29,0,NA,2020-04-24
+"2498","Republic of Karelia",37,3,0,NA,2020-04-24
+"2499","Amur Oblast",28,5,0,NA,2020-04-24
+"2500","Sevastopol",25,5,0,NA,2020-04-24
+"2501","Kurgan Oblast",22,3,0,NA,2020-04-24
+"2502","Sakhalin Oblast",20,8,0,NA,2020-04-24
+"2503","Tuva",15,0,0,NA,2020-04-24
+"2504","Chukotka Autonomous Okrug",11,0,0,NA,2020-04-24
+"2505","Altai Republic",9,0,0,NA,2020-04-24
+"2506","Nenets Autonomous Okrug",1,0,0,NA,2020-04-24
+"2507","Moscow",39509,3047,366,NA,2020-04-25
+"2508","Moscow Oblast",8494,262,69,NA,2020-04-25
+"2509","Saint Petersburg",2926,460,23,NA,2020-04-25
+"2510","Nizhny Novgorod Oblast",1214,92,8,NA,2020-04-25
+"2511","Murmansk Oblast",856,70,4,NA,2020-04-25
+"2512","Dagestan",724,43,11,NA,2020-04-25
+"2513","Krasnodar Krai",707,118,18,NA,2020-04-25
+"2514","Leningrad Oblast",658,56,0,NA,2020-04-25
+"2515","Rostov Oblast",584,18,0,NA,2020-04-25
+"2516","Tula Oblast",578,57,4,NA,2020-04-25
+"2517","Komi Republic",561,28,4,NA,2020-04-25
+"2518","Ryazan Oblast",539,38,0,NA,2020-04-25
+"2519","Bryansk Oblast",521,84,2,NA,2020-04-25
+"2520","Ingushetia",515,67,13,NA,2020-04-25
+"2521","Kaluga Oblast",513,17,8,NA,2020-04-25
+"2522","Tatarstan",491,48,0,NA,2020-04-25
+"2523","Bashkortostan",490,57,14,NA,2020-04-25
+"2524","Mordovia",469,18,2,NA,2020-04-25
+"2525","Krasnoyarsk Krai",467,51,5,NA,2020-04-25
+"2526","Tver Oblast",441,24,0,NA,2020-04-25
+"2527","Vladimir Oblast",426,11,5,NA,2020-04-25
+"2528","Mari El",407,46,1,NA,2020-04-25
+"2529","Kursk Oblast",389,38,4,NA,2020-04-25
+"2530","Chechnya",387,23,6,NA,2020-04-25
+"2531","Stavropol Krai",385,50,5,NA,2020-04-25
+"2532","Chuvashia",383,31,7,NA,2020-04-25
+"2533","Khabarovsk Krai",379,22,5,NA,2020-04-25
+"2534","Tyumen Oblast",374,50,3,NA,2020-04-25
+"2535","Perm Krai",373,52,4,NA,2020-04-25
+"2536","Orenburg Oblast",361,55,2,NA,2020-04-25
+"2537","Tambov Oblast",343,37,1,NA,2020-04-25
+"2538","Yaroslavl Oblast",342,23,2,NA,2020-04-25
+"2539","Sverdlovsk Oblast",337,82,1,NA,2020-04-25
+"2540","Oryol Oblast",321,10,2,NA,2020-04-25
+"2541","Kirov Oblast",316,29,3,NA,2020-04-25
+"2542","Voronezh Oblast",313,38,8,NA,2020-04-25
+"2543","North Ossetia-Alania",305,35,2,NA,2020-04-25
+"2544","Yamalo-Nenets Autonomous Okrug",303,35,1,NA,2020-04-25
+"2545","Lipetsk Oblast",284,64,2,NA,2020-04-25
+"2546","Ulyanovsk Oblast",280,5,3,NA,2020-04-25
+"2547","Smolensk Oblast",279,15,2,NA,2020-04-25
+"2548","Kabardino-Balkaria",272,21,1,NA,2020-04-25
+"2549","Saratov Oblast",265,34,2,NA,2020-04-25
+"2550","Ivanovo Oblast",263,41,2,NA,2020-04-25
+"2551","Penza Oblast",255,30,6,NA,2020-04-25
+"2552","Primorsky Krai",254,32,2,NA,2020-04-25
+"2553","Novosibirsk Oblast",247,24,4,NA,2020-04-25
+"2554","Karachay-Cherkessia",240,1,0,NA,2020-04-25
+"2555","Chelyabinsk Oblast",240,45,0,NA,2020-04-25
+"2556","Khanty-Mansi Autonomous Okrug",233,44,1,NA,2020-04-25
+"2557","Belgorod Oblast",221,28,2,NA,2020-04-25
+"2558","Altai Krai",215,18,1,NA,2020-04-25
+"2559","Volgograd Oblast",212,34,5,NA,2020-04-25
+"2560","Astrakhan Oblast",211,29,4,NA,2020-04-25
+"2561","Kaliningrad Oblast",210,49,1,NA,2020-04-25
+"2562","Samara Oblast",209,22,0,NA,2020-04-25
+"2563","Udmurtia",193,19,4,NA,2020-04-25
+"2564","Novgorod Oblast",186,14,1,NA,2020-04-25
+"2565","Buryatia",180,62,2,NA,2020-04-25
+"2566","Khakassia",151,10,2,NA,2020-04-25
+"2567","Arkhangelsk Oblast",147,18,1,NA,2020-04-25
+"2568","Yakutia",141,18,0,NA,2020-04-25
+"2569","Vologda Oblast",138,29,0,NA,2020-04-25
+"2570","Kostroma Oblast",137,11,3,NA,2020-04-25
+"2571","Kalmykia",122,19,3,NA,2020-04-25
+"2572","Adygea",119,32,3,NA,2020-04-25
+"2573","Pskov Oblast",93,9,6,NA,2020-04-25
+"2574","Kamchatka Krai",87,5,0,NA,2020-04-25
+"2575","Magadan Oblast",87,2,0,NA,2020-04-25
+"2576","Jewish Autonomous Oblast",86,9,0,NA,2020-04-25
+"2577","Irkutsk Oblast",85,23,3,NA,2020-04-25
+"2578","Zabaykalsky Krai",83,13,0,NA,2020-04-25
+"2579","Kemerovo Oblast",82,11,1,NA,2020-04-25
+"2580","Tomsk Oblast",66,4,0,NA,2020-04-25
+"2581","Omsk Oblast",58,19,0,NA,2020-04-25
+"2582","Republic of Crimea",57,29,0,NA,2020-04-25
+"2583","Republic of Karelia",42,4,0,NA,2020-04-25
+"2584","Amur Oblast",33,5,0,NA,2020-04-25
+"2585","Kurgan Oblast",27,4,0,NA,2020-04-25
+"2586","Sevastopol",26,6,0,NA,2020-04-25
+"2587","Tuva",24,0,0,NA,2020-04-25
+"2588","Sakhalin Oblast",20,13,0,NA,2020-04-25
+"2589","Altai Republic",14,0,0,NA,2020-04-25
+"2590","Chukotka Autonomous Okrug",12,1,0,NA,2020-04-25
+"2591","Nenets Autonomous Okrug",1,1,0,NA,2020-04-25
+"2592","Moscow",42480,3175,404,NA,2020-04-26
+"2593","Moscow Oblast",9070,272,71,NA,2020-04-26
+"2594","Saint Petersburg",3077,489,27,NA,2020-04-26
+"2595","Nizhny Novgorod Oblast",1367,109,8,NA,2020-04-26
+"2596","Murmansk Oblast",961,71,4,NA,2020-04-26
+"2597","Dagestan",827,48,11,NA,2020-04-26
+"2598","Krasnodar Krai",780,122,19,NA,2020-04-26
+"2599","Leningrad Oblast",700,56,0,NA,2020-04-26
+"2600","Rostov Oblast",649,37,1,NA,2020-04-26
+"2601","Tula Oblast",644,59,5,NA,2020-04-26
+"2602","Ryazan Oblast",602,47,0,NA,2020-04-26
+"2603","Bryansk Oblast",599,90,3,NA,2020-04-26
+"2604","Kaluga Oblast",583,25,8,NA,2020-04-26
+"2605","Komi Republic",578,52,5,NA,2020-04-26
+"2606","Tatarstan",562,51,0,NA,2020-04-26
+"2607","Ingushetia",552,75,13,NA,2020-04-26
+"2608","Bashkortostan",527,59,14,NA,2020-04-26
+"2609","Mordovia",518,36,2,NA,2020-04-26
+"2610","Krasnoyarsk Krai",508,59,5,NA,2020-04-26
+"2611","Vladimir Oblast",475,11,5,NA,2020-04-26
+"2612","Tver Oblast",464,24,1,NA,2020-04-26
+"2613","Kursk Oblast",456,38,4,NA,2020-04-26
+"2614","Perm Krai",434,52,4,NA,2020-04-26
+"2615","Mari El",431,46,3,NA,2020-04-26
+"2616","Chuvashia",421,31,8,NA,2020-04-26
+"2617","Stavropol Krai",421,58,6,NA,2020-04-26
+"2618","Chechnya",409,23,6,NA,2020-04-26
+"2619","Khabarovsk Krai",406,22,5,NA,2020-04-26
+"2620","Tambov Oblast",399,47,1,NA,2020-04-26
+"2621","Sverdlovsk Oblast",395,87,1,NA,2020-04-26
+"2622","Tyumen Oblast",386,58,3,NA,2020-04-26
+"2623","Yaroslavl Oblast",384,23,2,NA,2020-04-26
+"2624","Orenburg Oblast",377,58,2,NA,2020-04-26
+"2625","Oryol Oblast",363,32,2,NA,2020-04-26
+"2626","Kirov Oblast",362,37,3,NA,2020-04-26
+"2627","Yamalo-Nenets Autonomous Okrug",348,35,1,NA,2020-04-26
+"2628","North Ossetia-Alania",348,35,2,NA,2020-04-26
+"2629","Voronezh Oblast",338,42,8,NA,2020-04-26
+"2630","Ulyanovsk Oblast",307,5,3,NA,2020-04-26
+"2631","Lipetsk Oblast",306,64,2,NA,2020-04-26
+"2632","Saratov Oblast",305,38,2,NA,2020-04-26
+"2633","Novosibirsk Oblast",305,39,4,NA,2020-04-26
+"2634","Chelyabinsk Oblast",302,47,0,NA,2020-04-26
+"2635","Kabardino-Balkaria",300,21,1,NA,2020-04-26
+"2636","Smolensk Oblast",289,15,2,NA,2020-04-26
+"2637","Altai Krai",283,22,2,NA,2020-04-26
+"2638","Karachay-Cherkessia",282,4,1,NA,2020-04-26
+"2639","Primorsky Krai",278,33,3,NA,2020-04-26
+"2640","Astrakhan Oblast",277,42,4,NA,2020-04-26
+"2641","Ivanovo Oblast",274,70,2,NA,2020-04-26
+"2642","Khanty-Mansi Autonomous Okrug",274,53,1,NA,2020-04-26
+"2643","Penza Oblast",261,56,6,NA,2020-04-26
+"2644","Volgograd Oblast",242,37,6,NA,2020-04-26
+"2645","Belgorod Oblast",242,31,2,NA,2020-04-26
+"2646","Kaliningrad Oblast",236,59,3,NA,2020-04-26
+"2647","Samara Oblast",229,26,2,NA,2020-04-26
+"2648","Novgorod Oblast",211,14,2,NA,2020-04-26
+"2649","Udmurtia",202,19,4,NA,2020-04-26
+"2650","Buryatia",186,69,2,NA,2020-04-26
+"2651","Khakassia",176,15,2,NA,2020-04-26
+"2652","Arkhangelsk Oblast",167,22,1,NA,2020-04-26
+"2653","Yakutia",152,18,0,NA,2020-04-26
+"2654","Kostroma Oblast",148,11,3,NA,2020-04-26
+"2655","Kalmykia",146,19,3,NA,2020-04-26
+"2656","Vologda Oblast",145,33,0,NA,2020-04-26
+"2657","Adygea",134,32,3,NA,2020-04-26
+"2658","Pskov Oblast",110,9,7,NA,2020-04-26
+"2659","Kamchatka Krai",110,5,0,NA,2020-04-26
+"2660","Kemerovo Oblast",103,11,1,NA,2020-04-26
+"2661","Zabaykalsky Krai",90,13,0,NA,2020-04-26
+"2662","Magadan Oblast",88,2,0,NA,2020-04-26
+"2663","Irkutsk Oblast",87,25,4,NA,2020-04-26
+"2664","Jewish Autonomous Oblast",86,9,0,NA,2020-04-26
+"2665","Republic of Crimea",67,29,0,NA,2020-04-26
+"2666","Tomsk Oblast",67,4,0,NA,2020-04-26
+"2667","Omsk Oblast",62,20,2,NA,2020-04-26
+"2668","Republic of Karelia",44,5,0,NA,2020-04-26
+"2669","Amur Oblast",36,5,0,NA,2020-04-26
+"2670","Sevastopol",31,6,0,NA,2020-04-26
+"2671","Kurgan Oblast",29,4,0,NA,2020-04-26
+"2672","Tuva",27,0,0,NA,2020-04-26
+"2673","Sakhalin Oblast",20,13,0,NA,2020-04-26
+"2674","Altai Republic",15,0,0,NA,2020-04-26
+"2675","Chukotka Autonomous Okrug",15,1,0,NA,2020-04-26
+"2676","Nenets Autonomous Okrug",2,1,0,NA,2020-04-26
+"2677","Moscow",45351,3524,435,NA,2020-04-27
+"2678","Moscow Oblast",9708,286,71,NA,2020-04-27
+"2679","Saint Petersburg",3238,489,27,NA,2020-04-27
+"2680","Nizhny Novgorod Oblast",1574,109,9,NA,2020-04-27
+"2681","Dagestan",994,48,11,NA,2020-04-27
+"2682","Murmansk Oblast",989,73,4,NA,2020-04-27
+"2683","Krasnodar Krai",837,125,19,NA,2020-04-27
+"2684","Leningrad Oblast",743,80,0,NA,2020-04-27
+"2685","Rostov Oblast",714,40,2,NA,2020-04-27
+"2686","Tula Oblast",713,59,5,NA,2020-04-27
+"2687","Ryazan Oblast",687,47,3,NA,2020-04-27
+"2688","Bryansk Oblast",642,102,4,NA,2020-04-27
+"2689","Kaluga Oblast",639,26,8,NA,2020-04-27
+"2690","Tatarstan",632,54,0,NA,2020-04-27
+"2691","Komi Republic",590,52,5,NA,2020-04-27
+"2692","Ingushetia",590,90,17,NA,2020-04-27
+"2693","Bashkortostan",570,72,14,NA,2020-04-27
+"2694","Mordovia",560,36,2,NA,2020-04-27
+"2695","Krasnoyarsk Krai",527,59,5,NA,2020-04-27
+"2696","Kursk Oblast",525,46,4,NA,2020-04-27
+"2697","Vladimir Oblast",518,11,5,NA,2020-04-27
+"2698","Tver Oblast",498,24,1,NA,2020-04-27
+"2699","Chuvashia",463,44,8,NA,2020-04-27
+"2700","Mari El",462,46,3,NA,2020-04-27
+"2701","Tambov Oblast",460,48,1,NA,2020-04-27
+"2702","Sverdlovsk Oblast",454,88,1,NA,2020-04-27
+"2703","Stavropol Krai",454,73,6,NA,2020-04-27
+"2704","Perm Krai",454,61,4,NA,2020-04-27
+"2705","Khabarovsk Krai",439,22,5,NA,2020-04-27
+"2706","Chechnya",429,23,6,NA,2020-04-27
+"2707","Yaroslavl Oblast",409,26,3,NA,2020-04-27
+"2708","Oryol Oblast",407,32,2,NA,2020-04-27
+"2709","North Ossetia-Alania",401,57,2,NA,2020-04-27
+"2710","Tyumen Oblast",399,61,3,NA,2020-04-27
+"2711","Orenburg Oblast",391,58,2,NA,2020-04-27
+"2712","Kirov Oblast",388,38,3,NA,2020-04-27
+"2713","Yamalo-Nenets Autonomous Okrug",375,35,1,NA,2020-04-27
+"2714","Chelyabinsk Oblast",360,47,0,NA,2020-04-27
+"2715","Voronezh Oblast",358,57,8,NA,2020-04-27
+"2716","Novosibirsk Oblast",347,39,4,NA,2020-04-27
+"2717","Ulyanovsk Oblast",331,5,4,NA,2020-04-27
+"2718","Lipetsk Oblast",330,65,2,NA,2020-04-27
+"2719","Kabardino-Balkaria",329,28,1,NA,2020-04-27
+"2720","Saratov Oblast",327,39,2,NA,2020-04-27
+"2721","Smolensk Oblast",324,26,2,NA,2020-04-27
+"2722","Altai Krai",310,29,1,NA,2020-04-27
+"2723","Primorsky Krai",302,33,3,NA,2020-04-27
+"2724","Karachay-Cherkessia",301,4,2,NA,2020-04-27
+"2725","Astrakhan Oblast",298,44,4,NA,2020-04-27
+"2726","Khanty-Mansi Autonomous Okrug",297,55,2,NA,2020-04-27
+"2727","Penza Oblast",283,58,6,NA,2020-04-27
+"2728","Ivanovo Oblast",282,70,2,NA,2020-04-27
+"2729","Volgograd Oblast",272,37,8,NA,2020-04-27
+"2730","Belgorod Oblast",269,31,2,NA,2020-04-27
+"2731","Kaliningrad Oblast",264,59,3,NA,2020-04-27
+"2732","Samara Oblast",264,26,2,NA,2020-04-27
+"2733","Novgorod Oblast",244,14,2,NA,2020-04-27
+"2734","Buryatia",209,69,2,NA,2020-04-27
+"2735","Udmurtia",207,19,5,NA,2020-04-27
+"2736","Kamchatka Krai",195,5,0,NA,2020-04-27
+"2737","Khakassia",184,15,2,NA,2020-04-27
+"2738","Arkhangelsk Oblast",175,22,1,NA,2020-04-27
+"2739","Yakutia",159,18,1,NA,2020-04-27
+"2740","Kostroma Oblast",158,11,3,NA,2020-04-27
+"2741","Kalmykia",158,19,3,NA,2020-04-27
+"2742","Vologda Oblast",155,33,0,NA,2020-04-27
+"2743","Adygea",142,32,3,NA,2020-04-27
+"2744","Pskov Oblast",124,13,8,NA,2020-04-27
+"2745","Kemerovo Oblast",107,12,1,NA,2020-04-27
+"2746","Jewish Autonomous Oblast",101,9,0,NA,2020-04-27
+"2747","Zabaykalsky Krai",96,14,0,NA,2020-04-27
+"2748","Magadan Oblast",91,2,0,NA,2020-04-27
+"2749","Irkutsk Oblast",87,25,4,NA,2020-04-27
+"2750","Republic of Crimea",69,29,0,NA,2020-04-27
+"2751","Tomsk Oblast",76,11,0,NA,2020-04-27
+"2752","Omsk Oblast",71,20,1,NA,2020-04-27
+"2753","Republic of Karelia",56,5,0,NA,2020-04-27
+"2754","Amur Oblast",40,5,0,NA,2020-04-27
+"2755","Sevastopol",34,7,0,NA,2020-04-27
+"2756","Kurgan Oblast",31,4,0,NA,2020-04-27
+"2757","Tuva",30,0,0,NA,2020-04-27
+"2758","Altai Republic",27,0,0,NA,2020-04-27
+"2759","Sakhalin Oblast",21,15,0,NA,2020-04-27
+"2760","Chukotka Autonomous Okrug",17,1,0,NA,2020-04-27
+"2761","Nenets Autonomous Okrug",11,1,0,NA,NA
