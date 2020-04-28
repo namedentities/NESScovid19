@@ -273,7 +273,9 @@ p2 <- gadm36_levels_2 %>%
 ```
 
 ```{r, fig.width=12, fig.height=6,warning=FALSE,message=FALSE,error=FALSE}
+
 p2
+
 ```
 
 
@@ -376,11 +378,20 @@ To each individual dataset-location series, we fit a piecewise linear trend. Eac
 
 ```{r,warning=FALSE,message=FALSE,error=FALSE}
 
+#we need to parallelize this code and see what's loudly throwing
+#Error in chol.default(J12) : 
+#  the leading minor of order 1 is not positive definite
+
 dataset_places <- lhs_long_clean %>% dplyr::select(dataset_gid_geonameid_wikidata_id) %>% distinct() %>% pull(dataset_gid_geonameid_wikidata_id)
 library(party)
 temp_list1 <- list()
+options(error = expression(NULL))
+sink(NULL)
+zz <- file("messages.txt", open = "wt")
+sink(zz)
+suppressMessages(
 for(q in dataset_places  ){
-      try({
+      #try({
         temp <- NULL
         temp <- lhs_long_clean %>%
                 filter(dataset_gid_geonameid_wikidata_id %in% q) %>%
@@ -426,7 +437,7 @@ for(q in dataset_places  ){
                     mutate(confirmed_log_y_hat_percent_change = round((exp(confirmed_log_y_hat_slope)-1)*100,2))  %>%
                     mutate(confirmed_log_y_hat=ifelse(confirmed_log_y_hat<0,NA, confirmed_log_y_hat))
           }
-        }, error = function(e) {})
+        }, error = function(e) {}, silent=TRUE)
         
         tryCatch({  
           if(sum(!is.na(temp$deaths_log))>=3){ #need at least 3 points
@@ -445,7 +456,7 @@ for(q in dataset_places  ){
                     mutate(deaths_log_y_hat_percent_change = round((exp(deaths_log_y_hat_slope)-1)*100,2)) %>%
                     mutate(deaths_log_y_hat=ifelse(deaths_log_y_hat<0,NA, deaths_log_y_hat)) #reject any where the prediction is less than 1 full case
           }
-        }, error = function(e) {})
+        }, error = function(e) {}, silent=TRUE)
         
         tryCatch({  
           if(sum(!is.na(temp$tested_people_log))>=3){ #need at least 3 points
@@ -463,12 +474,14 @@ for(q in dataset_places  ){
                        mutate(tested_people_log_y_hat_percent_change = round((exp(tested_people_log_y_hat_slope)-1)*100,2)) %>%
                        mutate(tested_people_log_y_hat=ifelse(tested_people_log_y_hat<0,NA, tested_people_log_y_hat)) #reject any where the prediction is less than 1 full case
           }
-        }, error = function(e) {})
+        }, error = function(e) {}, silent=TRUE)
         
         temp_list1[[q ]] <- temp
   
-      })
+      #})
 }
+)
+sink(NULL)
 lhs_long_clean_imputed1 <- bind_rows(temp_list1)
 dim(lhs_long_clean_imputed1) #500,786 #bigger because we're interpolating now
 
@@ -538,7 +551,7 @@ for(q in places ){
 lhs_long_clean_imputed2 <- bind_rows(temp_list2)
 
 lhs_long_clean_imputed <- lhs_long_clean_imputed2
-dim(lhs_long_clean_imputed) #419910 #413475 #408,369 #we lose anywithout q codes here
+dim(lhs_long_clean_imputed) #629,493 #419910 #413475 #408,369 #we lose anywithout q codes here
 saveRDS(lhs_long_clean_imputed, "/media/skynet2/905884f0-7546-4273-9061-12a790830beb/rwd_github_private/NESScovid19/data_temp/lhs_long_clean_imputed.Rds")
 
 ```
