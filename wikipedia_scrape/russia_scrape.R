@@ -1,5 +1,5 @@
-# Vietnam scraping
-# First case table was seen on 11th March . We have the data till 24th April for the same.
+# Russia scraping data for confirmed cases and deaths included.
+# First case table was seen on 23rd March
 
 library(rvest)
 library(stringr)
@@ -124,5 +124,20 @@ russia_subnation_cases$cases <- as.integer(russia_subnation_cases$cases)
 russia_subnation_cases$deaths <- as.integer(russia_subnation_cases$deaths)
 russia_subnation_cases$recov <- as.integer(russia_subnation_cases$recov)
 russia_subnation_cases$active <- as.integer(russia_subnation_cases$active)
+
+dat = russia_subnation_cases$edit_date
+dat = lapply(X = dat, FUN = function(t) gsub('[0-9]{2}:[0-9]{2} ' ,'', x = t))
+russia_subnation_cases$edit_date = as.Date(unlist(dat),format = '%d %B %Y')
+
+russia_wikipedia_cases_long <- russia_subnation_cases %>% janitor::clean_names() %>%
+  mutate(date_asdate = ymd(edit_date)) %>%
+  mutate(dataset="wikipedia") %>% 
+  mutate(admin0_name_clean= "Russia" %>% rex_clean()) %>%
+  mutate(admin1_name_clean= federal_subject %>% rex_clean() ) %>%
+  mutate(admin2_name_clean= '' ) %>%
+  rex_admin_function() 
+
+forjoining_russia_wikipedia_cases <- russia_wikipedia_cases_long %>% dplyr::select(dataset,gid, geonameid,wikidata_id,date_asdate, confirmed=cases,deaths = deaths,recov = recov)  %>%
+  mutate(confirmed=confirmed %>% str_replace_all(",","") %>% as.numeric() )
 
 write.csv(russia_subnation_cases,"~/Desktop/mssl/NESScovid19/wikipedia_scrape/russia_scrape.csv")
