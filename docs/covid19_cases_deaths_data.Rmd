@@ -67,6 +67,8 @@ admin2 <- readRDS(paste0(here::here(),"/data_in/admin2.Rds"))
 
 rex_clean <- function(x){ x %>% stringi::stri_trans_general("latin-ascii") %>% stringi::stri_replace_all(regex="[^A-Za-z0-9]","") %>% tolower() } #so individually, each string should be devoid of spaces,noncharacters, and nonlatin
 
+
+
 rex_admin_function <- function(x) {
   x %>% 
   left_join(admin0 ) %>%
@@ -345,6 +347,7 @@ forjoining_rki_covid19<- rki_covid19_long %>%
 
 
 ```
+
 
 ### Italy
 
@@ -876,25 +879,27 @@ dim(forjoining_wikipedia_subnational_south_africa_long) #
 
 ### Mexico
   
-  https://github.com/carranco-sga/Mexico-COVID-19
+https://github.com/carranco-sga/Mexico-COVID-19
 Descriptions: https://github.com/carranco-sga/Mexico-COVID-19/blob/master/CTD/README.md
+
 EDO = represents the total number of cases in the state 
 EDO_D: represents the number of confirmed cases that have died in the state.
 EDO_S: represents the total number of suspect cases in the state.
-none: 
 
 ```{r}
 
 #https://raw.githubusercontent.com/carranco-sga/Mexico-COVID-19/master/Mexico_COVID19_CTD.csv
 
-
+# load the data
 openMX <- read_csv("https://raw.githubusercontent.com/carranco-sga/Mexico-COVID-19/master/Mexico_COVID19_CTD.csv")
 
+# narrow down to the relevant variables
 openMX_long <- openMX %>% 
   dplyr::select(-ends_with("_I"), -ends_with("_R"), -ends_with("_L")) %>% 
   dplyr::select(Fecha:ZAC_D) %>%
   pivot_longer(AGU_S:ZAC_D) 
 
+# reformat into date-location
 openMX_long <- full_join(
   openMX_long %>% filter(endsWith(name,"_D")) %>% 
     mutate(state = name, deaths = value) %>%
@@ -907,11 +912,21 @@ openMX_long <- full_join(
   full_join(
     openMX_long %>% filter(!endsWith(name,"_D") & !endsWith(name,"_S")) %>%
       mutate(state = name, confirmed = value) %>%
-      dplyr::select(-name, -value))
+      dplyr::select(-name, -value)) %>%
+  full_join(
+    admin1 %>%  dplyr::filter(gid0 == "MEX") %>% 
+      dplyr::select(admin1_name_clean, ISO31662) %>% unique() %>% 
+      dplyr::filter(!duplicated(ISO31662)) %>% 
+      mutate(ISO31662 = stringi::stri_sub(ISO31662,-3, -1)) %>% 
+      rename(state=ISO31662)
+  ) %>% dplyr::select(-state)
+
+
+
 
 openMX_long <- openMX_long %>% mutate(date_asdate = ymd(Fecha)) %>% 
                  mutate(admin0_name_original="Mexico") %>%
-                 mutate(admin1_name_original=state)  %>%
+                 mutate(admin1_name_original=admin1_name_clean)  %>%
                  mutate(admin2_name_original='')  %>%
                  mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
                  mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
@@ -941,60 +956,110 @@ https://github.com/snikitin-de/covid19-russia/tree/master/covid_19_time_series
 openRUtests <- read_csv("https://raw.githubusercontent.com/snikitin-de/COVID-19/master/covid-19-russia/covid19-tests-and-other.csv")
 openRUcases <- read_csv("https://raw.githubusercontent.com/snikitin-de/COVID-19/master/covid-19-russia/covid19-russia-cases.csv")
 
-data.table::data.table(
-  Altai.region = c("Altai Republic","Amurskaya Oblast",
-                   "Arkhangelsk region","Astrakhan region","Belgorod region",
-                   "Bryansk region","Chechen Republic","Chelyabinsk region",
-                   "Chukotka Autonomous Okrug","Chuvash Republic",
-                   "Diamond Princess","Irkutsk region","Ivanovo region",
-                   "Jewish Autonomous Region","Kabardino-Balkar Republic","Kaliningrad region",
-                   "Kaluga region","Kamchatka Krai",
-                   "Karachay-Cherkess Republic","Kemerovo region","Khabarovsk region","Khanty-Mansiysk",
-                   "Kirov region","Komi Republic","Kostroma region",
-                   "Krasnodar region","Krasnoyarsk region","Kurgan region",
-                   "Kursk region","Leningrad region","Lipetsk region","Magadan Region",
-                   "Mari El Republic","Moscow","Moscow region",
-                   "Murmansk region","Nenets Autonomous Okrug","Nizhny Novgorod Region",
-                   "Novgorod region","Novosibirsk region","Omsk region",
-                   "Orenburg region","Oryol Region","Penza region","Perm",
-                   "Primorsky Krai","Pskov region","Republic of Adygea",
-                   "Republic of Bashkortostan","Republic of Crimea","Republic of Kalmykia",
-                   "Republic of North Ossetia - Alania","Republic of Tatarstan",
-                   "Rostov region","Ryazan Oblast","Sakhalin region",
-                   "Samara Region","Saratov region","Sevastopol","Smolensk region",
-                   "St. Petersburg","Stavropol region","Sverdlovsk region",
-                   "Tambov Region","The Republic of Buryatia",
-                   "The Republic of Dagestan","The Republic of Ingushetia",
-                   "The Republic of Karelia","The Republic of Khakassia",
-                   "The Republic of Mordovia","The Republic of Sakha (Yakutia)","Tomsk region",
-                   "Tula region","Tver region","Tyumen region","Tyva Republic",
-                   "Udmurt republic","Ulyanovsk region","Vladimir region",
-                   "Volgograd region","Vologda Region","Voronezh region",
-                   "Yamalo-Nenets Autonomous Okrug","Yaroslavl region","Zabaykalsky Krai"),
-           ALT = c("AL","AMU","ARK","AST","BEL","BRY",
-                   "CE","CHE","CHU","CU",NA,"IRK","IVA","YEV","KB",
-                   "KGD","KLU","KAM","KC","KEM","KHA","KHM","KIR","KO",
-                   "KOS","KDA","KYA","KGN","KRS","LEN","LIP","MAG","ME",
-                   "MOW","MOS","MUR","NEN","NIZ","NGR","NVS","OMS","ORE",
-                   "ORL","PNZ","PER","PRI","PSK","AD","BA",NA,"KL",
-                   "SE","TA","ROS","RYA","SAK","SAM","SAR",NA,"SMO","SPE",
-                   "STA","SVE","TAM","BU","DA","IN","KR","KK","MO",
-                   "SA","TOM","TUL","TVE","TYU","TY","UD","ULY","VLA",
-                   "VGG","VLG","VOR","YAN","YAR","ZAB")
-)
 
-
-openRU_long <- openRUcases %>% dplyr::select(Date, `Region/City-Eng`, Region_ID, Confirmed, Deaths) %>% 
-  mutate(date_asdate = ymd(Date)) %>% 
+openRU_long <- full_join(openRUcases, data.frame(Region_ID = c(1L,2L,3L,4L,5L,6L,7L,8L,
+                       9L,10L,11L,12L,13L,14L,15L,16L,17L,18L,19L,
+                       95L,21L,22L,23L,24L,25L,26L,27L,28L,29L,30L,31L,
+                       32L,33L,34L,35L,36L,37L,38L,39L,40L,41L,42L,
+                       43L,44L,45L,46L,47L,48L,49L,50L,51L,52L,53L,54L,
+                       55L,56L,57L,58L,59L,60L,61L,62L,63L,64L,65L,
+                       66L,67L,68L,69L,70L,71L,72L,73L,74L,75L,76L,
+                       77L,78L,79L,83L,86L,87L,89L,82L,92L),
+              mergename = c("Adygea, Republic",
+                       "Bashkortostan, Republic","Buryatiya, Republic",
+                       "Altai Republic","Dagestan, Republic",
+                       "Ingushetia, Republic","Kabardino-Balkar Republic","Kalmykiya, Republic",
+                       "Karachay-Cherkess Republic","Karelia, Republic",
+                       "Komi Republic","Mari El Republic","Mordovia, Republic",
+                       "Sakha (Yakutiya) Republic", 
+                       "North Ossetia-Alania","Tatarstan, Republic","Tuva Republic",
+                       "Udmurt Republic","khakassiya, republic",
+                       "Chechen Republic","Chuvash Republic","Altai Krai","Krasnodar Krai",
+                       "Krasnoyarsk Krai","Primorsky Krai","Stavropol Krai",
+                       "Khabarovsk Krai","Amur Oblast","Arkhangelsk Oblast",
+                       "Astrakhan Oblast","Belgorod Oblast","Bryansk Oblast",
+                       "Vladimir Oblast","Volgograd Oblast","Vologda Oblast",
+                       "Voronezh Oblast","Ivanovo Oblast","Irkutsk Oblast",
+                       "Kaliningrad Oblast","Kaluga Oblast","Kamchatka Krai",
+                       "Kemerovo Oblast","Kirov Oblast","Kostroma Oblast",
+                       "Kurgan Oblast","Kursk Oblast","Leningrad Oblast",
+                       "Lipetsk Oblast","Magadan Oblast","Moscow Oblast",
+                       "Murmansk Oblast","Nizhny Novgorod Oblast","Novgorod Oblast",
+                       "Novosibirsk Oblast","Omsk Oblast","Orenburg Oblast",
+                       "Oryol Oblast","Penza Oblast","Perm Krai","Pskov Oblast",
+                       "Rostov Oblast","Ryazan Oblast","Samara Oblast",
+                       "Saratov Oblast","Sakhalin Oblast","Sverdlovsk Oblast",
+                       "Smolensk Oblast","Tambov Oblast","Tver Oblast","Tomsk Oblast",
+                       "Tula Oblast","Tyumen Oblast","Ulyanovsk Oblast",
+                       "Chelyabinsk Oblast","Zabaykalsky Krai","Yaroslavl Oblast",
+                       "Moscow","Saint Petersburg","Jewish Autonomous Oblast",
+                       "Nenets Autonomous Okrug", 
+                       "Khanty–Mansi Autonomous Okrug","Chukotka Autonomous Okrug",
+                       "Yamalo-Nenets Autonomous Okrug","Republic of Crimea","Sevastopol"))) %>% 
+  filter(!is.na(mergename)) %>%
+  dplyr::select(Date, Confirmed, Deaths, mergename) 
+  
+openRU_long <- openRU_long %>% mutate(date_asdate = ymd(Date)) %>%
   mutate(admin0_name_original="Russia") %>%
-  mutate(admin1_name_original=`Region/City-Eng`)  %>%
+  mutate(admin1_name_original=`mergename`)  %>%
   mutate(admin2_name_original='')  %>%
   mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
   mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
   mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
-  rex_admin_function()
+  rex_admin_function() 
+
+temp <- openRU_long
+
+# openRU_long <- openRU_long %>% mutate(date_asdate = ymd(Date)) %>%
+#   mutate(admin0_name_original="Russia") %>%
+#   mutate(admin1_name_original=`mergename`)  %>%
+#   mutate(admin2_name_original='')  %>%
+#   mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+#   mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+#   mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+#   rex_admin_function()
+
+
+forjoining_openRU <- openRU_long %>% 
+                     mutate(dataset="openRU") %>%
+                     dplyr::select(dataset, gid, geonameid, wikidata_id, date_asdate, confirmed=Confirmed, deaths=Deaths)
+
+
+# There are a couple that still don't seem to merge in right. Zabaykalsky Krai
+# openRU_long[openRU_long$mergename == "Zabaykalsky Krai",]
 
 ```
+
+```{r}
+# WHY DOESN'T zabaykalskykrai merge in admin 2 data?
+temp <- temp %>% filter(admin1_name_clean == "zabaykalskykrai")
+temp
+# doesn't get geonameid1, feature_code1, wikidata_id1, gid1
+
+```
+
+```{r}
+admin1_temp <- admin1 %>% filter(admin1_name_clean == "zabaykalskykrai")
+admin1_temp
+```
+
+```{r}
+# the merge is on c("admin1_name_clean", "geonameid0", "wikidata_id0", "gid0", "ISO31661")
+temp[1, c("admin1_name_clean", "geonameid0", "wikidata_id0", "gid0", "ISO31661")] == admin1_temp[1, c("admin1_name_clean", "geonameid0", "wikidata_id0", "gid0", "ISO31661")]
+
+```
+So the issue is that admin0 gives us the wikidata_id0 Q159 (Russia), but admin1 has zabaykalskykrai with the wikidata_id0 code Q2184 "Russian Soviet Federative Socialist Republic".
+
+```{r}
+rbind(
+  unique(admin0[,c("wikidata_id0", "gid0")]),
+  unique(admin1[,c("wikidata_id0", "gid0")])) %>% 
+  unique() %>% count(gid0) %>% arrange(desc(n))
+
+```
+
+
+
 
 ### Pakistan
 
@@ -2677,6 +2742,9 @@ lhs_long <- bind_rows(
     forjoining_nytimes,
     forjoining_usafacts,
     forjoining_covidtracking,
+    
+    #Mexico
+    forjoining_openMX,
   
   #South America
   
@@ -2707,7 +2775,9 @@ lhs_long <- bind_rows(
     forjoining_pakistan_wikipedia_cases,
 
   ## Asia
-    
+    #Russia
+    forjoining_openRU
+  
     #South Korea
     forjoining_ds4c,
     
