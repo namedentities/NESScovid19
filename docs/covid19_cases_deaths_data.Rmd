@@ -2189,7 +2189,7 @@ forjoining_bing <- bing_long %>% dplyr::select(dataset,gid, geonameid,wikidata_i
                    mutate(confirmed= confirmed %>% as.numeric() ) %>%
                    mutate(deaths= deaths %>% as.numeric() ) 
   
-dim(forjoining_bing)
+dim(forjoining_bing) #87,335
 
 #Some of these are wrong
 #russia khanty mansi  is a second level administrative division, it and a bunch of other ones from russia are listed as first order
