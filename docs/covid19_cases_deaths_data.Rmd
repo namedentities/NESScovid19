@@ -1140,9 +1140,41 @@ https://github.com/Kamparia/nigeria-covid19-data
 
 ```{r}
 
-#https://raw.githubusercontent.com/Kamparia/nigeria-covid19-data/master/data/csv/ncdc-covid19-states.csv
+openNGArecovered <- read_csv("https://raw.githubusercontent.com/Kamparia/nigeria-covid19-data/master/data/csv/ncdc-covid19-states-daily-recovered.csv")
+
+openNGAcases <- read_csv("https://raw.githubusercontent.com/Kamparia/nigeria-covid19-data/master/data/csv/ncdc-covid19-states-daily-cases.csv")
+
+openNGAdeaths <- read_csv("https://raw.githubusercontent.com/Kamparia/nigeria-covid19-data/master/data/csv/ncdc-covid19-states-daily-deaths.csv")
+
+
+
+openNGA_long <- 
+  openNGArecovered %>% pivot_longer(Abia:Zamfara) %>% rename(recovered = value) %>% mutate(name = rex_clean(name)) %>%
+  full_join(openNGAcases %>% pivot_longer(Abia:Zamfara) %>% rename(cases = value) %>% mutate(name = rex_clean(name))) %>% 
+  full_join(openNGAdeaths %>% pivot_longer(Abia:Zamfara) %>% rename(deaths = value) %>% mutate(name = rex_clean(name))) %>%
+  mutate(name = str_replace(name, "fctabuja", "abujafct"))
+  
+
+openNGA_long <- openNGA_long %>% mutate(date_asdate = mdy(Date)) %>%
+  mutate(admin0_name_original="Nigeria") %>%
+  mutate(admin1_name_original=`name`)  %>%
+  mutate(admin2_name_original='')  %>%
+  mutate(admin0_name_clean=admin0_name_original %>% rex_clean()) %>%
+  mutate(admin1_name_clean=admin1_name_original %>% rex_clean()) %>%
+  mutate(admin2_name_clean=admin2_name_original %>% rex_clean()) %>%
+  rex_admin_function() 
+
+
+forjoining_openNGA <- openNGA_long %>% 
+                     mutate(dataset="openNGA") %>%
+                     dplyr::select(dataset, gid, geonameid, wikidata_id, date_asdate, confirmed=cases, deaths)
+
 
 ```
+
+
+
+
 
 ### Bangladesh
 
@@ -2792,6 +2824,9 @@ lhs_long <- bind_rows(
   
     #Tunesia
     forjoining_TnCovid,
+    
+    #Nigeria
+    forjoining_openNGA,
   
   #Bangladesh
   forjoining_iedcr,
